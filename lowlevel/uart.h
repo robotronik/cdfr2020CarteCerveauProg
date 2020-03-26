@@ -20,6 +20,17 @@ simple uart configuration for debugging
 #define DEBUG_PIN_RX GPIO3
 #define DEBUG_AF_RX GPIO_AF7
 
+#define COMM_PORT_TX GPIOA
+#define COMM_PORT_TX_RCC RCC_GPIOA // clock of GPIO port
+#define COMM_PIN_TX GPIO9
+#define COMM_AF_TX GPIO_AF7
+
+#define COMM_PORT_RX GPIOA
+#define COMM_PORT_RX_RCC RCC_GPIOA
+#define COMM_PIN_RX GPIO10
+#define COMM_AF_RX GPIO_AF7
+
+
 void uart_setup();
 void uart_send_string(char* chain); // NULL-ended string
 void uart_send_int(int integer);
