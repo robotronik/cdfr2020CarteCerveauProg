@@ -1,0 +1,142 @@
+[binaries]
+c       = 'arm-none-eabi-gcc'
+cpp     = 'arm-none-eabi-g++'
+ld      = 'arm-none-eabi-ld'
+ar      = 'arm-none-eabi-ar'
+as      = 'arm-none-eabi-as'
+size    = 'arm-none-eabi-size'
+objdump = 'arm-none-eabi-objdump'
+objcopy = 'arm-none-eabi-objcopy'
+strip   = 'arm-none-eabi-strip'
+gdb     = 'arm-none-eabi-gdb'
+terminal= 'x-terminal-emulator'
+openocd = 'openocd'
+
+# c       = 'clang-5.0'
+# cpp     = 'clang++-5.0'
+# ld      = 'llvm-link-5.0'
+# ar      = 'llvm-ar-5.0'
+# as      = 'llvm-as-5.0'
+# size    = 'llvm-size-5.0'
+# objdump = 'llvm-objdump-5.0'
+
+[properties]
+has_function_printf = false
+
+
+size    = 'arm-none-eabi-size'
+objdump = 'arm-none-eabi-objdump'
+objcopy = 'arm-none-eabi-objcopy'
+strip   = 'arm-none-eabi-strip'
+gdb     = 'arm-none-eabi-gdb'
+terminal= 'x-terminal-emulator'
+openocd = 'openocd'
+
+
+c_args = [
+  ##### CPU flags
+  '-mcpu=cortex-m4',
+  '-mthumb',
+  '-mfloat-abi=hard',
+  '-mfpu=fpv4-sp-d16',
+
+  ##### Build/link flags
+  # Uninitialized global variables should not be common between object files
+  '-fno-common',
+  # Each function to a seperate section (Code-optimization / deletion)
+  '-ffunction-sections',
+  # each variable to a seperate section (Code-optimization / deletion)
+  '-fdata-sections',
+
+  ##### libopencm3 flag
+  '-DSTM32F3',
+
+  ##### Debugging
+  '-ggdb3',
+
+  ##### Other flags ?
+  '-specs=nosys.specs',
+  # otherwise errors at linking...
+  '-fshort-enums',
+  # '-ffreestanding',
+
+
+  # Optimizations
+  '-Os',
+  ]
+
+cpp_args = [
+  ##### CPU flags
+  '-mcpu=cortex-m4',
+  '-mthumb',
+  '-mfloat-abi=hard',
+  '-mfpu=fpv4-sp-d16',
+
+  ##### Build/link flags
+  # Uninitialized global variables should not be common between object files
+  '-fno-common',
+  # Each function to a seperate section (Code-optimization / deletion)
+  '-ffunction-sections',
+  # each variable to a seperate section (Code-optimization / deletion)
+  '-fdata-sections',
+  # otherwise errors at linking...
+  '-fshort-enums',
+
+  ##### libopencm3 flag
+  '-DSTM32F3',
+
+  ##### Debugging
+  '-ggdb3',
+
+  ##### Other flags ?
+  '-specs=nosys.specs',
+  # '-ffreestanding',
+
+
+  # Optimizations
+  '-Os',
+  ]
+
+
+# -nostartfiles -mthumb -mcpu=cortex-m4 -mfloat-abi=hard -mfpu=fpv4-sp-d16
+# -specs=nano.specs -Wl,--gc-sections
+# bin-stm32f4disco/main-stm32f4disco.o bin-stm32f4disco/usb-gadget0.o bin-stm32f4disco/trace.o
+# bin-stm32f4disco/trace_stdio.o bin-stm32f4disco/delay.o
+# -lopencm3_stm32f4 -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
+# -o usb-gadget0-stm32f4disco.elf
+
+c_link_args = [
+  ##### CPU flags
+  '-mcpu=cortex-m4',
+  '-mthumb',
+  '-mfloat-abi=hard',
+  '-mfpu=fpv4-sp-d16',
+
+  ##### Build/link flags
+  # Uninitialized global variables should not be common between object files
+  '-fno-common',
+  # Each function to a seperate section (Code-optimization / deletion)
+  '-ffunction-sections',
+  # each variable to a seperate section (Code-optimization / deletion)
+  '-fdata-sections',
+  # otherwise errors at linking...
+  '-fshort-enums',
+
+  '-specs=nosys.specs',
+
+  '-nostartfiles',
+  '-Wl,--gc-sections',
+  # '-lnosys',
+  # '-lstdc++_nano',
+  # '-lm',
+  # '-lc',
+  # '-lg',
+  # '-lrdimon',
+  ]
+
+
+[host_machine]
+system     = 'none'
+cpu_family = 'arm'
+cpu        = 'cortex-m4'
+endian     = 'little'
