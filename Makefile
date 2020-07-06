@@ -71,9 +71,17 @@ OPENOCD_CFG = /usr/share/openocd/scripts/board/st_nucleo_f4.cfg
 
 LFlags += -T $(LINKER_SCRIPTS_DIR)/stm32f401.ld
 
-CFlags += -I.
 
-all: tsmr.hex
+#include our directories with .h files
+#add directories separated by whitespaces in INCPATHS
+#a reparer
+INCPATHS=lowlevel/include debug/include #$(DIR2) ...
+
+INC_PARAMS=$(foreach d, $(INCPATHS), -I $d)
+
+CFlags += $(INC_PARAMS)
+
+all: mainTest.hex
 
 %.cpp.o: %.cpp Makefile
 	@$(CXX) $(CFlags) $(CXXFlags) $< -o $@ -c
@@ -83,45 +91,27 @@ all: tsmr.hex
 	$(CC) $(CFlags) $< -o $@ -c
 	@echo CC $<
 
+pathMainTest = lowlevel debug
+ 
+srcMainTest = $(foreach d, $(pathMainTest), $(wildcard $d/*.c))
 
-tsmr.elf: \
-		lowlevel/clock.c.o \
-		lowlevel/uart.c.o \
-		lowlevel/gpio.c.o \
-		lowlevel/nvic.c.o \
-		main.c.o \
-		|
+objMainTest = $(foreach d, $(srcMainTest) , $(d:.c=.o) )
+
+depsMainTest := $(objMainTest:.o=.d)
+
+mainTest.elf: $(objMainTest) \
+	main_test.c
+	#debug
+	#@echo $(objMainTest)
+	#
 	$(CC) $(CFlags) $^ $(LFlags) -o $@
 	@echo LINK $@
 
-	# lowlevel/encoders.c.o \
-	# lowlevel/eeprom.c.o \
-	# lowlevel/motors.c.o \
-	# fsm/fsm_master.c.o \
-	# fsm/fsm_asser.c.o \
-	# asservissement/calibration.c.o \
-	# asservissement/odometry.c.o \
-	# asservissement/pid.c.o \
-	# lowlevel/can.c.o \
-	# lowlevel/adc.c.o \
+-include $(depsMainTest)
+%.d: %.c
+	@$(CC) $(CFlags) $< -MM -MT $(@:.d=.o) >$@
 
-tests.elf: \
-		lowlevel/adc.c.o \
-		lowlevel/can.c.o \
-		lowlevel/clock.c.o \
-		lowlevel/uart.c.o \
-		lowlevel/eeprom.c.o \
-		lowlevel/encoders.c.o \
-		lowlevel/gpio.c.o \
-		lowlevel/motors.c.o \
-		asservissement/calibration.c.o \
-		asservissement/odometry.c.o \
-		asservissement/pid.c.o \
-		main_tests.c.o \
-		|
-	$(CC) $(CFlags) $^ $(LFlags) -o $@
-	@echo LINK $@
-
+#compiled version to be uploaded on the chip
 %.hex: %.elf
 	@arm-none-eabi-objcopy -Oihex $^ $@
 	@echo OBJCOPY $@
@@ -150,6 +140,7 @@ install_udev:
 		-c "reset" \
 		-c "shutdown"
 
+#feedback
 #NOTE: the files in the gdb dir must correspond to your MCU
 %.debug: %.elf
 	$(GDB) $^ --command=gdb/attach.gdb
@@ -162,19 +153,3 @@ clean:
 		-o -name "*.hex" \
 		-o -name "*.elf" \
 		\) -delete
-
-
-build: | _build
-	ninja -C _build
-
-_build:
-	meson _build --cross-file stm32f303.meson
-
-clean_meson:
-	rm -rf _build
-
-flash: build
-	ninja -C _build tsmr.flash
-
-flash_tests: build
-	ninja -C _build tsmr_tests.flash
