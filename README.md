@@ -1,4 +1,4 @@
-# cdfr2020CarteCerveauProg# cdfr2020CarteCerveauProg
+# cdfr2020CarteCerveauProg
 
 Code for the robotronik club participation to the french robotics cup (WIP).
 This code will implement the brain of the robot: trajectory planning, strategy and actuator control
