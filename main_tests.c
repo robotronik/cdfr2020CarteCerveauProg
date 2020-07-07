@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "lowlevel/clock.h"
-#include "lowlevel/actuators.h"
+#include "lowlevel/actuator.h"
 //#include "uart.h"
 
 void test_actuator();
