@@ -100,7 +100,7 @@ objMainTest = $(foreach d, $(srcMainTest) , $(d:.c=.o) )
 depsMainTest := $(objMainTest:.o=.d)
 
 mainTest.elf: $(objMainTest) \
-	main_test.c
+	mainTest.c
 	#debug
 	#@echo $(objMainTest)
 	#

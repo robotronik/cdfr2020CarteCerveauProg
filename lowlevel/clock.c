@@ -18,14 +18,14 @@ void clock_setup() {
   	systick_counter_enable();
 }
 
-volatile uint32_t systicks = 0;
+volatile uint32_t _systicks = 0;
 
 void sys_tick_handler() {
-  systicks++;
+  _systicks++;
 }
 
-uint32_t get_systicks() {
-  return systicks;
+uint32_t clock_get_systicks() {
+  return _systicks;
 }
 
 /*
@@ -35,8 +35,8 @@ uint32_t get_uptime_ms() {
 */
 
 void delay_ms(uint32_t ms) {
-  uint32_t count_max = systicks + MILLIS_TO_SYSTICK(ms);
-  while(systicks < count_max) {}
+  uint32_t count_max = clock_get_systicks() + ms;
+	while(clock_get_systicks() < count_max);
 }
 
 

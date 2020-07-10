@@ -18,7 +18,7 @@ void actuator_setup(){
     gpio_mode_setup(ARM_PORT_DIR_1, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, ARM_PIN_DIR_1);
     gpio_set_output_options(ARM_PORT_DIR_1, GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ, ARM_PIN_DIR_1);
 
-    rcc_periph_clock_enable(ARM_GPIO_RCC_DIR_21);
+    rcc_periph_clock_enable(ARM_GPIO_RCC_DIR_2);
     gpio_mode_setup(ARM_PORT_DIR_2, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, ARM_PIN_DIR_2);
     gpio_set_output_options(ARM_PORT_DIR_2, GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ, ARM_PIN_DIR_2);
 
@@ -39,7 +39,7 @@ void actuator_setup(){
     gpio_mode_setup(FLAG_PORT_DIR_1, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, FLAG_PIN_DIR_1);
     gpio_set_output_options(FLAG_PORT_DIR_1, GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ, FLAG_PIN_DIR_1);
 
-    rcc_periph_clock_enable(FLAG_GPIO_RCC_DIR_21);
+    rcc_periph_clock_enable(FLAG_GPIO_RCC_DIR_2);
     gpio_mode_setup(FLAG_PORT_DIR_2, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, FLAG_PIN_DIR_2);
     gpio_set_output_options(FLAG_PORT_DIR_2, GPIO_OTYPE_PP,GPIO_OSPEED_50MHZ, FLAG_PIN_DIR_2);
 
