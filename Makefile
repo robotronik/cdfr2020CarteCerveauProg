@@ -150,6 +150,7 @@ clean:
 		\( -not -path  "./hal_common*" \) \
 		\( -name "*.o" \
 		-o -name "*.a" \
+		-o -name "*.d" \
 		-o -name "*.hex" \
 		-o -name "*.elf" \
 		\) -delete

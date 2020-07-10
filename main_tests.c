@@ -19,7 +19,8 @@ int main() {
 }
 
 void test_actuator(){
-    
+    actuator_set(ARM, 50);
+    actuator_set(FLAG, -60);
 }
 
 void test_com(){
