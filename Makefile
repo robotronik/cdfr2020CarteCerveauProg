@@ -83,11 +83,11 @@ CFlags += $(INC_PARAMS)
 
 all: mainTest.hex
 
-%.cpp.o: %.cpp Makefile
+%.o: %.cpp Makefile
 	@$(CXX) $(CFlags) $(CXXFlags) $< -o $@ -c
 	@echo CXX $<
 
-%.c.o: %.c Makefile
+%.o: %.c Makefile
 	$(CC) $(CFlags) $< -o $@ -c
 	@echo CC $<
 
