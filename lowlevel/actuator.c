@@ -75,9 +75,9 @@ void actuator_set(enum actuator_sel sel, int8_t value){
     	
     		/*direction is backward: set DIR to 1 and value become positive*/
     		if(value<0){
-    			gpio_set(ARM_PORT_DIR_1, ARM_PIN_DIR_1);
+                gpio_set(ARM_PORT_DIR_1, ARM_PIN_DIR_1);
                 gpio_clear(ARM_PORT_DIR_2, ARM_PIN_DIR_2);
-    			value *= -1;
+                value *= -1;
     		}
     		/*direction is forward: set DIR to 0*/
     		else{
@@ -94,9 +94,9 @@ void actuator_set(enum actuator_sel sel, int8_t value){
     	
     		/*direction is backward: set DIR to 1 and value become positive*/
             if(value<0){
-    			gpio_set(FLAG_PORT_DIR_1, FLAG_PIN_DIR_1);
+                gpio_set(FLAG_PORT_DIR_1, FLAG_PIN_DIR_1);
                 gpio_clear(FLAG_PORT_DIR_2, FLAG_PIN_DIR_2);
-    			value *= -1;
+                value *= -1;
     		}
     		/*direction is forward: set DIR to 0*/
     		else{
