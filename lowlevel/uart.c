@@ -88,7 +88,7 @@ void usart1_isr(){
   if (usart_get_flag(COMM_USART,USART_SR_RXNE)){
     fprintf(stderr,"message received : \n");
     char charReceived='z';
-    charReceived = usart_recv_blocking(DEBUG_USART);
+    charReceived = usart_recv_blocking(COMM_USART);
     // fscanf(stdout,"%c",&charReceived);
     fprintf(stderr,"%c \n",charReceived);
   }
