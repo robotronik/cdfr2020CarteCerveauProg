@@ -156,10 +156,10 @@ int _read(int file,char *ptr,ssize_t len){
         // return character first, otherwise the serial console may not
         // actually return to the left.
         if(file == STDERR_FILENO){
-        ptr[i] = usart_recv(DEBUG_USART);//usart_recv_blocking(DEBUG_USART); 
+        ptr[i] = usart_recv_blocking(DEBUG_USART);//usart_recv_blocking(DEBUG_USART); 
         }
         if(file == STDOUT_FILENO){
-        ptr[i] = usart_recv(DEBUG_USART); //usart_recv_blocking(COMM_USART);
+        ptr[i] = usart_recv_blocking(DEBUG_USART); //usart_recv_blocking(COMM_USART);
         }
 
         if (ptr[i] == '\r'){
