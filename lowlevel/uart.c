@@ -35,11 +35,11 @@ void uart_setup()
 	gpio_mode_setup(COMM_PORT_TX, GPIO_MODE_AF, GPIO_PUPD_NONE, COMM_PIN_TX);
 	gpio_set_af(COMM_PORT_TX, DEBUG_AF_TX, COMM_PIN_TX);
 
-	//rcc_periph_clock_enable(COMM_PORT_RX_RCC);
+	rcc_periph_clock_enable(COMM_PORT_RX_RCC);
 	gpio_mode_setup(COMM_PORT_RX, GPIO_MODE_AF, GPIO_PUPD_NONE, COMM_PIN_RX);
 	gpio_set_af(COMM_PORT_RX, DEBUG_AF_RX, COMM_PIN_RX);
 
-	rcc_periph_clock_enable(DEBUG_RCC_USART);
+	rcc_periph_clock_enable(COMM_RCC_USART);
 
 	usart_disable(COMM_USART);
 
