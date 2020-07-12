@@ -63,24 +63,25 @@ void uart_setup()
 
 
 void usart2_isr(){
-  fprintf(stderr,"interruption on exti26 from usart2\n");
+	fprintf(stderr,"interruption on exti26 from usart2\n");
 
-  //message received
-  if (usart_get_flag(DEBUG_USART,USART_SR_RXNE)){
-    fprintf(stderr,"message received : \n");
-    char charReceived='z';
-    // usart_recv(DEBUG_USART);
-    fscanf(stderr,"%c",&charReceived);
-    fprintf(stderr,"%c \n",charReceived);
-  }
+	//message received
+	if (usart_get_flag(DEBUG_USART,USART_SR_RXNE)){
+	  fprintf(stderr,"message received : \n");
+	  char charReceived='z';
+	  // usart_recv(DEBUG_USART);
+	  fscanf(stderr,"%c",&charReceived);
+	  fprintf(stderr,"%c \n",charReceived);
+	}
 
-  //transmission of message complete
-  if (usart_get_flag(DEBUG_USART,USART_SR_TC)){
-    fprintf(stderr,"transmission complete");
-  }
+	//transmission of message complete
+	/*
+	if (usart_get_flag(DEBUG_USART,USART_SR_TC)){
+	  fprintf(stderr,"transmission complete");
+	}
+	*/
 
-
-  //exti_reset_request(EXTI26);
+	//exti_reset_request(EXTI26);
 }
 
 
