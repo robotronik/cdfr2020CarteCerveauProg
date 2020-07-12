@@ -87,10 +87,10 @@ void usart1_isr(){
   //message received
   if (usart_get_flag(COMM_USART,USART_SR_RXNE)){
     fprintf(stderr,"message received : \n");
-    char charReceived='z';
-    charReceived = usart_recv_blocking(COMM_USART);
+    uint16_t intReceived=14;
+    intReceived = usart_recv_blocking(COMM_USART);
     // fscanf(stdout,"%c",&charReceived);
-    fprintf(stderr,"%c \n",charReceived);
+    fprintf(stderr,"%d \n",intReceived);
   }
 
   //transmission of message complete
