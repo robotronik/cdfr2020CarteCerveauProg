@@ -89,7 +89,7 @@ void usart1_isr(){
     fprintf(stderr,"message received : \n");
     char charReceived='z';
     // usart_recv(DEBUG_USART);
-    fscanf(stderr,"%c",&charReceived);
+    fscanf(stdout,"%c",&charReceived);
     fprintf(stderr,"%c \n",charReceived);
   }
 
