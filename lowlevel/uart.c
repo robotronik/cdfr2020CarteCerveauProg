@@ -159,7 +159,7 @@ int _read(int file,char *ptr,ssize_t len){
         ptr[i] = usart_recv_blocking(DEBUG_USART);//usart_recv_blocking(DEBUG_USART); 
         }
         if(file == STDOUT_FILENO){
-        ptr[i] = usart_recv_blocking(DEBUG_USART); //usart_recv_blocking(COMM_USART);
+        ptr[i] = usart_recv_blocking(COMM_USART); //usart_recv_blocking(COMM_USART);
         }
 
         if (ptr[i] == '\r'){
