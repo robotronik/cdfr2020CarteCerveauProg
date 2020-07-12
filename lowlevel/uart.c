@@ -25,7 +25,6 @@ void uart_setup()
 
 	usart_enable_rx_interrupt(DEBUG_USART); // enable interrupts from reception events on usart 2
 /*TODO*/ //	usart_enable_tx_interrupt(DEBUG_USART); // enable interrupts from transmission events on usart 2
-	// exti_enable_request(DEBUG_UART_EXTI); //enable the interrupt peripheral "exti" external interrupt
 	nvic_enable_irq(DEBUG_UART_NVIC);
 
 	usart_enable(DEBUG_USART);
@@ -53,7 +52,6 @@ void uart_setup()
 
 	usart_enable_rx_interrupt(COMM_USART); // enable interrupts from reception events on usart 2
 /*TODO*/ //	usart_enable_tx_interrupt(COMM_USART); // enable interrupts from transmission events on usart 2
-	// exti_enable_request(EXTI); //enable the interrupt peripheral "exti" external interrupt
 	nvic_enable_irq(COMM_UART_NVIC);
 
 	usart_enable(COMM_USART);
@@ -63,7 +61,7 @@ void uart_setup()
 
 
 void usart2_isr(){
-  fprintf(stderr,"interruption on exti26 from usart2\n");
+  fprintf(stderr,"interruption from usart2\n");
 
   //message received
   if (usart_get_flag(DEBUG_USART,USART_SR_RXNE)){
@@ -74,13 +72,33 @@ void usart2_isr(){
     fprintf(stderr,"%c \n",charReceived);
   }
 
+  /*TODO*/
   //transmission of message complete
-  if (usart_get_flag(DEBUG_USART,USART_SR_TC)){
-    fprintf(stderr,"transmission complete");
+  // if (usart_get_flag(DEBUG_USART,USART_SR_TC)){
+  //   fprintf(stderr,"transmission complete");
+  // }
+
+
+}
+
+void usart1_isr(){
+  fprintf(stderr,"interruption from usart1\n");
+
+  //message received
+  if (usart_get_flag(COMM_USART,USART_SR_RXNE)){
+    fprintf(stderr,"message received : \n");
+    char charReceived='z';
+    // usart_recv(DEBUG_USART);
+    fscanf(stderr,"%c",&charReceived);
+    fprintf(stderr,"%c \n",charReceived);
   }
 
+  //transmission of message complete
+  // if (usart_get_flag(DEBUG_USART,USART_SR_TC)){
+  //   fprintf(stderr,"transmission complete");
+  // }
 
-  //exti_reset_request(EXTI26);
+
 }
 
 
