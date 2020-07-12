@@ -23,15 +23,15 @@ void uart_setup()
 	usart_set_parity(DEBUG_USART, USART_PARITY_NONE);
 	usart_set_flow_control(DEBUG_USART, USART_FLOWCONTROL_NONE);
 
-  usart_enable_rx_interrupt(DEBUG_USART); // enable interrupts from reception events on usart 2
-  usart_enable_tx_interrupt(DEBUG_USART); // enable interrupts from transmission events on usart 2
-  // exti_enable_request(DEBUG_UART_EXTI); //enable the interrupt peripheral "exti" external interrupt
-  nvic_enable_irq(DEBUG_UART_NVIC);
+	usart_enable_rx_interrupt(DEBUG_USART); // enable interrupts from reception events on usart 2
+/*TODO*/ //	usart_enable_tx_interrupt(DEBUG_USART); // enable interrupts from transmission events on usart 2
+	// exti_enable_request(DEBUG_UART_EXTI); //enable the interrupt peripheral "exti" external interrupt
+	nvic_enable_irq(DEBUG_UART_NVIC);
 
 	usart_enable(DEBUG_USART);
-  setbuf(stdout,NULL); //necessary for printf
+	setbuf(stdout,NULL); //necessary for printf
 
-// Open GPIO for USART
+	// Open GPIO for USART
 	rcc_periph_clock_enable(COMM_PORT_TX_RCC);
 	gpio_mode_setup(COMM_PORT_TX, GPIO_MODE_AF, GPIO_PUPD_NONE, COMM_PIN_TX);
 	gpio_set_af(COMM_PORT_TX, DEBUG_AF_TX, COMM_PIN_TX);
@@ -51,19 +51,19 @@ void uart_setup()
 	usart_set_parity(COMM_USART, USART_PARITY_NONE);
 	usart_set_flow_control(COMM_USART, USART_FLOWCONTROL_NONE);
 
-  usart_enable_rx_interrupt(COMM_USART); // enable interrupts from reception events on usart 2
-  usart_enable_tx_interrupt(COMM_USART); // enable interrupts from transmission events on usart 2
-  // exti_enable_request(EXTI); //enable the interrupt peripheral "exti" external interrupt
-  nvic_enable_irq(COMM_UART_NVIC);
+	usart_enable_rx_interrupt(COMM_USART); // enable interrupts from reception events on usart 2
+/*TODO*/ //	usart_enable_tx_interrupt(COMM_USART); // enable interrupts from transmission events on usart 2
+	// exti_enable_request(EXTI); //enable the interrupt peripheral "exti" external interrupt
+	nvic_enable_irq(COMM_UART_NVIC);
 
 	usart_enable(COMM_USART);
-  setbuf(stderr,NULL); //necessary for printf
+	setbuf(stderr,NULL); //necessary for printf
 
 }
 
 
-void usart2_exti26_isr(){
-  //fprintf(stderr,"interruption on exti26 from usart2\n");
+void usart2_isr(){
+  fprintf(stderr,"interruption on exti26 from usart2\n");
 
   //message received
   if (usart_get_flag(DEBUG_USART,USART_SR_RXNE)){
@@ -80,7 +80,7 @@ void usart2_exti26_isr(){
   }
 
 
-  exti_reset_request(EXTI26);
+  //exti_reset_request(EXTI26);
 }
 
 
@@ -102,20 +102,20 @@ int _write(int file, const char *ptr, ssize_t len) {
         // actually return to the left.
         if (ptr[i] == '\n') {
             if(file == STDERR_FILENO){
-            usart_send(DEBUG_USART, '\r');
+            usart_send_blocking(DEBUG_USART, '\r');
             }
             if(file == STDOUT_FILENO){
-            usart_send(COMM_USART, '\r');
+            usart_send_blocking(COMM_USART, '\r');
             }
         }
 
         // Write the character to send to the USART1 transmit buffer, and block
         // until it has been sent.
         if(file== STDOUT_FILENO){
-        usart_send(COMM_USART, ptr[i]);
+        usart_send_blocking(COMM_USART, ptr[i]);
         }
         if(file== STDERR_FILENO){
-        usart_send(DEBUG_USART, ptr[i]);
+        usart_send_blocking(DEBUG_USART, ptr[i]);
         }
     }
 
@@ -131,27 +131,27 @@ int _read(int file,char *ptr,ssize_t len){
             return -1;
         }
     // Keep i defined outside the loop so we can return it
-        int i;
-        for (i = 0; i < len; i++) {
-            //fprintf(stderr,"debug read entree// read len = %d // i=%d",len,i);
+    int i;
+    for (i = 0; i < len; i++) {
+        //fprintf(stderr,"debug read entree// read len = %d // i=%d",len,i);
 
-            // If we get a newline character, also be sure to send the carriage
-            // return character first, otherwise the serial console may not
-            // actually return to the left.
-            if(file == STDERR_FILENO){
-            ptr[i] = usart_recv(DEBUG_USART);//usart_recv_blocking(DEBUG_USART); 
-            }
-            if(file == STDOUT_FILENO){
-            ptr[i] = usart_recv(DEBUG_USART); //usart_recv_blocking(COMM_USART);
-            }
-
-            if (ptr[i] == '\r'){
-              ptr[i] = '\n';
-            } 
-            
+        // If we get a newline character, also be sure to send the carriage
+        // return character first, otherwise the serial console may not
+        // actually return to the left.
+        if(file == STDERR_FILENO){
+        ptr[i] = usart_recv(DEBUG_USART);//usart_recv_blocking(DEBUG_USART); 
+        }
+        if(file == STDOUT_FILENO){
+        ptr[i] = usart_recv(DEBUG_USART); //usart_recv_blocking(COMM_USART);
         }
 
-        // Return the number of bytes we sent
-        return i;
+        if (ptr[i] == '\r'){
+          ptr[i] = '\n';
+        } 
+        
+    }
+
+    // Return the number of bytes we sent
+    return i;
 
 }
