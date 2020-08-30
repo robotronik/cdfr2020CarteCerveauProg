@@ -1,7 +1,7 @@
 [
     {
         "arguments": [
-            "arm-none-eabi-gcc",
+            "/usr/bin/arm-none-eabi-gcc",
             "-c",
             "-Os",
             "-std=gnu11",
@@ -20,15 +20,15 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/timer.o",
-            "lowlevel/timer.c"
+            "lowlevel/gpio.o",
+            "lowlevel/gpio.c"
         ],
         "directory": "/home/mami/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/timer.c"
+        "file": "lowlevel/gpio.c"
     },
     {
         "arguments": [
-            "arm-none-eabi-gcc",
+            "/usr/bin/arm-none-eabi-gcc",
             "-c",
             "-Os",
             "-std=gnu11",
@@ -47,42 +47,15 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/uart.o",
-            "lowlevel/uart.c"
+            "lowlevel/clock.o",
+            "lowlevel/clock.c"
         ],
         "directory": "/home/mami/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/uart.c"
+        "file": "lowlevel/clock.c"
     },
     {
         "arguments": [
-            "arm-none-eabi-gcc",
-            "-c",
-            "-Os",
-            "-std=gnu11",
-            "-fdiagnostics-color=always",
-            "-Wall",
-            "-Wextra",
-            "-g",
-            "-mcpu=cortex-m4",
-            "-mthumb",
-            "-mfloat-abi=hard",
-            "-mfpu=fpv4-sp-d16",
-            "-specs=nano.specs",
-            "-I",
-            "/home/mami/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
-            "-DSTM32F4",
-            "-I",
-            "lowlevel/include",
-            "-o",
-            "lowlevel/actuator.o",
-            "lowlevel/actuator.c"
-        ],
-        "directory": "/home/mami/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/actuator.c"
-    },
-    {
-        "arguments": [
-            "arm-none-eabi-gcc",
+            "/usr/bin/arm-none-eabi-gcc",
             "-c",
             "-Os",
             "-std=gnu11",
@@ -115,7 +88,7 @@
     },
     {
         "arguments": [
-            "arm-none-eabi-gcc",
+            "/usr/bin/arm-none-eabi-gcc",
             "-c",
             "-Os",
             "-std=gnu11",
@@ -134,15 +107,15 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/gpio.o",
-            "lowlevel/gpio.c"
+            "lowlevel/uart.o",
+            "lowlevel/uart.c"
         ],
         "directory": "/home/mami/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/gpio.c"
+        "file": "lowlevel/uart.c"
     },
     {
         "arguments": [
-            "arm-none-eabi-gcc",
+            "/usr/bin/arm-none-eabi-gcc",
             "-c",
             "-Os",
             "-std=gnu11",
@@ -161,10 +134,37 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/clock.o",
-            "lowlevel/clock.c"
+            "lowlevel/timer.o",
+            "lowlevel/timer.c"
         ],
         "directory": "/home/mami/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/clock.c"
+        "file": "lowlevel/timer.c"
+    },
+    {
+        "arguments": [
+            "/usr/bin/arm-none-eabi-gcc",
+            "-c",
+            "-Os",
+            "-std=gnu11",
+            "-fdiagnostics-color=always",
+            "-Wall",
+            "-Wextra",
+            "-g",
+            "-mcpu=cortex-m4",
+            "-mthumb",
+            "-mfloat-abi=hard",
+            "-mfpu=fpv4-sp-d16",
+            "-specs=nano.specs",
+            "-I",
+            "/home/mami/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
+            "-DSTM32F4",
+            "-I",
+            "lowlevel/include",
+            "-o",
+            "lowlevel/actuator.o",
+            "lowlevel/actuator.c"
+        ],
+        "directory": "/home/mami/cdfr2020CarteCerveauProg",
+        "file": "lowlevel/actuator.c"
     }
 ]

@@ -2,7 +2,7 @@ default: all
 
 Makefile_path := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 
-Toolchain = arm-none-eabi-
+Toolchain = /usr/bin/arm-none-eabi-
 
 CC = $(Toolchain)gcc
 CFlags =
@@ -81,7 +81,7 @@ INC_PARAMS=$(foreach d, $(INCPATHS), -I $d)
 
 CFlags += $(INC_PARAMS)
 
-all: mainTest.hex
+all: mainTest.flash
 
 %.o: %.cpp Makefile
 	@$(CXX) $(CFlags) $(CXXFlags) $< -o $@ -c

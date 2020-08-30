@@ -77,4 +77,4 @@ int _write(int file, const char *ptr, ssize_t len);
  * @param len 
  * @return int 
  */
-int _read(int file,char *ptr,ssize_t len);
+int _read(int file,char *ptr, ssize_t len);

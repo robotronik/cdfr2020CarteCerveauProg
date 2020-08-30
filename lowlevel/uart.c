@@ -66,10 +66,13 @@ void usart2_isr(){
   //message received
   if (usart_get_flag(DEBUG_USART,USART_SR_RXNE)){
     fprintf(stderr,"message received : \n");
-    char charReceived='z';
-    // usart_recv(DEBUG_USART);
-    fscanf(stderr,"%c",&charReceived);
-    fprintf(stderr,"%c \n",charReceived);
+    // usart_recv_blocking(DEBUG_USART);
+    //char charReceived='z';
+    //fscanf(stderr,"%c",&charReceived);
+    //fprintf(stderr,"%c \n",charReceived);
+    int intReceived=1;
+    fscanf(stderr,"%d",&intReceived);
+    fprintf(stderr,"%d \n",intReceived);
   }
 
   /*TODO*/
@@ -88,8 +91,8 @@ void usart1_isr(){
   if (usart_get_flag(COMM_USART,USART_SR_RXNE)){
     fprintf(stderr,"message received : \n");
     uint16_t intReceived=14;
-    intReceived = usart_recv_blocking(COMM_USART);
-    // fscanf(stdout,"%c",&charReceived);
+    //intReceived = usart_recv_blocking(COMM_USART);
+    fscanf(stdout,"%d",&intReceived);
     fprintf(stderr,"%d \n",intReceived);
   }
 
@@ -141,7 +144,7 @@ int _write(int file, const char *ptr, ssize_t len) {
 }
 
 int _read(int file,char *ptr,ssize_t len){
-
+    fprintf(stderr,"_read has been called\n");
     if (file != STDOUT_FILENO && file != STDERR_FILENO) {
             // Set the errno code (requires errno.h)
             errno = EIO;
@@ -150,7 +153,7 @@ int _read(int file,char *ptr,ssize_t len){
     // Keep i defined outside the loop so we can return it
     int i;
     for (i = 0; i < len; i++) {
-        //fprintf(stderr,"debug read entree// read len = %d // i=%d",len,i);
+        fprintf(stderr,"debug read entree// read len = %d // i=%d",len,i);
 
         // If we get a newline character, also be sure to send the carriage
         // return character first, otherwise the serial console may not
@@ -160,6 +163,7 @@ int _read(int file,char *ptr,ssize_t len){
         }
         if(file == STDOUT_FILENO){
         ptr[i] = usart_recv_blocking(COMM_USART); //usart_recv_blocking(COMM_USART);
+        fprintf(stderr,"ptr recv blocing %c\n",ptr[i]); //DEBUG
         }
 
         if (ptr[i] == '\r'){
