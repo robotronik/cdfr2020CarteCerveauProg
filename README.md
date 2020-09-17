@@ -4,8 +4,8 @@ Code for the robotronik club participation to the french robotics cup (WIP).
 This code will implement the brain of the robot: trajectory planning, strategy and actuator control
 
 Reminder: To clone the submodule in the same time, use `git clone --recurse-submodules`, then don't forget to build libopencm3. You need to execute `make install_udev` one time to add the permission to flash.
-
-To compile and flash you need gcc-arm-none-eabi-bin, st-linkand  openocd
+If you forgot to clone with submodule just run `git submodule update --init --recursive`
+To compile and flash you need gcc-arm-none-eabi, st-link and  openocd
 
 To build: `mainTest.elf`
 To flash: `mainTest.flash`
