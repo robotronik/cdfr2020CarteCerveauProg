@@ -45,10 +45,12 @@
  * @brief Definitions for the arm
  *
  * EN stands for enable (output of the PWM signal) \n
- * We use OC_ID to select a specific channel of the output comparator as a PWM_output\n
+ * We use OC_ID to select a specific channel of the output comparator as a
+ * PWM_output\n
  * DIR_1/2 stands for direction (boolean value) \n
  * INIT_DIR is the initial direction of the motor
- * INVERT_DIR allows to define the forward direction in motor_set (must be 1 or -1)
+ * INVERT_DIR allows to define the forward direction in motor_set (must
+ * be 1 or -1)
  * Pinmap used here: EN on PC7 (with TIM3_CH2), DIR_1 on PB12, DIR_2 on PB13
  */
 #define ARM_GPIO_RCC_EN			RCC_GPIOC
@@ -104,21 +106,27 @@
 /** @} */
 
 /**
- * @brief enum of the actuators, used to identify them in some functions (like function actuators_set)
+ * @brief enum of the actuators, used to identify them in some functions (like
+ * function actuators_set)
  * 
  */
 enum actuator_sel {ARM, FLAG};
 
 /**
- * @brief This function initializes the timers (including the timer output comparator) and GPIOs to pilot by PWM the propulsion motors + the GPIOs for the direction
+ * @brief This function initializes the timers (including the timer output
+ * comparator) and GPIOs to pilot by PWM the propulsion motors + the GPIOs for
+ * the direction
  * 
  */
 void actuator_setup();
 
 /**
- * @brief This function pilots the sel with a value between -100(backward full speed) and +100 (forward full speed). The forward direction depends on the sign of ACT_X_INVER_DIR.
+ * @brief This function pilots the sel with a value between -100(backward full
+ * speed) and +100 (forward full speed). The forward direction depends on the
+ * sign of ACT_X_INVER_DIR.
  * 
  * @param sel    The actuator that will be piloted (eg ARM) 
- * @param value    value is between -100 and +100, controls the speed and direction of the motor sel (eg +54)
+ * @param value    value is between -100 and +100, controls the speed and
+ * direction of the motor sel (eg +54)
  */
 void actuator_set(enum actuator_sel sel, int8_t value);
