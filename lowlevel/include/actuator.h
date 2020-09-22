@@ -74,7 +74,7 @@
 /** @} */
 
 /**
- * @defgroup ARM arm
+ * @defgroup FLAG flag
  * @{
  * @brief Definitions for the flag
  *

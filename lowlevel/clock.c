@@ -24,7 +24,7 @@ void sys_tick_handler() {
   _systicks++;
 }
 
-uint32_t clock_get_systicks() {
+uint32_t _clock_get_systicks() {
   return _systicks;
 }
 
@@ -35,8 +35,8 @@ uint32_t get_uptime_ms() {
 */
 
 void delay_ms(uint32_t ms) {
-  uint32_t count_max = clock_get_systicks() + ms;
-	while(clock_get_systicks() < count_max);
+  uint32_t count_max = _clock_get_systicks() + ms;
+	while(_clock_get_systicks() < count_max);
 }
 
 

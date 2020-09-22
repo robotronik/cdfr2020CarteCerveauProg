@@ -22,6 +22,7 @@ void _limit_switch_init(uint32_t exti,uint32_t gpio_port,uint8_t interrupt_numbe
     exti_set_trigger(exti,trig);
     nvic_enable_irq(interrupt_number);
 }
+
 void arm_limit_switch_init(){
     _gpio_setup_pin(ARM_LIMITSWITCH_RCC,ARM_LIMITSWITCH_PORT,ARM_LIMITSWITCH_PIN,GPIO_MODE_INPUT);
     _limit_switch_init(ARM_LIMITSWITCH_EXTI,ARM_LIMITSWITCH_PORT,ARM_NVIC_INTERRUPT_NUMBER, EXTI_TRIGGER_RISING);

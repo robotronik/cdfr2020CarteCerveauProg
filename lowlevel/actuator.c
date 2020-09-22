@@ -7,11 +7,11 @@
  */
 void actuator_setup(){
     /* Setup one timer for the flag and arm */
-    timer_setup(ACTUATOR_TIM_RCC, ACTUATOR_TIM, PWM_PRESCALE, PWM_PERIOD);
+    _timer_setup(ACTUATOR_TIM_RCC, ACTUATOR_TIM, PWM_PRESCALE, PWM_PERIOD);
 
     /* setup arm EN*/
-    gpio_setup_pin_af(ARM_GPIO_RCC_EN, ARM_PORT_EN, ARM_PIN_EN, ARM_AF);
-    timer_setup_output_c(ACTUATOR_TIM, ARM_OC_ID, ARM_OC_MODE, 0);
+    _gpio_setup_pin_af(ARM_GPIO_RCC_EN, ARM_PORT_EN, ARM_PIN_EN, ARM_AF);
+    _timer_setup_output_c(ACTUATOR_TIM, ARM_OC_ID, ARM_OC_MODE, 0);
 
     /* setup arm DIR*/
     rcc_periph_clock_enable(ARM_GPIO_RCC_DIR_1);
@@ -31,8 +31,8 @@ void actuator_setup(){
     }
 
     /* setup flag EN */
-    gpio_setup_pin_af(FLAG_GPIO_RCC_EN, FLAG_PORT_EN, FLAG_PIN_EN, FLAG_AF);
-    timer_setup_output_c(ACTUATOR_TIM, FLAG_OC_ID, FLAG_OC_MODE, 0);
+    _gpio_setup_pin_af(FLAG_GPIO_RCC_EN, FLAG_PORT_EN, FLAG_PIN_EN, FLAG_AF);
+    _timer_setup_output_c(ACTUATOR_TIM, FLAG_OC_ID, FLAG_OC_MODE, 0);
 
     /* setup flag DIR*/
     rcc_periph_clock_enable(FLAG_GPIO_RCC_DIR_1);
@@ -52,7 +52,7 @@ void actuator_setup(){
     }
 
     /* start timer */
-    timer_start(ACTUATOR_TIM);
+    _timer_start(ACTUATOR_TIM);
 }
 
 /**

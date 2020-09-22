@@ -73,7 +73,7 @@ void clock_setup();
 /**
  * @brief This function gets the number of systicks since starting
  */
-uint32_t clock_get_systicks();
+uint32_t _clock_get_systicks();
 
 //uint32_t get_uptime_ms();
 //uint32_t get_frequency();
