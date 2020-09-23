@@ -3,6 +3,7 @@
 #include "clock.h"
 #include "actuator.h"
 #include "uart.h"
+#include "exti.h"
 
 void test_actuator();
 void test_com();
@@ -11,6 +12,7 @@ int main() {
     
     //setup
     clock_setup();
+    exti_setup();
     actuator_setup();
     uart_setup();
 

@@ -20,11 +20,11 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/exti.o",
-            "lowlevel/exti.c"
+            "lowlevel/gpio.o",
+            "lowlevel/gpio.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/exti.c"
+        "file": "lowlevel/gpio.c"
     },
     {
         "arguments": [
@@ -47,11 +47,11 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/gpio.o",
-            "lowlevel/gpio.c"
+            "lowlevel/actuator.o",
+            "lowlevel/actuator.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/gpio.c"
+        "file": "lowlevel/actuator.c"
     },
     {
         "arguments": [
@@ -100,19 +100,12 @@
             "-DSTM32F4",
             "-I",
             "lowlevel/include",
-            "lowlevel/actuator.o",
-            "lowlevel/clock.o",
-            "lowlevel/exti.o",
-            "lowlevel/gpio.o",
-            "lowlevel/timer.o",
-            "lowlevel/uart.o",
-            "-nostartfiles",
             "-o",
-            "mainTest.elf",
-            "mainTest.c"
+            "lowlevel/exti.o",
+            "lowlevel/exti.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "mainTest.c"
+        "file": "lowlevel/exti.c"
     },
     {
         "arguments": [
@@ -134,12 +127,19 @@
             "-DSTM32F4",
             "-I",
             "lowlevel/include",
-            "-o",
             "lowlevel/actuator.o",
-            "lowlevel/actuator.c"
+            "lowlevel/clock.o",
+            "lowlevel/exti.o",
+            "lowlevel/gpio.o",
+            "lowlevel/timer.o",
+            "lowlevel/uart.o",
+            "-nostartfiles",
+            "-o",
+            "mainTest.elf",
+            "mainTest.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/actuator.c"
+        "file": "mainTest.c"
     },
     {
         "arguments": [
