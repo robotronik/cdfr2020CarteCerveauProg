@@ -62,3 +62,8 @@ void _flag_limit_switch_init();
  * @brief Initialize the GPIO and interrupts for the limit switch of the ARM
  */
 void _arm_limit_switch_init();
+
+/**
+ * @brief initialize the peripheral that managed the exti line (syscfg)
+ */
+void exti_setup();

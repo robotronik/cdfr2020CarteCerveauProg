@@ -20,6 +20,33 @@
             "-I",
             "lowlevel/include",
             "-o",
+            "lowlevel/exti.o",
+            "lowlevel/exti.c"
+        ],
+        "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
+        "file": "lowlevel/exti.c"
+    },
+    {
+        "arguments": [
+            "/usr/bin/arm-none-eabi-gcc",
+            "-c",
+            "-Os",
+            "-std=gnu11",
+            "-fdiagnostics-color=always",
+            "-Wall",
+            "-Wextra",
+            "-g",
+            "-mcpu=cortex-m4",
+            "-mthumb",
+            "-mfloat-abi=hard",
+            "-mfpu=fpv4-sp-d16",
+            "-specs=nano.specs",
+            "-I",
+            "/home/akko/robotronik/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
+            "-DSTM32F4",
+            "-I",
+            "lowlevel/include",
+            "-o",
             "lowlevel/gpio.o",
             "lowlevel/gpio.c"
         ],
@@ -52,33 +79,6 @@
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
         "file": "lowlevel/timer.c"
-    },
-    {
-        "arguments": [
-            "/usr/bin/arm-none-eabi-gcc",
-            "-c",
-            "-Os",
-            "-std=gnu11",
-            "-fdiagnostics-color=always",
-            "-Wall",
-            "-Wextra",
-            "-g",
-            "-mcpu=cortex-m4",
-            "-mthumb",
-            "-mfloat-abi=hard",
-            "-mfpu=fpv4-sp-d16",
-            "-specs=nano.specs",
-            "-I",
-            "/home/akko/robotronik/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
-            "-DSTM32F4",
-            "-I",
-            "lowlevel/include",
-            "-o",
-            "lowlevel/uart.o",
-            "lowlevel/uart.c"
-        ],
-        "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/uart.c"
     },
     {
         "arguments": [
@@ -135,6 +135,33 @@
             "-I",
             "lowlevel/include",
             "-o",
+            "lowlevel/actuator.o",
+            "lowlevel/actuator.c"
+        ],
+        "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
+        "file": "lowlevel/actuator.c"
+    },
+    {
+        "arguments": [
+            "/usr/bin/arm-none-eabi-gcc",
+            "-c",
+            "-Os",
+            "-std=gnu11",
+            "-fdiagnostics-color=always",
+            "-Wall",
+            "-Wextra",
+            "-g",
+            "-mcpu=cortex-m4",
+            "-mthumb",
+            "-mfloat-abi=hard",
+            "-mfpu=fpv4-sp-d16",
+            "-specs=nano.specs",
+            "-I",
+            "/home/akko/robotronik/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
+            "-DSTM32F4",
+            "-I",
+            "lowlevel/include",
+            "-o",
             "lowlevel/clock.o",
             "lowlevel/clock.c"
         ],
@@ -162,37 +189,10 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/exti.o",
-            "lowlevel/exti.c"
+            "lowlevel/uart.o",
+            "lowlevel/uart.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/exti.c"
-    },
-    {
-        "arguments": [
-            "/usr/bin/arm-none-eabi-gcc",
-            "-c",
-            "-Os",
-            "-std=gnu11",
-            "-fdiagnostics-color=always",
-            "-Wall",
-            "-Wextra",
-            "-g",
-            "-mcpu=cortex-m4",
-            "-mthumb",
-            "-mfloat-abi=hard",
-            "-mfpu=fpv4-sp-d16",
-            "-specs=nano.specs",
-            "-I",
-            "/home/akko/robotronik/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
-            "-DSTM32F4",
-            "-I",
-            "lowlevel/include",
-            "-o",
-            "lowlevel/actuator.o",
-            "lowlevel/actuator.c"
-        ],
-        "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/actuator.c"
+        "file": "lowlevel/uart.c"
     }
 ]
