@@ -22,6 +22,7 @@
 #include "libopencm3/cm3/nvic.h"
 
 #include "gpio.h"
+#include "actuator.h"
 
 #define ARM_LIMITSWITCH_RCC     RCC_GPIOC
 #define ARM_LIMITSWITCH_PORT    GPIOC

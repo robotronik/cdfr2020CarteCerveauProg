@@ -12,12 +12,13 @@ int main() {
     
     //setup
     clock_setup();
-    //actuator_setup();
+    actuator_setup();
     uart_setup();
 
     arm_limit_switch_init();
     flag_limit_switch_init();
     
+    test_actuator();
     while(1){
         //test_actuator();
         fprintf(stderr,"un message de test\n");

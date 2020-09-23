@@ -5,6 +5,7 @@ This code will implement the brain of the robot: trajectory planning, strategy a
 
 Reminder: To clone the submodule in the same time, use `git clone --recurse-submodules`, then don't forget to build libopencm3. You need to execute `make install_udev` one time to add the permission to flash.
 If you forgot to clone with submodule just run `git submodule update --init --recursive`
+
 To compile and flash you need gcc-arm-none-eabi, st-link and  openocd
 
 To build: `mainTest.elf`
@@ -34,9 +35,21 @@ Generating the documentation with doxygen:
 
 Note: You must have a latex distribution on your computer that has `pdflatex` command.
 
+## Generate the database for your IDE
+--> to update the compile_command.json you can use bear (available in the AUR)
+--> run `make clean`
+--> run `bear /compilation command/`
+
+## Debug with uart
+--> install picocom
+--> find your card `ls /dev` . It should be /dev/ttyACM0
+--> run picocom with `picocom -b 9600 /dev/ttyACM0`
+
 ## Coding style
 
 * Tabs are spaces = 4
+
+* Column = 80
 
 * Brackets :
     ```

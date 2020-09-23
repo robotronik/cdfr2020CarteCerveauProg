@@ -55,11 +55,15 @@ void exti9_5_isr(){
     if(exti_get_flag_status(ARM_LIMITSWITCH_EXTI)){
         //TO DO: things to do when arm limit switch is pushed
         fprintf(stderr,"interrupt received from arm\n");       
+        
+        actuator_set(ARM,0);
+
         exti_reset_request(ARM_LIMITSWITCH_EXTI);
     }
     if(exti_get_flag_status(FLAG_LIMITSWITCH_EXTI)){
         //TO DO: things to do when flag limit switch is pushed
         fprintf(stderr,"interrupt received from flag\n");       
+        actuator_set(FLAG,0);
         exti_reset_request(FLAG_LIMITSWITCH_EXTI);
     }
 }
