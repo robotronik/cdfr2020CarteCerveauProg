@@ -21,7 +21,7 @@ int main() {
     while(1){
         //test_actuator();
         fprintf(stderr,"un message de test\n");
-        delay_ms(500);
+        delay_ms(1000);
     }
 }
 
