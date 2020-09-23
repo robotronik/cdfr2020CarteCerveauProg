@@ -3,7 +3,6 @@
 #include "clock.h"
 #include "actuator.h"
 #include "uart.h"
-#include "sensor.h"
 
 void test_actuator();
 void test_com();
@@ -15,8 +14,6 @@ int main() {
     actuator_setup();
     uart_setup();
 
-    arm_limit_switch_init();
-    flag_limit_switch_init();
     
     test_actuator();
     while(1){
@@ -27,8 +24,8 @@ int main() {
 }
 
 void test_actuator(){
-    actuator_set(ARM, 50);
-    actuator_set(FLAG, -60);
+    actuator_set(ARM, 80);
+    actuator_set(FLAG, 10);
 }
 
 void test_com(){

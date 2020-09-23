@@ -19,19 +19,39 @@
             "-DSTM32F4",
             "-I",
             "lowlevel/include",
-            "lowlevel/actuator.o",
-            "lowlevel/clock.o",
-            "lowlevel/gpio.o",
-            "lowlevel/sensor.o",
-            "lowlevel/timer.o",
-            "lowlevel/uart.o",
-            "-nostartfiles",
             "-o",
-            "mainTest.elf",
-            "mainTest.c"
+            "lowlevel/gpio.o",
+            "lowlevel/gpio.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "mainTest.c"
+        "file": "lowlevel/gpio.c"
+    },
+    {
+        "arguments": [
+            "/usr/bin/arm-none-eabi-gcc",
+            "-c",
+            "-Os",
+            "-std=gnu11",
+            "-fdiagnostics-color=always",
+            "-Wall",
+            "-Wextra",
+            "-g",
+            "-mcpu=cortex-m4",
+            "-mthumb",
+            "-mfloat-abi=hard",
+            "-mfpu=fpv4-sp-d16",
+            "-specs=nano.specs",
+            "-I",
+            "/home/akko/robotronik/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
+            "-DSTM32F4",
+            "-I",
+            "lowlevel/include",
+            "-o",
+            "lowlevel/timer.o",
+            "lowlevel/timer.c"
+        ],
+        "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
+        "file": "lowlevel/timer.c"
     },
     {
         "arguments": [
@@ -80,12 +100,19 @@
             "-DSTM32F4",
             "-I",
             "lowlevel/include",
-            "-o",
+            "lowlevel/actuator.o",
+            "lowlevel/clock.o",
+            "lowlevel/exti.o",
             "lowlevel/gpio.o",
-            "lowlevel/gpio.c"
+            "lowlevel/timer.o",
+            "lowlevel/uart.o",
+            "-nostartfiles",
+            "-o",
+            "mainTest.elf",
+            "mainTest.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/gpio.c"
+        "file": "mainTest.c"
     },
     {
         "arguments": [
@@ -135,38 +162,11 @@
             "-I",
             "lowlevel/include",
             "-o",
-            "lowlevel/sensor.o",
-            "lowlevel/sensor.c"
+            "lowlevel/exti.o",
+            "lowlevel/exti.c"
         ],
         "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/sensor.c"
-    },
-    {
-        "arguments": [
-            "/usr/bin/arm-none-eabi-gcc",
-            "-c",
-            "-Os",
-            "-std=gnu11",
-            "-fdiagnostics-color=always",
-            "-Wall",
-            "-Wextra",
-            "-g",
-            "-mcpu=cortex-m4",
-            "-mthumb",
-            "-mfloat-abi=hard",
-            "-mfpu=fpv4-sp-d16",
-            "-specs=nano.specs",
-            "-I",
-            "/home/akko/robotronik/cdfr2020CarteCerveauProg/hal_common/libopencm3/include",
-            "-DSTM32F4",
-            "-I",
-            "lowlevel/include",
-            "-o",
-            "lowlevel/timer.o",
-            "lowlevel/timer.c"
-        ],
-        "directory": "/home/akko/robotronik/cdfr2020CarteCerveauProg",
-        "file": "lowlevel/timer.c"
+        "file": "lowlevel/exti.c"
     },
     {
         "arguments": [
