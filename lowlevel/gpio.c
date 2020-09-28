@@ -26,4 +26,10 @@ void _gpio_setup_pin(enum rcc_periph_clken clken, uint32_t port,uint16_t pin,
     }
 }
 
+void __pulse(uint32_t port, uint16_t pin){
+    gpio_set(port,pin);
+    delay_ms(20);
+    gpio_clear(port,pin);
+}
+
 

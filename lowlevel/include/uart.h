@@ -3,9 +3,9 @@
  * 
  * This file is part of cdfr2020CarteCerveauProg
  * 
- * @brief This implements a debug uart
+ * @brief This implements the setup of the actuators: the arm and the flag
  * 
- * @date  08/2020  
+ * @date  07/2020  
  * 
  * Licence :
  * 
@@ -35,9 +35,9 @@ simple uart configuration for debugging
 /**
  * @defgroup DEBUG_UART debug_uart
  * @{
- * @brief Definition for a debug uart connected via usb to a pc
+ * @brief Uart used for debugging via a usb to a pc
  * 
- * baudrate is 9600
+ * Baudrate is 9600
  */
 #define DEBUG_RCC_USART RCC_USART2
 #define DEBUG_USART USART2
@@ -57,6 +57,30 @@ simple uart configuration for debugging
 #define DEBUG_UART_NVIC NVIC_USART2_IRQ
 /** @} */
 
+/**
+ * @defgroup ACTUATOR_TIM actuator_tim
+ * @{
+ * @brief Uart used for communication between devices
+ * 
+ * Baudrate is 9600
+ */
+#define COMM_RCC_USART RCC_USART1
+#define COMM_USART USART1
+#define COMM_UART_SPEED (9600)
+
+#define COMM_PORT_TX GPIOA
+#define COMM_PORT_TX_RCC RCC_GPIOB 
+#define COMM_PIN_TX GPIO9
+#define COMM_AF_TX GPIO_AF7
+
+#define COMM_PORT_RX GPIOA
+#define COMM_PORT_RX_RCC RCC_GPIOB
+#define COMM_PIN_RX GPIO10
+#define COMM_AF_RX GPIO_AF7
+
+#define COMM_UART_EXTI EXTI25
+#define COMM_UART_NVIC NVIC_USART1_IRQ
+/** @} */
 
 /**
  * @brief setup communication uart and debug uart(usb through the stlink)

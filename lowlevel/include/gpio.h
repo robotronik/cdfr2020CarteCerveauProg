@@ -42,3 +42,13 @@ void _gpio_setup_pin_af(enum rcc_periph_clken rcc_clken, uint32_t gpio_port,
  */
 void _gpio_setup_pin(enum rcc_periph_clken clken, uint32_t port,uint16_t pin,
         uint8_t mode, uint8_t pull_ud);
+
+/**
+ * @brief This function write a short pulse on the output pin
+ *
+ * Xavier defines a short pulse to 20 ms
+ *
+ * @param port      the port to enable
+ * @param pin       the pint to enable
+ */
+void __pulse(uint32_t port, uint16_t pin);
