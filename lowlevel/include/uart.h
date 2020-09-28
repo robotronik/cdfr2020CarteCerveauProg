@@ -1,3 +1,18 @@
+/**
+ * @file
+ * 
+ * This file is part of cdfr2020CarteCerveauProg
+ * 
+ * @brief This implements a debug uart
+ * 
+ * @date  08/2020  
+ * 
+ * Licence :
+ * 
+ * Robotronik Phelma
+ * @author PhenixRobotik NPXav Benano Trukbidule
+*/
+
 #pragma once
 
 #include <stdarg.h>
@@ -17,7 +32,13 @@
 simple uart configuration for debugging
 ***************************************/
 
-// DEFINES FOR DEBUG_UART
+/**
+ * @defgroup DEBUG_UART debug_uart
+ * @{
+ * @brief Definition for a debug uart connected via usb to a pc
+ * 
+ * baudrate is 9600
+ */
 #define DEBUG_RCC_USART RCC_USART2
 #define DEBUG_USART USART2
 #define DEBUG_UART_SPEED (9600) 
@@ -34,23 +55,7 @@ simple uart configuration for debugging
 
 #define DEBUG_UART_EXTI EXTI26
 #define DEBUG_UART_NVIC NVIC_USART2_IRQ
-
-#define COMM_RCC_USART RCC_USART1
-#define COMM_USART USART1
-#define COMM_UART_SPEED (9600)
-
-#define COMM_PORT_TX GPIOA
-#define COMM_PORT_TX_RCC RCC_GPIOB 
-#define COMM_PIN_TX GPIO9
-#define COMM_AF_TX GPIO_AF7
-
-#define COMM_PORT_RX GPIOA
-#define COMM_PORT_RX_RCC RCC_GPIOB
-#define COMM_PIN_RX GPIO10
-#define COMM_AF_RX GPIO_AF7
-
-#define COMM_UART_EXTI EXTI25
-#define COMM_UART_NVIC NVIC_USART1_IRQ
+/** @} */
 
 
 /**
@@ -58,6 +63,7 @@ simple uart configuration for debugging
  * 
  */
 void uart_setup();
+
 /**
  * @brief implementation of write that redirects stdout on the communication uart and stderr on the debug uart
  * This function is never actually called by us: use fprintf and fscanf to communicate
@@ -68,6 +74,7 @@ void uart_setup();
  * @return int 
  */
 int _write(int file, const char *ptr, ssize_t len);
+
 /**
  * @brief implementation of read that redirects stdout on the communication uart and stderr on the debug uart
  * This function is never actually called by us: use fprintf and fscanf to communicate
