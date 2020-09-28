@@ -17,6 +17,7 @@
 
 #include "gpio.h"
 #include "timer.h"
+#include "exti.h"
 
 /**
  * Prescale 64000000 Hz system clock by 64 = 1000000 Hz.

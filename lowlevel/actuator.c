@@ -53,6 +53,10 @@ void actuator_setup(){
 
     /* start timer */
     _timer_start(ACTUATOR_TIM);
+
+    // exti setup
+    _arm_limit_switch_init();
+    _flag_limit_switch_init();
 }
 
 /**

@@ -22,6 +22,7 @@
 #include "libopencm3/cm3/nvic.h"
 
 #include "gpio.h"
+#include "actuator.h"
 
 #define ARM_LIMITSWITCH_RCC     RCC_GPIOC
 #define ARM_LIMITSWITCH_PORT    GPIOC
@@ -55,9 +56,14 @@ void _limit_switch_init(uint32_t exti,uint32_t gpio_port,uint8_t interrupt_numbe
 /**
  * @brief Initialize the GPIO and interrupts for the limit switch of the FLAG
  */
-void flag_limit_switch_init();
+void _flag_limit_switch_init();
 
 /**
  * @brief Initialize the GPIO and interrupts for the limit switch of the ARM
  */
-void arm_limit_switch_init();
+void _arm_limit_switch_init();
+
+/**
+ * @brief initialize the peripheral that managed the exti line (syscfg)
+ */
+void exti_setup();

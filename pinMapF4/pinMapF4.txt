@@ -1,0 +1,84 @@
+Configuration	pinMapF4
+STM32CubeMX 	6.0.1
+Date	09/23/2020
+MCU	STM32F401RETx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+8	PC0	GPIO_Output	tof_shift
+9	PC1	GPIO_Output	tof_data
+16	PA2*	USART2_TX	debug_TX_AF07
+17	PA3*	USART2_RX	debug_RX_AF07
+33	PB12	GPIO_Output	bras_in1
+34	PB13	GPIO_Output	bras_in2
+35	PB14	GPIO_Output	flag_in3
+36	PB15	GPIO_Output	flag_in4
+37	PC6*	TIM3_CH1	flag_pwm_AF02
+38	PC7*	TIM3_CH2	bras_pwm_AF02
+39	PC8	GPIO_EXTI8	EXTI8_flag_butee
+40	PC9	GPIO_EXTI9	EXTI9_bras_butee
+42	PA9*	USART1_TX	commF3_TX_AF07
+43	PA10*	USART1_RX	commF3_RX_AF07
+55	PB3*	SPI1_SCK	pixy_spi_clk_AF05
+56	PB4*	SPI1_MISO	pixy_spi_miso_AF05
+57	PB5*	SPI1_MOSI	pixy_spi_mosi_AF05
+58	PB6*	I2C1_SCL	tof_SCL_AF04
+59	PB7*	I2C1_SDA	tof_SDA_AF04
+PERIPHERALS	MODES	FUNCTIONS	PINS
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+8	PC0	GPIO_Output	tof_shift
+9	PC1	GPIO_Output	tof_data
+16	PA2*	USART2_TX	debug_TX_AF07
+17	PA3*	USART2_RX	debug_RX_AF07
+33	PB12	GPIO_Output	bras_in1
+34	PB13	GPIO_Output	bras_in2
+35	PB14	GPIO_Output	flag_in3
+36	PB15	GPIO_Output	flag_in4
+37	PC6*	TIM3_CH1	flag_pwm_AF02
+38	PC7*	TIM3_CH2	bras_pwm_AF02
+39	PC8	GPIO_EXTI8	EXTI8_flag_butee
+40	PC9	GPIO_EXTI9	EXTI9_bras_butee
+42	PA9*	USART1_TX	commF3_TX_AF07
+43	PA10*	USART1_RX	commF3_RX_AF07
+55	PB3*	SPI1_SCK	pixy_spi_clk_AF05
+56	PB4*	SPI1_MISO	pixy_spi_miso_AF05
+57	PB5*	SPI1_MOSI	pixy_spi_mosi_AF05
+58	PB6*	I2C1_SCL	tof_SCL_AF04
+59	PB7*	I2C1_SDA	tof_SDA_AF04
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : pinMapF4
+Project Folder : /home/akko/robotronik/pinMapF4
+Toolchain / IDE : EWARM V8.32
+Firmware Package Name and Version : STM32Cube FW_F4 V1.25.0
+
+
+Code Generation Settings : 
+STM32Cube MCU packages and embedded software packs : Copy all used libraries into the project folder
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : No
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : 
+
+
+
+
+
