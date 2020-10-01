@@ -1,11 +1,13 @@
-Configuration	pinMapF4
+Configuration	f446test
 STM32CubeMX 	6.0.1
-Date	09/23/2020
-MCU	STM32F401RETx
+Date	10/01/2020
+MCU	STM32F446RETx
 
 
 
 PERIPHERALS	MODES	FUNCTIONS	PINS
+CAN1	Master	CAN1_RX	PB8
+CAN1	Master	CAN1_TX	PB9
 SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
 
 
@@ -30,7 +32,11 @@ Pin Nb	PINs	FUNCTIONs	LABELs
 57	PB5*	SPI1_MOSI	pixy_spi_mosi_AF05
 58	PB6*	I2C1_SCL	tof_SCL_AF04
 59	PB7*	I2C1_SDA	tof_SDA_AF04
+61	PB8	CAN1_RX	
+62	PB9	CAN1_TX	
 PERIPHERALS	MODES	FUNCTIONS	PINS
+CAN1	Master	CAN1_RX	PB8
+CAN1	Master	CAN1_TX	PB9
 SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
 
 
@@ -55,14 +61,16 @@ Pin Nb	PINs	FUNCTIONs	LABELs
 57	PB5*	SPI1_MOSI	pixy_spi_mosi_AF05
 58	PB6*	I2C1_SCL	tof_SCL_AF04
 59	PB7*	I2C1_SDA	tof_SDA_AF04
+61	PB8	CAN1_RX	
+62	PB9	CAN1_TX	
 
 
 
 SOFTWARE PROJECT
 
 Project Settings : 
-Project Name : pinMapF4
-Project Folder : /home/akko/robotronik/pinMapF4
+Project Name : f446test
+Project Folder : /home/akko/robotronik/cdfr2020CarteCerveauProg/pinMapf446
 Toolchain / IDE : EWARM V8.32
 Firmware Package Name and Version : STM32Cube FW_F4 V1.25.0
 
