@@ -1,3 +1,18 @@
+/**
+ * @file
+ * 
+ * This file is part of cdfr2020CarteCerveauProg
+ * 
+ * @brief This implements the setup of the actuators: the arm and the flag
+ * 
+ * @date  07/2020  
+ * 
+ * Licence :
+ * 
+ * Robotronik Phelma
+ * @author PhenixRobotik NPXav Benano Trukbidule
+*/
+
 #pragma once
 
 #include <stdarg.h>
@@ -17,7 +32,13 @@
 simple uart configuration for debugging
 ***************************************/
 
-// DEFINES FOR DEBUG_UART
+/**
+ * @defgroup DEBUG_UART debug_uart
+ * @{
+ * @brief Uart used for debugging via a usb to a pc
+ * 
+ * Baudrate is 9600
+ */
 #define DEBUG_RCC_USART RCC_USART2
 #define DEBUG_USART USART2
 #define DEBUG_UART_SPEED (9600) 
@@ -34,7 +55,15 @@ simple uart configuration for debugging
 
 #define DEBUG_UART_EXTI EXTI26
 #define DEBUG_UART_NVIC NVIC_USART2_IRQ
+/** @} */
 
+/**
+ * @defgroup ACTUATOR_TIM actuator_tim
+ * @{
+ * @brief Uart used for communication between devices
+ * 
+ * Baudrate is 9600
+ */
 #define COMM_RCC_USART RCC_USART1
 #define COMM_USART USART1
 #define COMM_UART_SPEED (9600)
@@ -51,13 +80,14 @@ simple uart configuration for debugging
 
 #define COMM_UART_EXTI EXTI25
 #define COMM_UART_NVIC NVIC_USART1_IRQ
-
+/** @} */
 
 /**
  * @brief setup communication uart and debug uart(usb through the stlink)
  * 
  */
 void uart_setup();
+
 /**
  * @brief implementation of write that redirects stdout on the communication uart and stderr on the debug uart
  * This function is never actually called by us: use fprintf and fscanf to communicate
@@ -68,6 +98,7 @@ void uart_setup();
  * @return int 
  */
 int _write(int file, const char *ptr, ssize_t len);
+
 /**
  * @brief implementation of read that redirects stdout on the communication uart and stderr on the debug uart
  * This function is never actually called by us: use fprintf and fscanf to communicate
