@@ -50,7 +50,12 @@
 #define CAN1_TX_PORT GPIOB
 #define CAN1_TX_PIN GPIO9
 #define CAN1_TX_RCC RCC_GPIOB
-#define CAN1_NVIC NVIC_CEC_CAN_IRQ
+//#define CAN1_NVIC NVIC_CEC_CAN_IRQ           Do not defined for F4
+// Which could replace it?
+#define CAN1_NVIC_TX NVIC_CAN1_TX_IRQ
+#define CAN1_NVIC_RX0 NVIC_CAN1_RX0_IRQ
+#define CAN1_NVIC_RX1 NVIC_CAN1_RX1_IRQ
+#define CAN1_NVIC_SCE NVIC_CAN1_SCE_IRQ
 
 /**
  * @brief Frame of stantard received CAN messages and transmitted CAN messages
@@ -58,29 +63,36 @@
  * @param std_id    Unique identifier which also represents the message priority
  * @param ext_id    Dominant for standard frame. Recessive for extended frame
  * @param rtr       Dominant for data frames. Recessive for request frames
+ * @param fmi       ID of the matched filter
  * @param dlc       Data length code. Number of bytes of data
  * @param data      Data to be transmitted
  * @param crc       Cyclic redundancy check. Error detecting code
  * @param ack       Acknowledge the receipt of a valid CAN frame (dominant)
+ * @param ts       {Timestamp. Pointer to store the message timestamp.
+ *                  Only valid on time triggered CAN. Use NULL to ignore.}
  */
 struct can_tx_msg {
   uint32_t std_id;
-  uint32_t ext_id;
-  uint8_t rtr;
+  bool ext_id;
+  bool rtr;
+  uint8_t fmi;
   uint8_t dlc;
   uint8_t data[8];
   uint8_t crc;
   uint8_t ack;
+  uint16_t ts;
 };
 
 struct can_rx_msg {
   uint32_t std_id;
-  uint32_t ext_id;
-  uint8_t rtr;
+  bool ext_id;
+  bool rtr;
   uint8_t fmi;
   uint8_t dlc;
   uint8_t data[8];
-  uint8_t ts;
+  uint8_t crc;
+  uint8_t ack;
+  uint16_t ts;
 };
 
 typedef struct can_tx_msg can_tx_msg;

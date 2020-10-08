@@ -63,7 +63,8 @@ void can_setup() {
   //  		1,                                 // FIFO 1
   //  		true);
 
-  nvic_enable_irq(CAN1_NVIC);
+  //  CAN1_NVIC_SCE was picked randomly among 4 other define (in order to compile)
+  nvic_enable_irq(CAN1_NVIC_SCE);
 
   // enable gpio clock
   rcc_periph_clock_enable(CAN1_RX_RCC);
@@ -98,7 +99,7 @@ void receive(uint8_t fifo) {
               fifo, // FIFO ID
               true, // Automatically release FIFO after rx
               &rx_msg.std_id, &rx_msg.ext_id, &rx_msg.rtr, &rx_msg.fmi,
-              &rx_msg.dlc, &rx_msg.data, &rx_msg.ts);
+              &rx_msg.dlc, rx_msg.data, &rx_msg.ts);
 }
 
 // void transmit(uint32_t id, can_tx_msg tx_msg) {
