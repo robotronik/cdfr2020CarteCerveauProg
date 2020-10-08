@@ -5,29 +5,52 @@
  *
  * @brief This implements the setup of communication between F3, F4 and other
  *        potential computers using CAN protocol.
- *
+ *		  Source: https://www.rhye.org/post/stm32-with-opencm3-3-canbus/
  * @date  10/2020
  *
  * Licence :
  *
  * Robotronik Phelma
  * @author NPXav Benano Trukbidule JamesWright
-*/
+ */
 
 #pragma once
 
-#include <stdarg.h>
-#include <string.h>
-#include <stdio.h>
+#include "gpio.h"
+
 #include <errno.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
+#include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/can.h>
-#include <libopencm3/stm32/usart.h>
+#include <libopencm3/stm32/exti.h>
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/exti.h>
-#include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/usart.h>
+
+//// Bit timing settings
+//// Assuming 48MHz base clock, 87.5% sample point, 500 kBit/s data rate
+//// http://www.bittiming.can-wiki.info/
+// Resync time quanta jump width
+#define PARAM_SJW CAN_BTR_SJW_1TQ
+// Time segment 1 time quanta width
+#define PARAM_TS1 CAN_BTR_TS1_11TQ // 13,
+// Time segment 2 time quanta width
+#define PARAM_TS2 CAN_BTR_TS2_4TQ // 2,
+// Baudrate prescaler
+#define PARAM_BRP 6
+
+#define CAN1_RX_PORT GPIOB
+#define CAN1_RX_PIN GPIO8
+#define CAN1_RX_RCC RCC_GPIOB
+//#define CAN CAN1 ID ??
+#define CAN1_TX_PORT GPIOB
+#define CAN1_TX_PIN GPIO9
+#define CAN1_TX_RCC RCC_GPIOB
+#define CAN1_NVIC NVIC_CEC_CAN_IRQ
 
 /**
  * @brief Frame of stantard received CAN messages and transmitted CAN messages
@@ -41,23 +64,23 @@
  * @param ack       Acknowledge the receipt of a valid CAN frame (dominant)
  */
 struct can_tx_msg {
-	uint32_t std_id;
-	uint32_t ext_id;
-	uint8_t rtr;
-	uint8_t dlc;
-	uint8_t data[8];
+  uint32_t std_id;
+  uint32_t ext_id;
+  uint8_t rtr;
+  uint8_t dlc;
+  uint8_t data[8];
   uint8_t crc;
-	uint8_t ack;
+  uint8_t ack;
 };
 
 struct can_rx_msg {
-	uint32_t std_id;
-	uint32_t ext_id;
-	uint8_t rtr;
+  uint32_t std_id;
+  uint32_t ext_id;
+  uint8_t rtr;
   uint8_t fmi;
-	uint8_t dlc;
-	uint8_t data[8];
-	uint8_t ts;
+  uint8_t dlc;
+  uint8_t data[8];
+  uint8_t ts;
 };
 
 typedef struct can_tx_msg can_tx_msg;

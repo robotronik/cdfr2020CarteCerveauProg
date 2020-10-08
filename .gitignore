@@ -1,5 +1,7 @@
-# Atom editor
+# editor/LSP
 .vscode
+.vim
+.clangd
 
 # built files
 *.o
