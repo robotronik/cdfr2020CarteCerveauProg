@@ -63,8 +63,8 @@ void can_setup() {
   //  		1,                                 // FIFO 1
   //  		true);
 
-  //  CAN1_NVIC_SCE was picked randomly among 4 other define (in order to compile)
-  nvic_enable_irq(CAN1_NVIC_SCE);
+  //  Enable tranmit interrupt
+  nvic_enable_irq(CAN1_NVIC_TX);
 
   // enable gpio clock
   rcc_periph_clock_enable(CAN1_RX_RCC);
