@@ -17,6 +17,7 @@
 
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
+#include "clock.h"
 
 /**
  * @brief This function setup a pin for an alternate function
