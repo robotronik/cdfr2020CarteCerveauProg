@@ -15,6 +15,8 @@
 
 #pragma once
 
+#include "gpio.h"
+
 #define TOF_NUM 8
 
 /**
@@ -37,13 +39,13 @@
  * Ce faisant, le n ème ToF n'est plus en état de reset et on peut lui réattribuer sa propre adresse sans crainte de confusion."
  * On reset successivement tous les ToFs en leur réattribuant leur propre adresse à chaque fois
  */
-#define SR_DSAB_RCC
-#define SR_DSAB_PORT
-#define SR_DSAB_PIN
+#define SR_DSAB_RCC     RCC_GPIOC 
+#define SR_DSAB_PORT    GPIOC
+#define SR_DSAB_PIN     GPIO1
 
-#define SR_CP_RCC
-#define SR_CP_PORT
-#define SR_CP_PIN
+#define SR_CP_RCC       RCC_GPIOC
+#define SR_CP_PORT      GPIOC
+#define SR_CP_PIN       GPIO0
 /** @} */
 
 /**
