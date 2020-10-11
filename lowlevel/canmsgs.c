@@ -46,6 +46,13 @@ void can_setup() {
   // no idea why there are two interrupts to enable here
   // actually there are two FIFO so two interrupt for new messages to check
   can_enable_irq(CAN1_RX_PORT, CAN_IER_FMPIE0 | CAN_IER_FMPIE1);
+
+  // Transmit mailbox empty interrupt enable
+  can_enable_irq(CAN1_RX_PORT, CAN_IER_TMEIE);
+
+  // Error interrupt enable
+  can_enable_irq(CAN1_RX_PORT, CAN_IER_ERRIE);
+
   // filter for later
   //    // Initialisation filter 0
   //    can_filter_id_mask_16bit_init(
@@ -63,8 +70,8 @@ void can_setup() {
   //  		1,                                 // FIFO 1
   //  		true);
 
-  //  Enable tranmit interrupt
-  nvic_enable_irq(CAN1_NVIC_TX);
+  // TODO
+  // nvic_enable_irq(CAN1_NVIC_TX);
 
   // enable gpio clock
   rcc_periph_clock_enable(CAN1_RX_RCC);

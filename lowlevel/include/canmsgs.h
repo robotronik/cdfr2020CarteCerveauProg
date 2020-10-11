@@ -50,7 +50,7 @@
 #define CAN1_TX_PORT GPIOB
 #define CAN1_TX_PIN GPIO9
 #define CAN1_TX_RCC RCC_GPIOB
-//#define CAN1_NVIC NVIC_CEC_CAN_IRQ           Do not defined for F4
+//#define CAN1_NVIC NVIC_CEC_CAN_IRQ           Not defined for F4
 // Which could replace it?
 #define CAN1_NVIC_TX NVIC_CAN1_TX_IRQ
 #define CAN1_NVIC_RX0 NVIC_CAN1_RX0_IRQ
@@ -121,4 +121,8 @@ void receive(uint8_t fifo);
  * @param id        id of the message to be transmitted
  * @param tx_msg    structure of the message to transmit
  */
+// {In order to transmit a message, the application must select one empty 
+// transmit mailbox, set up the identifier, the data length code (DLC) and the
+// data before requesting the transmission by setting the corresponding TXRQ bit
+// in the CAN_TIxR register.}
 void transmit(uint32_t id, can_tx_msg tx_msg);
