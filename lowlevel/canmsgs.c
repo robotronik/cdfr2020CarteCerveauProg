@@ -48,10 +48,21 @@ void can_setup() {
   can_enable_irq(CAN1_RX_PORT, CAN_IER_FMPIE0 | CAN_IER_FMPIE1);
 
   // Transmit mailbox empty interrupt enable
-  can_enable_irq(CAN1_RX_PORT, CAN_IER_TMEIE);
+  //can_enable_irq(CAN1_RX_PORT, CAN_IER_TMEIE);
 
   // Error interrupt enable
-  can_enable_irq(CAN1_RX_PORT, CAN_IER_ERRIE);
+  //can_enable_irq(CAN1_RX_PORT, CAN_IER_ERRIE);
+
+  //enable the entries related to both FIFO in NVIC table
+  nvic_enable_irq(CAN1_NVIC_RX0);
+  nvic_enable_irq(CAN1_NVIC_RX1);
+
+
+  //set alternate function on the pin to use CAN
+  _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF);
+  _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF);
+
+
 
   // filter for later
   //    // Initialisation filter 0
@@ -70,38 +81,22 @@ void can_setup() {
   //  		1,                                 // FIFO 1
   //  		true);
 
-  // TODO
-  // nvic_enable_irq(CAN1_NVIC_TX);
-
-  // enable gpio clock
-  rcc_periph_clock_enable(CAN1_RX_RCC);
-  rcc_periph_clock_enable(CAN1_TX_RCC);
-
-  // Route the CAN signal to our selected GPIOs
-  gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE,
-                  CAN1_RX_PIN | CAN1_TX_PIN);
-  gpio_set_af(GPIOA, GPIO_AF9, CAN1_RX_PIN | CAN1_TX_PIN);
 }
 
-// TODO can rx i guess
-// void cec_can_isr() {
-//   // Message pending on FIFO 0?
-//   if (CAN_RF0R(GPIOX) & CAN_RF0R_FMP0_MASK) {
-//     receive(0);
-//   }
-//   // Message pending on FIFO 1?
-//   if (CAN_RF1R(GPIOX) & CAN_RF1R_FMP1_MASK) {
-//     receive(1);
-//   }
-// }
+// ISR for both FIFO reception
+// TODO name FIFO_O and FIFO_1
+void can_rx0_isr(){
+  receive(0);
+}
 
-// void can_rx1_isr(){
-//   can_rx_isr(1,CAN_RF1R(CAN1)&3);
-// }
+void can_rx1_isr(){
+  receive(1);
+}
 
 void receive(uint8_t fifo) {
   // Copy CAN message data into main ram
-  can_rx_msg rx_msg;
+  // TODO create a global variable//data structure to store message
+  Can_rx_msg rx_msg;
   can_receive(CAN1,
               fifo, // FIFO ID
               true, // Automatically release FIFO after rx
@@ -109,7 +104,10 @@ void receive(uint8_t fifo) {
               &rx_msg.dlc, rx_msg.data, &rx_msg.ts);
 }
 
-// void transmit(uint32_t id, can_tx_msg tx_msg) {
-//   can_transmit(CAN1, id, tx_msg.ext_id, tx_msg.rtr, tx_message.dlc,
-//                &tx_msg.data);
-// }
+
+void transmit(uint32_t id, Can_tx_msg tx_msg) {
+  can_transmit(CAN1, id, tx_msg.ext_id, tx_msg.rtr, tx_msg.dlc,
+               &tx_msg.data);
+}
+
+// TODO user function that takes in argument the message data and set all the parameters

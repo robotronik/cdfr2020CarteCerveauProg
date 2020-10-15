@@ -46,10 +46,12 @@
 #define CAN1_RX_PORT GPIOB
 #define CAN1_RX_PIN GPIO8
 #define CAN1_RX_RCC RCC_GPIOB
+#define CAN1_RX_AF GPIO_AF9
 //#define CAN CAN1 ID ??
 #define CAN1_TX_PORT GPIOB
 #define CAN1_TX_PIN GPIO9
 #define CAN1_TX_RCC RCC_GPIOB
+#define CAN1_TX_AF GPIO_AF9
 //#define CAN1_NVIC NVIC_CEC_CAN_IRQ           Not defined for F4
 // Which could replace it?
 #define CAN1_NVIC_TX NVIC_CAN1_TX_IRQ
@@ -71,7 +73,7 @@
  * @param ts       {Timestamp. Pointer to store the message timestamp.
  *                  Only valid on time triggered CAN. Use NULL to ignore.}
  */
-struct can_tx_msg {
+struct Can_tx_msg {
   uint32_t std_id;
   bool ext_id;
   bool rtr;
@@ -83,7 +85,7 @@ struct can_tx_msg {
   uint16_t ts;
 };
 
-struct can_rx_msg {
+struct Can_rx_msg {
   uint32_t std_id;
   bool ext_id;
   bool rtr;
@@ -95,8 +97,8 @@ struct can_rx_msg {
   uint16_t ts;
 };
 
-typedef struct can_tx_msg can_tx_msg;
-typedef struct can_rx_msg can_rx_msg;
+typedef struct Can_tx_msg Can_tx_msg;
+typedef struct Can_rx_msg Can_rx_msg;
 
 /**
  * @brief This function setup the CAN system
@@ -125,4 +127,4 @@ void receive(uint8_t fifo);
 // transmit mailbox, set up the identifier, the data length code (DLC) and the
 // data before requesting the transmission by setting the corresponding TXRQ bit
 // in the CAN_TIxR register.}
-void transmit(uint32_t id, can_tx_msg tx_msg);
+void transmit(uint32_t id, Can_tx_msg tx_msg);
