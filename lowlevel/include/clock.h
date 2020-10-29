@@ -17,6 +17,10 @@
 
 #include <stdint.h>
 
+
+#include <libopencm3/cm3/systick.h>
+#include <libopencm3/stm32/rcc.h>
+
 //define from previous tsmr
 // // RCC Clock Frequency [Hz]
 // #define RCC_CLOCK_FREQ_HZ (     84000000)
