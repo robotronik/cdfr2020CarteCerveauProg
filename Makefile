@@ -75,11 +75,13 @@ LFlags += -T $(LINKER_SCRIPTS_DIR)/stm32f401.ld
 #include our directories with .h files
 #add directories separated by whitespaces in INCPATHS
 #a reparer
-INCPATHS=lowlevel/include #$(DIR2) ...
+INCPATHS=lowlevel/include VL53L0X_1.0.2/Api/core/inc VL53L0X_1.0.2/Api/platform/inc #$(DIR2) ...
 
 INC_PARAMS=$(foreach d, $(INCPATHS), -I $d)
 
 CFlags += $(INC_PARAMS)
+
+CFlasgs += -DUSE_I2C_2V8
 
 all: mainTest.flash
 
@@ -91,7 +93,7 @@ all: mainTest.flash
 	$(CC) $(CFlags) $< -o $@ -c
 	@echo CC $<
 
-pathMainTest = lowlevel 
+pathMainTest = lowlevel VL53L0X_1.0.2/Api/core/src VL53L0X_1.0.2/Api/platform/src
  
 srcMainTest = $(foreach d, $(pathMainTest), $(wildcard $d/*.c))
 

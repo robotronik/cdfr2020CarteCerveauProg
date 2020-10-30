@@ -30,4 +30,8 @@ typedef enum I2C_Status_E{
 /**
  * @brief Set the application-specific I2C configuration
  */
-void i2c_setup();
+void i2c_setup(uint32_t i2c_peripheral);
+
+
+void i2c_write7(uint32_t i2c, int addr, uint8_t *data, size_t n);
+void i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n);

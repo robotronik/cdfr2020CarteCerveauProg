@@ -15,7 +15,7 @@ void tof_setup(){
 
     
 }
-
+/*
 int _tof_init(ToF_Handler_t *htof, uint8_t i2c_addr){
     //declare Parameters for the given tof
     ToF_Params params;
@@ -24,7 +24,7 @@ int _tof_init(ToF_Handler_t *htof, uint8_t i2c_addr){
     
     
 }
-
+*/
 void _shift_reg_init(){
     gpio_set(SR_DSAB_PORT, SR_DSAB_PIN);
     __pulse(SR_CP_PORT, SR_CP_PIN);
@@ -38,7 +38,7 @@ void _shift_reg(int i){
 }
 
 void tof_reset(){
-    _init_shreg();
+    _shift_reg_init();
     for(int i =0; i<TOF_NUM-1;++i){
         _shift_reg(1);
     }

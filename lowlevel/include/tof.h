@@ -18,6 +18,7 @@
 #include "gpio.h"
 #include "i2c.h"
 //TODO include API
+#include "vl53l0x_api.h"
 
 #define TOF_NUM 1
 
@@ -26,10 +27,9 @@
 #define TOF_DELAY 10
 
 //Shortcut redefinitions
-/*
 typedef VL53L0X_RangingMeasurementData_t ToF_Data_t;
 typedef VL53L0X_Dev_t ToF_Dev_t;
-*/
+
 
 typedef struct ToF_Handler_S{
   ToF_Dev_t dev;
@@ -100,7 +100,7 @@ void tof_setup();
  * @param i2c_addr  i2c address of the given tof
  * @return bool value of success
  */
-int _tof_init(ToF_Handler_t *htof, uint8_t i2c_addr);
+//int _tof_init(ToF_Handler_t *htof, uint8_t i2c_addr);
 
 /**
  * @brief reset all tof via the shift register
