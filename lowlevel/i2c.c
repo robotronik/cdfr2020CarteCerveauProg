@@ -35,7 +35,7 @@ void i2c_setup(uint32_t i2c_peripheral){
 
 
 //copie depuis libopencm3
-void i2c_write7(uint32_t i2c, int addr, uint8_t *data, size_t n)
+void i2c_write7_v1(uint32_t i2c, int addr, uint8_t *data, size_t n)
 {
      while ((I2C_SR2(i2c) & I2C_SR2_BUSY)) {
      }
@@ -61,7 +61,7 @@ void i2c_write7(uint32_t i2c, int addr, uint8_t *data, size_t n)
      }
 }
 
-void i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n)
+void i2c_read7_v1(uint32_t i2c, int addr, uint8_t *res, size_t n)
 {
      i2c_send_start(i2c);
      i2c_enable_ack(i2c);
@@ -89,14 +89,3 @@ void i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n)
 
      return;
 }
-
-void i2c_transfer7(uint32_t i2c, uint8_t addr, uint8_t *w, size_t wn, uint8_t *r, size_t rn) {
-         if (wn) {
-                 i2c_write7(i2c, addr, w, wn);
-         }
-         if (rn) {
-                 i2c_read7(i2c, addr, r, rn);
-         } else {
-                 i2c_send_stop(i2c);
-         }
- }

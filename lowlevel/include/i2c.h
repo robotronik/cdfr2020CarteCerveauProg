@@ -33,6 +33,5 @@ typedef enum I2C_Status_E{
 void i2c_setup(uint32_t i2c_peripheral);
 
 
-void i2c_write7(uint32_t i2c, int addr, uint8_t *data, size_t n);
-void i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n);
-void i2c_transfer7(uint32_t i2c, uint8_t addr, uint8_t *w, size_t wn, uint8_t *r, size_t rn);
+void i2c_write7_v1(uint32_t i2c, int addr, uint8_t *data, size_t n);
+void i2c_read7_v1(uint32_t i2c, int addr, uint8_t *res, size_t n);

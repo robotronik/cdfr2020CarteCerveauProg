@@ -53,7 +53,7 @@ void test_i2c(){
     uint8_t data = 0xab;
 
     while(1){
-        i2c_write7(I2C1, 0x52, &data, sizeof(data)); 	
+        i2c_write7_v1(I2C1, 0x52, &data, sizeof(data)); 	
         delay_ms(1000);
     }
 }
