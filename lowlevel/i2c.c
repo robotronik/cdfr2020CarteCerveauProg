@@ -89,3 +89,14 @@ void i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n)
 
      return;
 }
+
+void i2c_transfer7(uint32_t i2c, uint8_t addr, uint8_t *w, size_t wn, uint8_t *r, size_t rn) {
+         if (wn) {
+                 i2c_write7(i2c, addr, w, wn);
+         }
+         if (rn) {
+                 i2c_read7(i2c, addr, r, rn);
+         } else {
+                 i2c_send_stop(i2c);
+         }
+ }
