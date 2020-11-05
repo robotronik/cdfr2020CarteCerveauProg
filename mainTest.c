@@ -11,14 +11,15 @@
 void test_actuator();
 void test_com();
 void test_i2c();
+void blink_led();
 
 int main() {
     
     //setup
     clock_setup();
-    exti_setup();
-    actuator_setup();
-    uart_setup();
+    //exti_setup();
+    //actuator_setup();
+    //uart_setup();
 
     /*
     test_actuator();
@@ -29,7 +30,9 @@ int main() {
     }
     */
 
-    test_i2c();
+    //test_i2c();
+    blink_led();
+
 }
 
 void test_actuator(){
@@ -54,6 +57,16 @@ void test_i2c(){
 
     while(1){
         i2c_write7_v1(I2C1, 0x52, &data, sizeof(data)); 	
+        delay_ms(1000);
+    }
+}
+
+void blink_led(){
+    //led is on PA5
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE);
+    
+    while(1){
+        gpio_toggle(GPIOA,GPIO5);
         delay_ms(1000);
     }
 }
