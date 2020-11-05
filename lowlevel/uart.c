@@ -23,9 +23,9 @@ void uart_setup()
 	usart_set_parity(DEBUG_USART, USART_PARITY_NONE);
 	usart_set_flow_control(DEBUG_USART, USART_FLOWCONTROL_NONE);
 
-	usart_enable_rx_interrupt(DEBUG_USART); // enable interrupts from reception events on usart 2
+	//usart_enable_rx_interrupt(DEBUG_USART); // enable interrupts from reception events on usart 2
 /*TODO*/ //	usart_enable_tx_interrupt(DEBUG_USART); // enable interrupts from transmission events on usart 2
-	nvic_enable_irq(DEBUG_UART_NVIC);
+	//nvic_enable_irq(DEBUG_UART_NVIC);
 
 	usart_enable(DEBUG_USART);
 	setbuf(stderr,NULL); //necessary for printf
