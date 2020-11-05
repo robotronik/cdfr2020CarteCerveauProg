@@ -19,7 +19,7 @@ int main() {
     clock_setup();
     //exti_setup();
     //actuator_setup();
-    //uart_setup();
+    uart_setup();
 
     /*
     test_actuator();

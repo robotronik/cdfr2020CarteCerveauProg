@@ -40,7 +40,7 @@ void i2c_write7_v1(uint32_t i2c, int addr, uint8_t *data, size_t n)
 {
      while ((I2C_SR2(i2c) & I2C_SR2_BUSY)) {
      }
-
+     fprintf(stderr,"send start");
      i2c_send_start(i2c);
 
      /* Wait for the end of the start condition, master mode selected, and BUSY bit set */
@@ -48,10 +48,13 @@ void i2c_write7_v1(uint32_t i2c, int addr, uint8_t *data, size_t n)
              && (I2C_SR2(i2c) & I2C_SR2_MSL)
              && (I2C_SR2(i2c) & I2C_SR2_BUSY) ));
 
+        fprintf(stderr,"start condition passed");
+
      i2c_send_7bit_address(i2c, addr, I2C_WRITE);
 
      /* Waiting for address is transferred. */
      while (!(I2C_SR1(i2c) & I2C_SR1_ADDR));
+        fprintf(stderr,"adress transferred");
 
      /* Clearing ADDR condition sequence. */
      (void)I2C_SR2(i2c);
@@ -59,6 +62,7 @@ void i2c_write7_v1(uint32_t i2c, int addr, uint8_t *data, size_t n)
      for (size_t i = 0; i < n; i++) {
              i2c_send_data(i2c, data[i]);
              while (!(I2C_SR1(i2c) & (I2C_SR1_BTF)));
+             fprintf(stderr,"data[ %d ]transferred",i);
      }
 }
 

@@ -16,6 +16,7 @@
 #pragma once
 
 #include <libopencm3/stm32/i2c.h>
+#include <stdio.h>
 #include "gpio.h"
 
 #define I2C_CLK_MHZ    8
