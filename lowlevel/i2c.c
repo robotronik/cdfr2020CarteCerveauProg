@@ -9,6 +9,7 @@ void i2c_setup(uint32_t i2c_peripheral){
 
             /* Disable peripheral before changing parameters */
             i2c_peripheral_disable(I2C1);
+            i2c_reset(I2C1);
             //i2c_enable_analog_filter(I2C1); /*used on f3 (pas besoin je crois)*/ 
             i2c_set_speed(I2C1, i2c_speed_fm_400k, (rcc_apb1_frequency / 1000000) );
 
