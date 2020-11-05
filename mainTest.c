@@ -30,8 +30,8 @@ int main() {
     }
     */
 
-    //test_i2c();
-    blink_led();
+    test_i2c();
+    //blink_led();
 
 }
 
@@ -54,9 +54,9 @@ void test_i2c(){
     i2c_setup(I2C1);
 
     uint8_t data = 0xab;
-
+    int addr = 0x52;
     while(1){
-        i2c_write7_v1(I2C1, 0x52, &data, sizeof(data)); 	
+        i2c_write7_v1(I2C1, addr, &data, sizeof(data)); 	
         delay_ms(1000);
     }
 }
