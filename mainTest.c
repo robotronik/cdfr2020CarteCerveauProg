@@ -29,7 +29,7 @@ int main() {
         delay_ms(1000);
     }
     */
-
+    
     test_i2c();
     //blink_led();
 
@@ -46,15 +46,41 @@ void test_com(){
 }
 
 void test_i2c(){
-    //Setup SDA
-    _gpio_setup_pin_af(RCC_GPIOB, GPIOB, GPIO7, GPIO_AF4);
     //Setup SCL
-    _gpio_setup_pin_af(RCC_GPIOB, GPIOB, GPIO6, GPIO_AF4);
+    // _gpio_setup_pin_af(RCC_GPIOB, GPIOB, GPIO6, GPIO_AF4);
+    // //Setup SDA
+    // _gpio_setup_pin_af(RCC_GPIOB, GPIOB, GPIO7, GPIO_AF4);
     
-    i2c_setup(I2C1);
+ /* Enable clock on port*/
+    rcc_periph_clock_enable(RCC_GPIOB);
 
-    uint8_t data = 0xab;
-    int addr = 0x52;
+    /* Setup pin as altfun and no pull up or pull down */
+    gpio_mode_setup(GPIOB,GPIO_MODE_AF,GPIO_PUPD_PULLUP,GPIO6);
+    
+    /* Setup pin as push-pull with a default speed of 50 MHz */
+    gpio_set_output_options(GPIOB, GPIO_OTYPE_OD,GPIO_OSPEED_50MHZ, GPIO6); 
+
+    /* Setup alternate function */    
+    gpio_set_af(GPIOB, GPIO_AF4, GPIO6);
+
+        /* Setup pin as altfun and no pull up or pull down */
+    gpio_mode_setup(GPIOB,GPIO_MODE_AF,GPIO_PUPD_PULLUP,GPIO7);
+    
+    /* Setup pin as push-pull with a default speed of 50 MHz */
+    gpio_set_output_options(GPIOB, GPIO_OTYPE_OD,GPIO_OSPEED_50MHZ, GPIO7); 
+
+    /* Setup alternate function */    
+    gpio_set_af(GPIOB, GPIO_AF4, GPIO7);
+
+
+
+
+
+    delay_ms(200);
+    i2c_setup(I2C1);
+    delay_ms(100);
+    uint32_t data = 0xabcdef ;
+     uint16_t addr = 4;
     while(1){
         i2c_write7_v1(I2C1, addr, &data, sizeof(data)); 	
         delay_ms(1000);
@@ -67,6 +93,6 @@ void blink_led(){
     
     while(1){
         gpio_toggle(GPIOA,GPIO5);
-        delay_ms(1000);
+        delay_ms(50);
     }
 }
