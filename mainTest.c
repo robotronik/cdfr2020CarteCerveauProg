@@ -89,7 +89,7 @@ void test_i2c(){
 
 void blink_led(){
     //led is on PA5
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE);
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
     
     while(1){
         gpio_toggle(GPIOA,GPIO5);
