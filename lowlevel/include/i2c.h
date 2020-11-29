@@ -25,7 +25,7 @@ typedef enum I2C_Status_E{
     I2C_TIMEOUT, // timeout for unknown reason
 }I2C_status;
 
-#define I2C_MAX_TIMEOUT 20 //ms
+#define I2C_MAX_TIMEOUT 10 //ms
 
 
 //I2C1

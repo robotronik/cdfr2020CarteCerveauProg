@@ -38,7 +38,7 @@ extern "C" {
 #endif
 
 #define VL53L0X_DELAY_US 1000
-#define VL53L0X_I2C_TIMEOUT_MS 10
+//#define VL53L0X_I2C_TIMEOUT_MS 10
 
 /**
  * @file vl53l0x_platform.h
