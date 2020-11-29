@@ -19,14 +19,14 @@
 #include <stdio.h>
 #include "gpio.h"
 
-#define I2C_CLK_MHZ    8
-#define I2C_MAX_NBYTES 255
 
 typedef enum I2C_Status_E{
     I2C_OK,
-    I2C_ETIME, // timeout for unknown reason
-    I2C_ENACK, // NACK
-}I2C_Status;
+    I2C_TIMEOUT, // timeout for unknown reason
+}I2C_status;
+
+#define I2C_MAX_TIMEOUT 20 //ms
+
 
 //I2C1
 #define I2C_GPIO_OTYPE GPIO_OTYPE_OD
@@ -53,5 +53,5 @@ typedef enum I2C_Status_E{
 void i2c_setup(uint32_t i2c_peripheral);
 
 
-void i2c_write7_v1(uint32_t i2c, int addr, uint8_t *data, size_t n);
-void i2c_read7_v1(uint32_t i2c, int addr, uint8_t *res, size_t n);
+I2C_status i2c_write7(uint32_t i2c, int addr, uint8_t *data, size_t n);
+I2C_status i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n);

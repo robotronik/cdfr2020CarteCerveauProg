@@ -48,9 +48,17 @@ void test_com(){
 void test_i2c(){
     i2c_setup(I2C1);
     uint32_t data = 0xabcdef ;
-     uint16_t addr = 4;
+    uint16_t addr = 4;
+    I2C_status my_I2C_return;
+
+    delay_ms(200);
+    my_I2C_return = i2c_write7(I2C1, addr, &data, sizeof(data));
+    fprintf(stderr,"I2Cret = %d\n",my_I2C_return);
+    delay_ms(50);
+    data = 0xfedcba;
+    my_I2C_return = i2c_write7(I2C1, addr, &data, sizeof(data));
+    fprintf(stderr,"I2Cret = %d\n",my_I2C_return);
     while(1){
-        i2c_write7_v1(I2C1, addr, &data, sizeof(data)); 	
         delay_ms(1000);
     }
 }
