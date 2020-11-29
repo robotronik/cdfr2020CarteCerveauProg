@@ -10,7 +10,7 @@ void actuator_setup(){
     _timer_setup(ACTUATOR_TIM_RCC, ACTUATOR_TIM, PWM_PRESCALE, PWM_PERIOD);
 
     /* setup arm EN*/
-    _gpio_setup_pin_af(ARM_GPIO_RCC_EN, ARM_PORT_EN, ARM_PIN_EN, ARM_AF);
+    _gpio_setup_pin_af(ARM_GPIO_RCC_EN, ARM_PORT_EN, ARM_PIN_EN, ARM_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
     _timer_setup_output_c(ACTUATOR_TIM, ARM_OC_ID, ARM_OC_MODE, 0);
 
     /* setup arm DIR*/
@@ -31,7 +31,7 @@ void actuator_setup(){
     }
 
     /* setup flag EN */
-    _gpio_setup_pin_af(FLAG_GPIO_RCC_EN, FLAG_PORT_EN, FLAG_PIN_EN, FLAG_AF);
+    _gpio_setup_pin_af(FLAG_GPIO_RCC_EN, FLAG_PORT_EN, FLAG_PIN_EN, FLAG_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
     _timer_setup_output_c(ACTUATOR_TIM, FLAG_OC_ID, FLAG_OC_MODE, 0);
 
     /* setup flag DIR*/

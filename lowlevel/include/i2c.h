@@ -28,6 +28,25 @@ typedef enum I2C_Status_E{
     I2C_ENACK, // NACK
 }I2C_Status;
 
+//I2C1
+#define I2C_GPIO_OTYPE GPIO_OTYPE_OD
+#define I2C_GPIO_PULL_UP GPIO_PUPD_PULLUP
+
+//SCL
+#define I2C1_SCL_GPIO_PORT GPIOB
+#define I2C1_SCL_GPIO_RCC RCC_GPIOB
+#define I2C1_SCL_GPIO_PIN GPIO6
+#define I2C1_SCL_AF GPIO_AF4
+//SDA
+#define I2C1_SDA_GPIO_PORT GPIOB
+#define I2C1_SDA_GPIO_RCC RCC_GPIOB
+#define I2C1_SDA_GPIO_PIN GPIO7
+#define I2C1_SDA_AF GPIO_AF4
+
+
+
+
+
 /**
  * @brief Set the application-specific I2C configuration
  */

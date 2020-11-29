@@ -29,7 +29,7 @@ int main() {
         delay_ms(1000);
     }
     */
-
+    
     test_i2c();
     //blink_led();
 
@@ -46,15 +46,9 @@ void test_com(){
 }
 
 void test_i2c(){
-    //Setup SDA
-    _gpio_setup_pin_af(RCC_GPIOB, GPIOB, GPIO7, GPIO_AF4);
-    //Setup SCL
-    _gpio_setup_pin_af(RCC_GPIOB, GPIOB, GPIO6, GPIO_AF4);
-    
     i2c_setup(I2C1);
-
-    uint8_t data = 0xab;
-    int addr = 0x52;
+    uint32_t data = 0xabcdef ;
+     uint16_t addr = 4;
     while(1){
         i2c_write7_v1(I2C1, addr, &data, sizeof(data)); 	
         delay_ms(1000);
@@ -63,10 +57,10 @@ void test_i2c(){
 
 void blink_led(){
     //led is on PA5
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE);
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
     
     while(1){
         gpio_toggle(GPIOA,GPIO5);
-        delay_ms(1000);
+        delay_ms(50);
     }
 }
