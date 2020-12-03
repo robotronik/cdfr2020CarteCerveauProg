@@ -127,7 +127,6 @@ void actuator_setup();
  * sign of ACT_X_INVER_DIR.
  * 
  * @param sel    The actuator that will be piloted (eg ARM) 
- * @param value    value is between -100 and +100, controls the speed and
- * direction of the motor sel (eg +54)
+ * @param value    value is between -100 and +100, controls the speed and direction of the motor sel (eg +54)
  */
 void actuator_set(enum actuator_sel sel, int8_t value);

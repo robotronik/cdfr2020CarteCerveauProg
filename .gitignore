@@ -2,6 +2,7 @@
 .vscode
 .vim
 .clangd
+*.json
 
 # built files
 *.o
