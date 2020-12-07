@@ -1,10 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "clock.h"
 #include "actuator.h"
 #include "uart.h"
 #include "exti.h"
 #include "i2c.h"
+#include "vl53l0x_platform.h"
 
 #include <libopencm3/stm32/i2c.h>
 
@@ -12,7 +14,7 @@ void test_actuator();
 void test_com();
 void test_i2c();
 void blink_led();
-
+void test_tof_platform();
 int main() {
     
     //setup
@@ -30,8 +32,10 @@ int main() {
     }
     */
     
-    test_i2c();
+    //test_i2c();
     //blink_led();
+
+    test_tof_platform();
 
 }
 
@@ -61,6 +65,33 @@ void test_i2c(){
     while(1){
         delay_ms(1000);
     }
+}
+
+void test_tof_platform(){
+    i2c_setup(I2C1);
+    VL53L0X_DEV pDev = calloc(1,sizeof(*pDev));
+    pDev->i2c_dev = I2C1;
+    pDev->i2c_slave_address = 4;
+    delay_ms(200);
+
+    VL53L0X_Error myError;
+    uint8_t index = 0xcd;
+    uint8_t dataByte = 0xab;
+    myError = VL53L0X_WrByte(pDev,index,dataByte);
+    delay_ms(30);
+
+    uint16_t dataWord = 0xa1b2;
+    myError = VL53L0X_WrWord(pDev,index,dataWord);
+    delay_ms(30);
+
+    uint32_t dataDWord = 0xa1b2e3f4;
+    myError = VL53L0X_WrDWord(pDev,index,dataDWord);
+    delay_ms(30);
+    
+    uint8_t bigDataWink[6] ={0xab,0xcd,0xef,0x12,0x13,0x14};
+    myError = VL53L0X_WriteMulti(pDev,index,bigDataWink,6);
+
+    
 }
 
 void blink_led(){
