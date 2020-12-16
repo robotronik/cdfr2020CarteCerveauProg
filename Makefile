@@ -5,7 +5,7 @@ Makefile_path := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
 Toolchain = /usr/bin/arm-none-eabi-
 
 CC = $(Toolchain)gcc
-CFlags =
+CFlags = 
 CXX= $(Toolchain)g++
 CXXFlags =
 LD = $(Toolchain)ld
@@ -81,7 +81,8 @@ INC_PARAMS=$(foreach d, $(INCPATHS), -I $d)
 
 CFlags += $(INC_PARAMS)
 
-CFlasgs += -DUSE_I2C_2V8
+#tof api parameters
+CFlags += -DUSE_I2C_2V8
 
 all: mainTest.flash
 

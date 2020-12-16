@@ -56,8 +56,8 @@
 /** @} */
 
 /* Liste globale de tout les tofs */
-VL53L0X_Dev_t tof[TOF_NUM];
-
+// VL53L0X_DEV* tof[TOF_NUM];
+VL53L0X_DEV myTof;
 
 /**
  * @brief setup the tof and all pin
