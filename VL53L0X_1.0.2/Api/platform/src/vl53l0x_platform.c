@@ -167,7 +167,7 @@ VL53L0X_Error VL53L0X_WrWord(VL53L0X_DEV Dev, uint8_t index, uint16_t data){
 
 	//status_int = VL53L0X_write_multi(deviceAddress, index, pdata, count);
 	buffer[0] = index;
-    memcpy((uint16_t*)(&buffer[1]), &data, 1);
+    memcpy((uint16_t*)(&buffer[1]), &data, 2);
     i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,buffer,3);
 
 	if (i2c_status != I2C_OK ){
@@ -183,7 +183,7 @@ VL53L0X_Error VL53L0X_WrDWord(VL53L0X_DEV Dev, uint8_t index, uint32_t data){
 
 	//status_int = VL53L0X_write_multi(deviceAddress, index, pdata, count);
 	buffer[0] = index;
-    memcpy((uint32_t*)(&buffer[1]), &data, 1);
+    memcpy((uint32_t*)(&buffer[1]), &data, 4);
     i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,buffer,5);
 
 	if (i2c_status != I2C_OK ){
@@ -200,7 +200,7 @@ VL53L0X_Error VL53L0X_UpdateByte(VL53L0X_DEV Dev, uint8_t index, uint8_t AndData
     //status_int = VL53L0X_read_byte(deviceAddress, index, &data);
     i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,&index,1);
     // pdata[0] = index; unused in our read7 implementation cf "VL53L0X_read_multi"
-    i2c_status = i2c_read7(Dev->i2c_dev,Dev->i2c_slave_address,data,1);
+    i2c_status = i2c_read7(Dev->i2c_dev,Dev->i2c_slave_address,&data,1);
 
     if (i2c_status != I2C_OK)
         Status = VL53L0X_ERROR_CONTROL_INTERFACE;
