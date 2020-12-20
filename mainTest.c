@@ -7,6 +7,7 @@
 #include "exti.h"
 #include "i2c.h"
 #include "vl53l0x_platform.h"
+#include "tof_timer.h"
 
 #include <libopencm3/stm32/i2c.h>
 
@@ -16,6 +17,8 @@ void test_i2c();
 void blink_led();
 void test_tof_platform_write();
 void test_tof_platform_read();
+void interrupt_timer_test();
+
 int main() {
     
     //setup
@@ -36,8 +39,9 @@ int main() {
     
     //blink_led();
     //test_tof_platform_write();
-    // test_i2c();
-    test_tof_platform_read();
+    //test_i2c();
+    //test_tof_platform_read();
+    interrupt_timer_test();
 }
 
 void test_actuator(){
@@ -52,9 +56,9 @@ void test_com(){
 
 void test_i2c(){
     i2c_setup(I2C1);
-    uint32_t data = 0xabcdef ;
+    // uint32_t data = 0xabcdef ;
     uint16_t addr = 4;
-    I2C_status my_I2C_return;
+    // I2C_status my_I2C_return;
 
     delay_ms(200);
     // my_I2C_return = i2c_write7(I2C1, addr, (uint8_t*)&data, sizeof(data));
@@ -68,7 +72,7 @@ void test_i2c(){
 
     while(1){
         delay_ms(20);
-        i2c_read7(I2C1,addr,&dataRead,2);
+        i2c_read7(I2C1,addr,(uint8_t*)(&dataRead),2);
         //fprintf(stderr,"dataRead=%04X \r\n",dataRead);
     }
 }
@@ -120,7 +124,7 @@ void test_tof_platform_read(){
     delay_ms(200);
 
     uint8_t bigDataRead[6];
-    myError = VL53L0X_ReadMulti(pDev,index,&bigDataRead,6);
+    myError = VL53L0X_ReadMulti(pDev,index,(uint8_t*)(&bigDataRead),6);
     delay_ms(200);
 
     fprintf(stderr,"Byte = %X \t Word = %X \t DWord = %X \t ",dataReadByte,dataReadWord,dataReadDWord,bigDataRead);
@@ -139,4 +143,16 @@ void blink_led(){
         gpio_toggle(GPIOA,GPIO5);
         delay_ms(50);
     }
+}
+
+
+
+void interrupt_timer_test(){
+    int counter;
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+    timer_setup_interrupt();
+    while (1){
+        
+    }
+    
 }
