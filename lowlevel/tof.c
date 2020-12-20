@@ -70,8 +70,8 @@ VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr){
     status = _tof_set_address(dev, addr);
     if(status) return status;
 
-    DataInit(dev);
-    StaticInit(dev);
+    VL53L0X_DataInit(dev);
+    VL53L0X_StaticInit(dev);
 
     return VL53L0X_ERROR_NONE;
 }
