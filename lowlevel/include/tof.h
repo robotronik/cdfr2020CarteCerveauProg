@@ -20,6 +20,8 @@
 //TODO include API
 #include "vl53l0x_api.h"
 
+#include <stdlib.h>
+
 #define TOF_NUM 1
 
 //Fixed in hardware
@@ -55,9 +57,22 @@
 #define SR_CP_PIN       GPIO0
 /** @} */
 
+/*Long Range Profile*/
+/** @defgroup Long Range Ranging Profile 
+ * @{
+ */
+#define VL53L0X_LR_SIGNAL_LIMIT             (FixPoint1616_t)(0.25*65536)
+#define VL53L0X_LR_SIGMA_LIMIT              (FixPoint1616_t)(18*65536)
+#define VL53L0X_LR_TIMING_BUDGET            33000
+#define VL53L0X_LR_VCSEL_PERIOD_PRE_RANGE   14
+#define VL53L0X_LR_VCSEL_PERIOD_FINAL_RANGE 10
+/** @} */
+
+
 /* Liste globale de tout les tofs */
 // VL53L0X_DEV* tof[TOF_NUM];
 VL53L0X_DEV myTof;
+
 
 /**
  * @brief setup the tof and all pin
@@ -66,12 +81,55 @@ VL53L0X_DEV myTof;
 void tof_setup();
 
 /**
- * @brief initialize 1 tof according to fig2 User Manual
- * @param htof  pointer on the tof "object"
- * @param i2c_addr  i2c address of the given tof
- * @return bool value of success
+ * @brief setup the structure with the standard address and I2C peripheral
+ * @param dev our tof object
  */
-//int _tof_init(ToF_Handler_t *htof, uint8_t i2c_addr);
+void _tof_init_dev(VL53L0X_DEV dev);
+
+/**
+ * @brief Check if the tof is answering
+ * @param dev our tof object
+ * @return return the error type from the API
+ */
+VL53L0X_Error _tof_poke(VL53L0X_DEV dev);
+
+/**
+ * @brief set the tof I2C slave address
+ * @param dev our tof object
+ * @param addr the slave address
+ * @return return the error type from the API
+ */
+VL53L0X_Error _tof_set_address(VL53L0X_DEV dev, uint8_t addr);
+
+/**
+ * @brief setup the tof with its address (calling poke and set address)
+ * @param dev our tof object
+ * @param addr the slave address
+ * @return return the error type from the API
+ */
+VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr);
+
+/**
+ * @brief Configure the tof with its calibration data and ranging profile
+ * @param dev our tof object
+ * @return return the error type from the API
+ */
+VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev);
+
+/**
+ * @brief Function to calibrate a tof (each tof has its own calibration)
+ * @param dev our tof object
+ * @return return the error type from the API
+ */
+VL53L0X_Error _tof_calibration(VL53L0X_DEV dev);
+
+/**
+ * @brief Function to acces the measure of the tof
+ * @param dev our tof object
+ * @param range pointer to the variable storing the range in /!\ MILLIMETER /!\
+ * @return return the error type from the API
+ */
+VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range);
 
 /**
  * @brief reset all tof via the shift register

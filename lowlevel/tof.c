@@ -17,11 +17,12 @@ void tof_setup(){
     */
 
     //POUR 1 TOF
-    int status;
+    VL53L0X_Error status;
     status = _tof_setup_dev(myTof,0x52);
     //TODO return error not yet implemented void function 
     //if(status) return -1;
-    
+    status = _tof_configure_dev(myTof);
+    status = VL53L0X_StartMeasurement(myTof);
 }
 
 void _tof_init_dev(VL53L0X_DEV dev){
@@ -31,63 +32,119 @@ void _tof_init_dev(VL53L0X_DEV dev){
 	dev->i2c_dev = I2C1;
 }
 
-int _tof_poke(VL53L0X_DEV dev){
-  int status;
-  //Read ID to know if the address is correct
-  uint16_t id = 0;
-  status = VL53L0X_RdWord(dev, VL53L0X_REG_IDENTIFICATION_MODEL_ID, &id);
-  
-  //I2C error or bad ID
-  //Compare to 0xEEAA because of black magic (standard value)
-  if(status || id != 0xEEAA){
-    return -1;
-  }
-  
-  return 0;
+VL53L0X_Error _tof_poke(VL53L0X_DEV dev){
+    VL53L0X_Error status;
+    //Read ID to know if the address is correct
+    uint16_t id = 0;
+    status = VL53L0X_RdWord(dev, VL53L0X_REG_IDENTIFICATION_MODEL_ID, &id);
+
+    //I2C error or bad ID
+    //Compare to 0xEEAA because of black magic (standard value)
+    if(status){
+        return status;
+    }
+    if(id != 0xEEAA){
+    return VL53L0X_ERROR_NOT_IMPLEMENTED;
+    }
+
+    return VL53L0X_ERROR_NONE;
 }
 
-int _tof_set_address(VL53L0X_DEV dev, uint8_t addr){
+VL53L0X_Error _tof_set_address(VL53L0X_DEV dev, uint8_t addr){
   //Set device address
-  int status = VL53L0X_SetDeviceAddress(dev, addr);
-  if(status) return -1;
+  VL53L0X_Error status = VL53L0X_SetDeviceAddress(dev, addr);
+  if(status) return status;
   dev->i2c_slave_address = addr;
 
   //Check if the device work with the new address
   return _tof_poke(dev);
 }
 
-int _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr){
-    int status;
+VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr){
+    VL53L0X_Error status;
     _tof_init_dev(dev);
 
     status = _tof_poke(dev);
-    if(status) return -1;
+    if(status) return status;
 
     status = _tof_set_address(dev, addr);
-    if(status) return -1;
+    if(status) return status;
 
     DataInit(dev);
     StaticInit(dev);
 
-    return 0;
+    return VL53L0X_ERROR_NONE;
 }
 
-int _tof_configure_dev(){
+VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev){
     //Fig 5
+    /*TODO skip calibration*/
+    
+    VL53L0X_Error status;
+    //Set single ranging mode
+    status = VL53L0X_SetDeviceMode(dev, VL53L0X_DEVICEMODE_CONTINUOUS_RANGING);
+    if(status) return status;
+  
+    //Enable Sigma Limit
+    status = VL53L0X_SetLimitCheckEnable(dev, VL53L0X_CHECKENABLE_SIGMA_FINAL_RANGE, 1);
+    if(status) return status;
+  
+    //Enable Signal Limit
+    status = VL53L0X_SetLimitCheckEnable(dev, VL53L0X_CHECKENABLE_SIGNAL_RATE_FINAL_RANGE, 1);
+    if(status) return status;
 
-    /*TODO Take Parameter and configure the device*/
-    return 0;
+    /*Profile Long Range*/
+    //Set signal limit
+    status = VL53L0X_SetLimitCheckValue(dev, VL53L0X_CHECKENABLE_SIGNAL_RATE_FINAL_RANGE, VL53L0X_LR_SIGNAL_LIMIT);
+    if(status) return status;
+  
+    //Set sigma limit
+    status = VL53L0X_SetLimitCheckValue(dev, VL53L0X_CHECKENABLE_SIGMA_FINAL_RANGE, VL53L0X_LR_SIGMA_LIMIT);
+    if(status) return status;
+
+    //Set timing budget
+    status = VL53L0X_SetMeasurementTimingBudgetMicroSeconds(dev, VL53L0X_LR_TIMING_BUDGET);
+    if(status) return status;
+  
+    //Set pre range pulse period
+    status = VL53L0X_SetVcselPulsePeriod(dev, VL53L0X_VCSEL_PERIOD_PRE_RANGE, VL53L0X_LR_VCSEL_PERIOD_PRE_RANGE);
+    if(status) return status;
+
+    //Set final range pulse period
+    status = VL53L0X_SetVcselPulsePeriod(dev, VL53L0X_VCSEL_PERIOD_FINAL_RANGE, VL53L0X_LR_VCSEL_PERIOD_FINAL_RANGE);
+    if(status) return status;
+  
+    return VL53L0X_ERROR_NONE;
 }
 
-int _tof_calibration(VL53L0X_DEV dev){
-    int status;
+VL53L0X_Error _tof_calibration(VL53L0X_DEV dev){
+    VL53L0X_Error status;
     status = _tof_setup_dev(dev,0x52);
-    if(status) return -1;
+    if(status) return status;
 
     /*TODO Calibration*/
     return 0;
 }
 
+VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
+    VL53L0X_Error status;
+    uint8_t ready;
+    status = VL53L0X_GetMeasurementDataReady(dev, &ready);
+    if(status) return status;
+
+    if(!ready) return VL53L0X_ERROR_NOT_IMPLEMENTED;
+
+    VL53L0X_RangingMeasurementData_t measure_data;
+    status = VL53L0X_GetRangingMeasurementData(dev,&measure_data);
+    if(status) return status;
+
+    status = VL53L0X_ClearInterruptMask(dev,-1);
+    if(status) return status;
+
+    *range = measure_data.RangeMilliMeter;
+
+    return VL53L0X_ERROR_NONE;
+}
 
 void _shift_reg_init(){
     gpio_set(SR_DSAB_PORT, SR_DSAB_PIN);
