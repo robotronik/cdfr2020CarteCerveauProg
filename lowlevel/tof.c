@@ -18,10 +18,18 @@ void tof_setup(){
 
     //POUR 1 TOF
     VL53L0X_Error status;
-    status = _tof_setup_dev(myTof,0x52);
+    
+    /*ATTENTION CETTE FONCTION EST DANS CALIBRATION QUI SERA ENLEVER DU SETUP PLUS TARD, CORDIALEMENT*/
+    //status = _tof_setup_dev(myTof,0x52);
+    /*ATTENTION CE CODE EST TEMPORAIRE JUSQU'A UNE IMPLEMENTATION PLUS PROPRE DE LA CALIBRATION, CORDIALEMENT*/
+    VL53L0X_Calibration_Parameter myCalib;
+    status = _tof_calibration(myTof,&myCalib,0,0);
+    status = _tof_configure_dev(myTof, myCalib);
+    /*J'ESPERE QUE VOUS AVEZ PRIS EN COMPTE LES WARNINGS AU DESSUS*/
+
     //TODO return error not yet implemented void function 
     //if(status) return -1;
-    status = _tof_configure_dev(myTof);
+
     status = VL53L0X_StartMeasurement(myTof);
 }
 
@@ -76,11 +84,32 @@ VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr){
     return VL53L0X_ERROR_NONE;
 }
 
-VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev){
+VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter calib_param){
     //Fig 5
-    /*TODO skip calibration*/
-    
     VL53L0X_Error status;
+
+    /*Calibration*/
+    
+    status = VL53L0X_SetReferenceSpads(dev, calib_param.refSpadCount, calib_param.isApertureSpads);
+    if(status) return status;
+
+    status = VL53L0X_SetRefCalibration(dev, calib_param.VhvSettings, calib_param.PhaseCal);
+    if(status) return status;
+
+    /*We don't have the robot to make the calibration with target*/
+    // status = VL53L0X_SetOffsetCalibrationDataMicroMeter(dev,calib_param.OffsetMicroMeter);
+    // if(status) return status;
+
+    // status = VL53L0X_SetXTalkCompensationEnable(dev,1);
+    // if(status) return status;
+
+    // status = VL53L0X_SetXTalkCompensationRateMegaCps(dev,calib_param.XTalkCompensationRateMegaCps);
+    // if(status) return status;
+
+
+
+    /* Ranging Profile*/
+
     //Set single ranging mode
     status = VL53L0X_SetDeviceMode(dev, VL53L0X_DEVICEMODE_CONTINUOUS_RANGING);
     if(status) return status;
@@ -117,13 +146,29 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev){
     return VL53L0X_ERROR_NONE;
 }
 
-VL53L0X_Error _tof_calibration(VL53L0X_DEV dev){
+VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* calib_param, FixPoint1616_t offset_cal_distance, FixPoint1616_t xTalk_cal_distance){
     VL53L0X_Error status;
     status = _tof_setup_dev(dev,0x52);
     if(status) return status;
 
-    /*TODO Calibration*/
-    return 0;
+    /*Calibration*/
+    status = VL53L0X_PerformRefSpadManagement(dev, &(calib_param->refSpadCount), &(calib_param->isApertureSpads));
+    if(status) return status;
+
+    status = VL53L0X_PerformRefCalibration(dev, &(calib_param->VhvSettings), &(calib_param->PhaseCal));
+    if(status) return status;
+
+    /*Calibration avec un objectif*/
+    /*We don't have the robot to make the calibration with target*/
+    // /*Set a White Target and define the distance to the sensor*/
+    // status = VL53L0X_PerformOffsetCalibration(dev, offset_cal_distance, &(calib_param->OffsetMicroMeter));
+    // if(status) return status;
+
+    // /*Set a Grey Target and define */
+    // status = VL53L0X_PerformXTalkCalibration(dev, xTalk_cal_distance, &(calib_param->XTalkCompensationRateMegaCps));
+    // if(status) return status;
+
+    return VL53L0X_ERROR_NONE;
 }
 
 VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
@@ -141,7 +186,12 @@ VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
     status = VL53L0X_ClearInterruptMask(dev,-1);
     if(status) return status;
 
-    *range = measure_data.RangeMilliMeter;
+    if(!measure_data.RangeStatus){
+        *range = measure_data.RangeMilliMeter;
+    }
+    else{
+        return VL53L0X_ERROR_RANGE_ERROR;
+    }
 
     return VL53L0X_ERROR_NONE;
 }

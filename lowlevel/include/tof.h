@@ -68,6 +68,15 @@
 #define VL53L0X_LR_VCSEL_PERIOD_FINAL_RANGE 10
 /** @} */
 
+typedef struct VL53L0X_Calibration_Parameter_S{
+  uint8_t VhvSettings;
+  uint8_t PhaseCal;
+  uint32_t refSpadCount;
+  uint8_t isApertureSpads;
+  int32_t OffsetMicroMeter;
+  FixPoint1616_t XTalkCompensationRateMegaCps;
+}VL53L0X_Calibration_Parameter;
+
 
 /* Liste globale de tout les tofs */
 // VL53L0X_DEV* tof[TOF_NUM];
@@ -112,16 +121,20 @@ VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr);
 /**
  * @brief Configure the tof with its calibration data and ranging profile
  * @param dev our tof object
+ * @param calib_param structure that store all calibration parameter
  * @return return the error type from the API
  */
-VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev);
+VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter calib_param);
 
 /**
  * @brief Function to calibrate a tof (each tof has its own calibration)
  * @param dev our tof object
+ * @param calib_param structure to store all calibration parameter
+ * @param offset_cal_distance distance to the white target in millimeter
+ * @param xTalk_cal_distance distance to the grey target in millimeter
  * @return return the error type from the API
  */
-VL53L0X_Error _tof_calibration(VL53L0X_DEV dev);
+VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* calib_param, FixPoint1616_t offset_cal_distance, FixPoint1616_t xTalk_cal_distance);
 
 /**
  * @brief Function to acces the measure of the tof
