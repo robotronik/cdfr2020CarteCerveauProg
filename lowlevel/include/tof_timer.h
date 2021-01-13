@@ -9,9 +9,9 @@
 #define TOF_TIM_PRESCALE	(84)
 
 /**
- * We need a 50 Hz freq (1000 / 20ms = 50), thus divide 100000 by 50 = 20000 (us).
+ * Period for the Timer
  */
-#define TOF_TIM_PERIOD		(20000)
+#define TOF_TIM_PERIOD		(500000)
 
 /**
  * @defgroup TOF_TIM tof_tim
