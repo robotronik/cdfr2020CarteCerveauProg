@@ -7,12 +7,15 @@
 #include "exti.h"
 #include "i2c.h"
 #include "vl53l0x_platform.h"
+#include "tof.h"
 #include "tof_timer.h"
 
 #include <libopencm3/stm32/i2c.h>
 
 void test_actuator();
 void test_com();
+void test_tof();
+void test_tof_poke();
 void test_i2c();
 void blink_led();
 void test_tof_platform_write();
@@ -41,7 +44,8 @@ int main() {
     //test_tof_platform_write();
     //test_i2c();
     //test_tof_platform_read();
-    interrupt_timer_test();
+    //interrupt_timer_test();
+    test_tof_poke();
 }
 
 void test_actuator(){
@@ -155,4 +159,45 @@ void interrupt_timer_test(){
         
     }
     
+}
+
+void test_tof(){
+    VL53L0X_Error status;
+    fprintf(stderr,"After reset TOF\n");
+    status = tof_setup();
+    fprintf(stderr,"error status: %d\n",status);
+    fprintf(stderr,"After setup TOF\n");
+    uint16_t range;
+    while(1){
+        status = tof_get_measure(myTof,&range);
+        if(status){
+            fprintf(stderr,"error status: %d\n",status);
+        }
+        else{
+            fprintf(stderr,"range: %X\n",range);
+        }
+        delay_ms(500);
+    }
+}
+
+void test_tof_poke(){
+    fprintf(stderr,"Welcome in test tof_poke\n");
+
+    i2c_setup(I2C1);
+
+    VL53L0X_DEV dev = calloc(1,sizeof(*dev));
+    VL53L0X_Error status;
+    fprintf(stderr,"Before init_dev\n");
+    _tof_init_dev(dev);
+    fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+    fprintf(stderr,"i2c peripheral: %s\n",(dev->i2c_dev==I2C1)?"OK":"NOP");
+    fprintf(stderr,"After init_dev\n");
+
+    fprintf(stderr,"Before tof_poke\n");
+    status = _tof_poke(dev); //0x00c0
+
+
+    fprintf(stderr,"error status: %d\n",status);
+    fprintf(stderr,"After tof_poke\n");
+    fprintf(stderr,"Goodbye from test tof_poke\n");
 }

@@ -1,6 +1,6 @@
 #include "tof.h"
 
-void tof_setup(){
+VL53L0X_Error tof_setup(){
     //DONE setup i2c peripheral from benano 
     i2c_setup(I2C1);
 
@@ -18,25 +18,33 @@ void tof_setup(){
 
     //POUR 1 TOF
     VL53L0X_Error status;
+    myTof = calloc(1,sizeof(*myTof));
+    
+    
     
     /*ATTENTION CETTE FONCTION EST DANS CALIBRATION QUI SERA ENLEVER DU SETUP PLUS TARD, CORDIALEMENT*/
     //status = _tof_setup_dev(myTof,0x52);
     /*ATTENTION CE CODE EST TEMPORAIRE JUSQU'A UNE IMPLEMENTATION PLUS PROPRE DE LA CALIBRATION, CORDIALEMENT*/
     VL53L0X_Calibration_Parameter myCalib;
     status = _tof_calibration(myTof,&myCalib,0,0);
+    if(status) return status;
     status = _tof_configure_dev(myTof, myCalib);
+    //if(status) return status;
     /*J'ESPERE QUE VOUS AVEZ PRIS EN COMPTE LES WARNINGS AU DESSUS*/
 
     //TODO return error not yet implemented void function 
     //if(status) return -1;
 
     status = VL53L0X_StartMeasurement(myTof);
+    //if(status) return status;
+
+    return 0;
 }
 
 void _tof_init_dev(VL53L0X_DEV dev){
-    dev = calloc(1,sizeof(dev));
+    
 
-    dev->i2c_slave_address = 0x52;
+    dev->i2c_slave_address = 0x52>>1;
 	dev->i2c_dev = I2C1;
 }
 
@@ -51,8 +59,9 @@ VL53L0X_Error _tof_poke(VL53L0X_DEV dev){
     if(status){
         return status;
     }
+    fprintf(stderr, "id = 0x%x \n",id);
     if(id != 0xEEAA){
-    return VL53L0X_ERROR_NOT_IMPLEMENTED;
+        return VL53L0X_ERROR_NOT_IMPLEMENTED;
     }
 
     return VL53L0X_ERROR_NONE;
@@ -76,7 +85,7 @@ VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr){
     if(status) return status;
 
     status = _tof_set_address(dev, addr);
-    if(status) return status;
+    //if(status) return status;
 
     VL53L0X_DataInit(dev);
     VL53L0X_StaticInit(dev);
@@ -153,10 +162,10 @@ VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* c
 
     /*Calibration*/
     status = VL53L0X_PerformRefSpadManagement(dev, &(calib_param->refSpadCount), &(calib_param->isApertureSpads));
-    if(status) return status;
+    //if(status) return status;
 
     status = VL53L0X_PerformRefCalibration(dev, &(calib_param->VhvSettings), &(calib_param->PhaseCal));
-    if(status) return status;
+    //if(status) return status;
 
     /*Calibration avec un objectif*/
     /*We don't have the robot to make the calibration with target*/

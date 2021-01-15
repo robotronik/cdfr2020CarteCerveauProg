@@ -87,7 +87,7 @@ VL53L0X_DEV myTof;
  * @brief setup the tof and all pin
  * 
  */
-void tof_setup();
+VL53L0X_Error tof_setup();
 
 /**
  * @brief setup the structure with the standard address and I2C peripheral
