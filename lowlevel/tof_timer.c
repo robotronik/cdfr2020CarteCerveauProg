@@ -9,8 +9,8 @@ void timer_setup_interrupt(){
     //timer_disable_preload(TOF_TIM);
     //timer_set_oc_slow_mode(TOF_TIM, TOF_TIM_OC_ID);
     nvic_enable_irq(TOF_TIM_NVIC);
-    _timer_start(TOF_TIM);
 	timer_enable_irq(TOF_TIM, TOF_TIM_DIER_CCIE);
+    _timer_start(TOF_TIM);
 }
 
 void tim4_isr(){
@@ -22,6 +22,5 @@ void tim4_isr(){
 
 		timer_clear_flag(TOF_TIM, TOF_TIM_SR_CCIF);
 	}
-
 }
 
