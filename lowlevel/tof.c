@@ -43,7 +43,7 @@ VL53L0X_Error tof_setup(){
 
 void _tof_init_dev(VL53L0X_DEV dev){
     
-
+    //TODO INVESTIGATE THE SHIFT !!!! 
     dev->i2c_slave_address = 0x52>>1;
 	dev->i2c_dev = I2C1;
 }
