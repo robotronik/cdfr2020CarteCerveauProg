@@ -17,6 +17,7 @@ void test_com();
 void test_tof();
 void test_tof_poke();
 void test_i2c();
+void test_xshut();
 void blink_led();
 void test_tof_platform_write();
 void test_tof_platform_read();
@@ -45,7 +46,13 @@ int main() {
     //test_i2c();
     //test_tof_platform_read();
     //interrupt_timer_test();
-    test_tof_poke();
+/*     while(1){
+        test_tof_poke();
+        delay_ms(500);
+    } */
+    //test_tof();
+    test_xshut();
+
 }
 
 void test_actuator(){
@@ -85,10 +92,10 @@ void test_tof_platform_write(){
     i2c_setup(I2C1);
     VL53L0X_DEV pDev = calloc(1,sizeof(*pDev));
     pDev->i2c_dev = I2C1;
-    pDev->i2c_slave_address = 4;
+    pDev->i2c_slave_address = 0x52>>1; //4;
     delay_ms(200);
 
-    uint8_t index = 0xcd;
+    uint8_t index = 0xc0;
     uint8_t dataByte = 0xab;
     VL53L0X_Error myError = VL53L0X_WrByte(pDev,index,dataByte);
     delay_ms(30);
@@ -163,11 +170,19 @@ void interrupt_timer_test(){
 
 void test_tof(){
     VL53L0X_Error status;
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+    gpio_set(GPIOA,GPIO5);
+    delay_ms(500);
+    gpio_clear(GPIOA,GPIO5);
+    delay_ms(20);
+    gpio_set(GPIOA,GPIO5);
+    delay_ms(20);
+    gpio_clear(GPIOA,GPIO5);
     fprintf(stderr,"After reset TOF\n");
     status = tof_setup();
     fprintf(stderr,"error status: %d\n",status);
     fprintf(stderr,"After setup TOF\n");
-    uint16_t range;
+/*     uint16_t range;
     while(1){
         status = tof_get_measure(myTof,&range);
         if(status){
@@ -177,7 +192,7 @@ void test_tof(){
             fprintf(stderr,"range: %X\n",range);
         }
         delay_ms(500);
-    }
+    } */
 }
 
 void test_tof_poke(){
@@ -200,4 +215,40 @@ void test_tof_poke(){
     fprintf(stderr,"error status: %d\n",status);
     fprintf(stderr,"After tof_poke\n");
     fprintf(stderr,"Goodbye from test tof_poke\n");
+}
+
+void test_xshut(){
+    fprintf(stderr,"Welcome in test xshut\n");
+    i2c_setup(I2C1);
+    uint8_t addr = 0x88;
+    VL53L0X_DEV dev = calloc(1,sizeof(*dev));
+    VL53L0X_Error status;
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
+    gpio_set(GPIOA, GPIO6);
+    fprintf(stderr,"Start poke on base address\n");
+    _tof_init_dev(dev);
+    fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+    status = _tof_poke(dev); //0x00c0
+    //delay_ms(50);
+    fprintf(stderr,"status: %d\n",status);
+    fprintf(stderr,"After base address poke\n");
+
+    fprintf(stderr,"Start poke on new address\n");
+    status = _tof_set_address(dev, addr);
+    //delay_ms(50);
+    fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+    fprintf(stderr,"status: %d\n",status);
+    fprintf(stderr,"After new address poke\n");
+
+    gpio_clear(GPIOA,GPIO6);
+    delay_ms(20);
+    gpio_set(GPIOA,GPIO6);
+
+
+    fprintf(stderr,"Start poke after reset\n");
+    dev->i2c_slave_address = 0x52 / 2;
+    status = _tof_poke(dev); //0x00c0
+    fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+    fprintf(stderr,"status: %d\n",status);
+    fprintf(stderr,"After reset poke\n");
 }

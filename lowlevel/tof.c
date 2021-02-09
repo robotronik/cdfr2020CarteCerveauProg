@@ -27,8 +27,11 @@ VL53L0X_Error tof_setup(){
     /*ATTENTION CE CODE EST TEMPORAIRE JUSQU'A UNE IMPLEMENTATION PLUS PROPRE DE LA CALIBRATION, CORDIALEMENT*/
     VL53L0X_Calibration_Parameter myCalib;
     status = _tof_calibration(myTof,&myCalib,0,0);
+    fprintf(stderr,"status after tof_calibration %d\n",status);
     if(status) return status;
     status = _tof_configure_dev(myTof, myCalib);
+    fprintf(stderr,"status after tof_configure_dev %d\n",status);
+    if(status) return status;
     //if(status) return status;
     /*J'ESPERE QUE VOUS AVEZ PRIS EN COMPTE LES WARNINGS AU DESSUS*/
 
@@ -38,13 +41,13 @@ VL53L0X_Error tof_setup(){
     status = VL53L0X_StartMeasurement(myTof);
     //if(status) return status;
 
-    return 0;
+    return status;
 }
 
 void _tof_init_dev(VL53L0X_DEV dev){
     
     //TODO INVESTIGATE THE SHIFT !!!! 
-    dev->i2c_slave_address = 0x52>>1;
+    dev->i2c_slave_address = 0x52 / 2;
 	dev->i2c_dev = I2C1;
 }
 
@@ -71,7 +74,7 @@ VL53L0X_Error _tof_set_address(VL53L0X_DEV dev, uint8_t addr){
   //Set device address
   VL53L0X_Error status = VL53L0X_SetDeviceAddress(dev, addr);
   if(status) return status;
-  dev->i2c_slave_address = addr;
+  dev->i2c_slave_address = addr / 2;
 
   //Check if the device work with the new address
   return _tof_poke(dev);
@@ -157,7 +160,7 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
 
 VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* calib_param, FixPoint1616_t offset_cal_distance, FixPoint1616_t xTalk_cal_distance){
     VL53L0X_Error status;
-    status = _tof_setup_dev(dev,0x52);
+    status = _tof_setup_dev(dev,0x66);
     if(status) return status;
 
     /*Calibration*/
