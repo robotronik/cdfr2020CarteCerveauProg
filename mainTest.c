@@ -10,8 +10,6 @@
 #include "tof.h"
 #include "tof_timer.h"
 
-#include <libopencm3/stm32/i2c.h>
-
 void test_actuator();
 void test_com();
 void test_tof();

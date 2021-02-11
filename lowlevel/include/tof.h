@@ -17,10 +17,8 @@
 
 #include "gpio.h"
 #include "i2c.h"
-//TODO include API
-#include "vl53l0x_api.h"
 
-#include <stdlib.h>
+#include "vl53l0x_api.h"
 
 #define TOF_NUM 1
 

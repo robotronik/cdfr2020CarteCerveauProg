@@ -1,5 +1,7 @@
+#pragma once
 
 #include <libopencm3/stm32/flash.h>
+
 static uint32_t flash_program_data(uint32_t start_address, uint8_t *input_data, uint16_t num_elements);
 static void flash_read_data(uint32_t start_address, uint16_t num_elements, uint8_t *output_data);
 
