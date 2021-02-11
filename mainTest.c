@@ -24,7 +24,7 @@ void test_tof_platform_read();
 void interrupt_timer_test();
 
 int main() {
-    
+
     //setup
     clock_setup();
     //exti_setup();
@@ -39,8 +39,8 @@ int main() {
         delay_ms(1000);
     }
     */
-    
-    
+
+
     //blink_led();
     //test_tof_platform_write();
     //test_i2c();
@@ -50,8 +50,8 @@ int main() {
         test_tof_poke();
         delay_ms(500);
     } */
-    //test_tof();
-    test_xshut();
+    test_tof();
+    //test_xshut();
 
 }
 
@@ -107,7 +107,7 @@ void test_tof_platform_write(){
     uint32_t dataDWord = 0xa1b2e3f4;
     myError = VL53L0X_WrDWord(pDev,index,dataDWord);
     delay_ms(30);
-    
+
     uint8_t bigDataWink[6] ={0xab,0xcd,0xef,0x12,0x13,0x14};
     myError = VL53L0X_WriteMulti(pDev,index,bigDataWink,6);
 }
@@ -149,7 +149,7 @@ void test_tof_platform_read(){
 void blink_led(){
     //led is on PA5
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
-    
+
     while(1){
         gpio_toggle(GPIOA,GPIO5);
         delay_ms(50);
@@ -163,36 +163,53 @@ void interrupt_timer_test(){
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
     timer_setup_interrupt();
     while (1){
-        
+
     }
-    
+
 }
 
 void test_tof(){
+    fprintf(stderr,"Welcome in test tof\n");
+    //tof setup
+    i2c_setup(I2C1);
+    VL53L0X_DEV dev = calloc(1,sizeof(*dev));
     VL53L0X_Error status;
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
-    gpio_set(GPIOA,GPIO5);
-    delay_ms(500);
+    VL53L0X_Calibration_Parameter myCalib;
+    uint8_t addr = 0x66;
+
+    //gestion du reset des tofs
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
+    gpio_set(GPIOA,GPIO6);
     gpio_clear(GPIOA,GPIO5);
-    delay_ms(20);
-    gpio_set(GPIOA,GPIO5);
-    delay_ms(20);
-    gpio_clear(GPIOA,GPIO5);
-    fprintf(stderr,"After reset TOF\n");
-    status = tof_setup();
-    fprintf(stderr,"error status: %d\n",status);
-    fprintf(stderr,"After setup TOF\n");
-/*     uint16_t range;
+
     while(1){
-        status = tof_get_measure(myTof,&range);
-        if(status){
-            fprintf(stderr,"error status: %d\n",status);
-        }
-        else{
-            fprintf(stderr,"range: %X\n",range);
-        }
-        delay_ms(500);
-    } */
+         fprintf(stderr,"New Cycle\n");
+        gpio_clear(GPIOA,GPIO5);
+        gpio_clear(GPIOA,GPIO6);
+        delay_ms(20);
+        gpio_set(GPIOA,GPIO6);
+
+        status = _tof_setup_dev(dev,0x66); //0x33 en pratique
+        status = VL53L0X_GetReferenceSpads(dev,&(myCalib.refSpadCount),&(myCalib.isApertureSpads));
+        fprintf(stderr,"get SPAD count: %d\n",myCalib.refSpadCount);
+        fprintf(stderr,"get is aperture SPAD: %d\n",myCalib.isApertureSpads);
+        fprintf(stderr,"Get Ref SPAD DONE ! error status: %d\n",status);
+        
+        //J4ai fait une erreur a corriger 
+        status = _tof_calibration(dev,&myCalib,0,0);
+        // ICI
+        
+        fprintf(stderr,"Perform SPAD count: %d\n",myCalib.refSpadCount);
+        fprintf(stderr,"Perform is aperture SPAD: %d\n",myCalib.isApertureSpads);
+        fprintf(stderr,"Perform Ref SPAD DONE ! error status: %d\n",status);
+        status = _tof_configure_dev(dev, myCalib);
+        fprintf(stderr,"Configuration DONE ! error status: %d\n",status);
+
+        delay_ms(1000);
+    }
+
+    fprintf(stderr,"Goodbye from test tof\n");
 }
 
 void test_tof_poke(){
@@ -225,30 +242,35 @@ void test_xshut(){
     VL53L0X_Error status;
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
     gpio_set(GPIOA, GPIO6);
-    fprintf(stderr,"Start poke on base address\n");
-    _tof_init_dev(dev);
-    fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
-    status = _tof_poke(dev); //0x00c0
-    //delay_ms(50);
-    fprintf(stderr,"status: %d\n",status);
-    fprintf(stderr,"After base address poke\n");
 
-    fprintf(stderr,"Start poke on new address\n");
-    status = _tof_set_address(dev, addr);
-    //delay_ms(50);
-    fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
-    fprintf(stderr,"status: %d\n",status);
-    fprintf(stderr,"After new address poke\n");
+    while(1){
+        fprintf(stderr,"Start poke on base address\n");
+        _tof_init_dev(dev);
+        fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+        status = _tof_poke(dev); //0x00c0
+        //delay_ms(50);
+        fprintf(stderr,"status: %d\n",status);
+        fprintf(stderr,"After base address poke\n");
 
-    gpio_clear(GPIOA,GPIO6);
-    delay_ms(20);
-    gpio_set(GPIOA,GPIO6);
+        fprintf(stderr,"Start poke on new address\n");
+        status = _tof_set_address(dev, addr);
+        //delay_ms(50);
+        fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+        fprintf(stderr,"status: %d\n",status);
+        fprintf(stderr,"After new address poke\n");
+
+        gpio_clear(GPIOA,GPIO6);
+        delay_ms(20);
+        gpio_set(GPIOA,GPIO6);
 
 
-    fprintf(stderr,"Start poke after reset\n");
-    dev->i2c_slave_address = 0x52 / 2;
-    status = _tof_poke(dev); //0x00c0
-    fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
-    fprintf(stderr,"status: %d\n",status);
-    fprintf(stderr,"After reset poke\n");
+        fprintf(stderr,"Start poke after reset\n");
+        dev->i2c_slave_address = 0x52 / 2;
+        status = _tof_poke(dev); //0x00c0
+        fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+        fprintf(stderr,"status: %d\n",status);
+        fprintf(stderr,"After reset poke\n");
+
+        delay_ms(1000);
+    }
 }
