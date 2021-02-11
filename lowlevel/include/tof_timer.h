@@ -1,3 +1,5 @@
+#pragma once
+
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/cm3/nvic.h>
 
