@@ -100,6 +100,16 @@ struct Can_rx_msg {
 typedef struct Can_tx_msg Can_tx_msg;
 typedef struct Can_rx_msg Can_rx_msg;
 
+
+typedef struct can_msg_buffer_list_t can_msg_buffer_list_t;
+struct can_msg_buffer_list_t{
+    Can_rx_msg data;
+    can_msg_buffer_list_t * next;
+};
+
+
+can_msg_buffer_list_t * can_msg_buffer_list;
+
 /**
  * @brief This function setup the CAN system
  *

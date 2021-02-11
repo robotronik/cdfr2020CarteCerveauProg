@@ -16,6 +16,7 @@
  */
 
 #include "canmsgs.h"
+#include <stdlib.h>
 
 void can_setup() {
   // Enable clock to the CAN peripheral
@@ -104,6 +105,29 @@ void receive(uint8_t fifo) {
               &rx_msg.dlc, rx_msg.data, &rx_msg.ts);
 }
 
+void can_msg_buffer_append( Can_rx_msg rx_msg ){
+  can_msg_buffer_list_t * p = can_msg_buffer_list;
+  while( NULL != p ){
+    p = p->next;
+  }
+  can_msg_buffer_list = calloc(1, sizeof(can_msg_buffer_list_t));
+  can_msg_buffer_list->data = rx_msg;
+  can_msg_buffer_list->next = NULL;
+}
+
+int can_msg_buffer_pop( Can_rx_msg * rx_msg ){
+  can_msg_buffer_list_t * p = can_msg_buffer_list;
+  if( NULL == p ){
+    return 0;
+  }
+  int i = 1;
+  while( NULL != p->next ){
+    i++;
+    p = p->next;
+  }
+  *rx_msg = p->data;
+  return i;
+}
 
 void transmit(uint32_t id, Can_tx_msg tx_msg) {
   can_transmit(CAN1, id, tx_msg.ext_id, tx_msg.rtr, tx_msg.dlc,
