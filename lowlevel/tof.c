@@ -26,12 +26,12 @@ VL53L0X_Error tof_setup(){
     // ATTENTION CE CODE EST TEMPORAIRE JUSQU'A UNE IMPLEMENTATION PLUS PROPRE DE LA CALIBRATION, CORDIALEMENT
     VL53L0X_Calibration_Parameter myCalib;
     status = _tof_calibration(myTof,&myCalib,0,0);
-/*     fprintf(stderr,"status after tof_calibration %d\n",status);
-    delay_ms(20); */
+    fprintf(stderr,"status after tof_calibration %d\n",status);
+    delay_ms(20);
     if(status) return status;
     status = _tof_configure_dev(myTof, myCalib);
-/*     fprintf(stderr,"status after tof_configure_dev %d\n",status);
-    delay_ms(20); */
+    fprintf(stderr,"status after tof_configure_dev %d\n",status);
+    delay_ms(20);
     if(status) return status;
     //if(status) return status;
     // J'ESPERE QUE VOUS AVEZ PRIS EN COMPTE LES WARNINGS AU DESSUS
