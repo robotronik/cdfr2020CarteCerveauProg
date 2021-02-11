@@ -10,7 +10,7 @@
  * Licence :
  * 
  * Robotronik Phelma
- * @author PhenixRobotik NPXav Benano Trukbidule
+ * @author NPXav Benano
 */
 
 #pragma once
@@ -78,7 +78,7 @@ typedef struct VL53L0X_Calibration_Parameter_S{
 
 /* Liste globale de tout les tofs */
 // VL53L0X_DEV* tof[TOF_NUM];
-VL53L0X_DEV myTof;
+// VL53L0X_DEV myTof;
 
 
 /**

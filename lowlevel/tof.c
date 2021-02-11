@@ -16,15 +16,15 @@ VL53L0X_Error tof_setup(){
     delay_ms(TOF_DELAY);
     */
 
-    //POUR 1 TOF
+/*     //POUR 1 TOF
     VL53L0X_Error status;
     myTof = calloc(1,sizeof(*myTof));
     
     
     
-    /*ATTENTION CETTE FONCTION EST DANS CALIBRATION QUI SERA ENLEVER DU SETUP PLUS TARD, CORDIALEMENT*/
+    // ATTENTION CETTE FONCTION EST DANS CALIBRATION QUI SERA ENLEVER DU SETUP PLUS TARD, CORDIALEMENT
     //status = _tof_setup_dev(myTof,0x52);
-    /*ATTENTION CE CODE EST TEMPORAIRE JUSQU'A UNE IMPLEMENTATION PLUS PROPRE DE LA CALIBRATION, CORDIALEMENT*/
+    // ATTENTION CE CODE EST TEMPORAIRE JUSQU'A UNE IMPLEMENTATION PLUS PROPRE DE LA CALIBRATION, CORDIALEMENT
     VL53L0X_Calibration_Parameter myCalib;
     status = _tof_calibration(myTof,&myCalib,0,0);
     fprintf(stderr,"status after tof_calibration %d\n",status);
@@ -33,15 +33,16 @@ VL53L0X_Error tof_setup(){
     fprintf(stderr,"status after tof_configure_dev %d\n",status);
     if(status) return status;
     //if(status) return status;
-    /*J'ESPERE QUE VOUS AVEZ PRIS EN COMPTE LES WARNINGS AU DESSUS*/
+    // J'ESPERE QUE VOUS AVEZ PRIS EN COMPTE LES WARNINGS AU DESSUS
 
     //TODO return error not yet implemented void function 
     //if(status) return -1;
 
     status = VL53L0X_StartMeasurement(myTof);
-    //if(status) return status;
-
-    return status;
+    //if(status) return status; 
+*/
+    
+    return VL53L0X_ERROR_NONE;
 }
 
 void _tof_init_dev(VL53L0X_DEV dev){

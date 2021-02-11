@@ -1,3 +1,18 @@
+/**
+ * @file
+ * 
+ * This file is part of cdfr2020CarteCerveauProg
+ * 
+ * @brief This implements the storage of data in flash memory
+ * 
+ * @date  12/2020  
+ * 
+ * Licence :
+ * 
+ * Robotronik Phelma
+ * @author NPXav Benano
+*/
+
 #pragma once
 
 #include <libopencm3/stm32/flash.h>

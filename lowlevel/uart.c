@@ -1,6 +1,5 @@
 #include "uart.h"
 
-
 void uart_setup()
 {
 	// Open GPIO for USART
