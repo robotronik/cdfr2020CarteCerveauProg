@@ -11,18 +11,18 @@
  * Licence :
  *
  * Robotronik Phelma
- * @author NPXav Benano Trukbidule JamesWright
+ * @author NPXav Benano Trukbidule JamesWright Floorcows
  */
 
 #pragma once
 
 #include "gpio.h"
 
-#include <errno.h>
+/* #include <errno.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
+#include <unistd.h> */
 
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/can.h>

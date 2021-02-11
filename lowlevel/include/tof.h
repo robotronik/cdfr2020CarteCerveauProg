@@ -10,17 +10,15 @@
  * Licence :
  * 
  * Robotronik Phelma
- * @author PhenixRobotik NPXav Benano Trukbidule
+ * @author NPXav Benano
 */
 
 #pragma once
 
 #include "gpio.h"
 #include "i2c.h"
-//TODO include API
-#include "vl53l0x_api.h"
 
-#include <stdlib.h>
+#include "vl53l0x_api.h"
 
 #define TOF_NUM 1
 
@@ -80,7 +78,7 @@ typedef struct VL53L0X_Calibration_Parameter_S{
 
 /* Liste globale de tout les tofs */
 // VL53L0X_DEV* tof[TOF_NUM];
-VL53L0X_DEV myTof;
+// VL53L0X_DEV myTof;
 
 
 /**

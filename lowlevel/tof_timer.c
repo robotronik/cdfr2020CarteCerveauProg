@@ -1,5 +1,3 @@
-// reference used code by Ken Sarkies ksarkies@trinity.asn.au
-//https://github.com/ksarkies/ARM-Ports/blob/master/test-libopencm3-stm32f1/timer-interrupt-oc-et-stm32f103.c
 #include "tof_timer.h"
 
 void timer_setup_interrupt(){
