@@ -96,37 +96,45 @@ void can_rx1_isr(){
 
 void receive(uint8_t fifo) {
   // Copy CAN message data into main ram
-  // TODO create a global variable//data structure to store message
   Can_rx_msg rx_msg;
   can_receive(CAN1,
               fifo, // FIFO ID
               true, // Automatically release FIFO after rx
               &rx_msg.std_id, &rx_msg.ext_id, &rx_msg.rtr, &rx_msg.fmi,
               &rx_msg.dlc, rx_msg.data, &rx_msg.ts);
+  // Append the message a global can message buffer
+  can_msg_buffer_append( rx_msg );
 }
 
 void can_msg_buffer_append( Can_rx_msg rx_msg ){
+  // Edge case: the linked list is empty
+  if( NULL == can_msg_buffer_list ){
+    can_msg_buffer_list = calloc(1, sizeof(can_msg_buffer_list_t));
+    can_msg_buffer_list->next = NULL;
+    can_msg_buffer_list->data = rx_msg;
+    return;
+  }
+  // Adding the message to the end of the linked list
   can_msg_buffer_list_t * p = can_msg_buffer_list;
-  while( NULL != p ){
+  while( NULL != p->next ){
     p = p->next;
   }
-  can_msg_buffer_list = calloc(1, sizeof(can_msg_buffer_list_t));
-  can_msg_buffer_list->data = rx_msg;
-  can_msg_buffer_list->next = NULL;
+  p->next = calloc(1, sizeof(can_msg_buffer_list_t));
+  p->next->data = rx_msg;
+  p->next->next = NULL;
 }
 
 int can_msg_buffer_pop( Can_rx_msg * rx_msg ){
-  can_msg_buffer_list_t * p = can_msg_buffer_list;
-  if( NULL == p ){
-    return 0;
+  // Checking if the linked list is empty
+  if( NULL == can_msg_buffer_list ){
+    return 1;
   }
-  int i = 1;
-  while( NULL != p->next ){
-    i++;
-    p = p->next;
-  }
-  *rx_msg = p->data;
-  return i;
+  // Fetching and deleting the first element of the linked list
+  *rx_msg = can_msg_buffer_list->data;
+  can_msg_buffer_list_t * buffer = can_msg_buffer_list;
+  can_msg_buffer_list = can_msg_buffer_list->next;
+  free(buffer);
+  return 0;
 }
 
 void transmit(uint32_t id, Can_tx_msg tx_msg) {
