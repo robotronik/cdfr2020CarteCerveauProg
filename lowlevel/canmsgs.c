@@ -103,10 +103,10 @@ void receive(uint8_t fifo) {
               &rx_msg.std_id, &rx_msg.ext_id, &rx_msg.rtr, &rx_msg.fmi,
               &rx_msg.dlc, rx_msg.data, &rx_msg.ts);
   // Append the message a global can message buffer
-  can_msg_buffer_append( rx_msg );
+  _can_msg_buffer_append( rx_msg );
 }
 
-void can_msg_buffer_append( Can_rx_msg rx_msg ){
+void _can_msg_buffer_append( Can_rx_msg rx_msg ){
   // Edge case: the linked list is empty
   if( NULL == can_msg_buffer_list ){
     can_msg_buffer_list = calloc(1, sizeof(can_msg_buffer_list_t));

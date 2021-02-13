@@ -131,7 +131,7 @@ can_msg_buffer_list_t * can_msg_buffer_list;
  * @brief Appends a can message at the end of the global can buffer list
  * @param rx_msg The can message to be appended
  */
-void can_msg_buffer_append( Can_rx_msg rx_msg );
+void _can_msg_buffer_append( Can_rx_msg rx_msg );
 
 /**
  * @brief Pops the first element of the global can buffer list
