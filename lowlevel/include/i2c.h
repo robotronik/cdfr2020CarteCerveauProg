@@ -43,15 +43,27 @@ typedef enum I2C_Status_E{
 #define I2C1_SDA_GPIO_PIN GPIO7
 #define I2C1_SDA_AF GPIO_AF4
 
-
-
-
-
 /**
  * @brief Set the application-specific I2C configuration
  */
 void i2c_setup(uint32_t i2c_peripheral);
 
-
+/**
+ * @brief This function re-implement Libopencm3 write on I2C bus with 7 bit address
+ *
+ * @param i2c       I2C peripheral used
+ * @param addr      address of slave
+ * @param data      data to be sent
+ * @param n         size of data in byte
+ */
 I2C_status i2c_write7(uint32_t i2c, int addr, uint8_t *data, size_t n);
+
+/**
+ * @brief This function re-implement Libopencm3 read on I2C bus with 7 bit address
+ *
+ * @param i2c       I2C peripheral used
+ * @param addr      address of slave
+ * @param res       data that have been read
+ * @param n         size of data in byte
+ */
 I2C_status i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n);

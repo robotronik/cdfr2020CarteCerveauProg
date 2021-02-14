@@ -11,7 +11,7 @@
  * Licence :
  *
  * Robotronik Phelma
- * @author NPXav Benano Trukbidule JamesWright
+ * @author NPXav Benano Trukbidule JamesWright Floorcows
  */
 
 #pragma once
@@ -60,7 +60,7 @@
 #define CAN1_NVIC_SCE NVIC_CAN1_SCE_IRQ
 
 /**
- * @brief Frame of stantard received CAN messages and transmitted CAN messages
+ * @brief Frame of stantard transmitted CAN messages
  * @struct can_tx_msg canmsgs.h
  * @param std_id    Unique identifier which also represents the message priority
  * @param ext_id    Dominant for standard frame. Recessive for extended frame
@@ -85,6 +85,20 @@ struct Can_tx_msg {
   uint16_t ts;
 };
 
+/**
+ * @brief Frame of stantard received CAN messages
+ * @struct Can_rx_msg canmsgs.h
+ * @param std_id    Unique identifier which also represents the message priority
+ * @param ext_id    Dominant for standard frame. Recessive for extended frame
+ * @param rtr       Dominant for data frames. Recessive for request frames
+ * @param fmi       ID of the matched filter
+ * @param dlc       Data length code. Number of bytes of data
+ * @param data      Data to be transmitted
+ * @param crc       Cyclic redundancy check. Error detecting code
+ * @param ack       Acknowledge the receipt of a valid CAN frame (dominant)
+ * @param ts       {Timestamp. Pointer to store the message timestamp.
+ *                  Only valid on time triggered CAN. Use NULL to ignore.}
+ */
 struct Can_rx_msg {
   uint32_t std_id;
   bool ext_id;
@@ -101,7 +115,32 @@ typedef struct Can_tx_msg Can_tx_msg;
 typedef struct Can_rx_msg Can_rx_msg;
 
 /**
- * @brief This function setup the CAN system
+ * @brief FIFO linked list to store impeding CAN messages (software side) 
+ * @struct can_msg_buffer_list_t canmsgs.h
+ * @param data A can mesage
+ * @param next Pointer to the next element in the list
+ */
+typedef struct can_msg_buffer_list_t can_msg_buffer_list_t;
+struct can_msg_buffer_list_t{
+    Can_rx_msg data;
+    can_msg_buffer_list_t * next;
+};
+can_msg_buffer_list_t * can_msg_buffer_list;
+
+/**
+ * @brief Appends a can message at the end of the global can buffer list
+ * @param rx_msg The can message to be appended
+ */
+void can_msg_buffer_append( Can_rx_msg rx_msg );
+
+/**
+ * @brief Pops the first element of the global can buffer list
+ * @param rx_msg Pointer to the variable where the can message will be stored
+ * @return 0: a can message was found and stored in rx_msg, 1: the list was empty
+ */
+int can_msg_buffer_pop( Can_rx_msg * rx_msg );
+/**
+ * @brief Startup configuration of the CAN system
  *
  */
 void can_setup();

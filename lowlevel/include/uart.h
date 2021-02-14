@@ -10,7 +10,7 @@
  * Licence :
  * 
  * Robotronik Phelma
- * @author PhenixRobotik NPXav Benano Trukbidule
+ * @author NPXav Benano
 */
 
 #pragma once

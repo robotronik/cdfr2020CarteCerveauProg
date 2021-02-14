@@ -10,7 +10,7 @@
  * Licence :
  * 
  * Robotronik Phelma
- * @author PhenixRobotik NPXav Benano Trukbidule
+ * @author NPXav Benano
 */
 
 #pragma once
@@ -66,6 +66,11 @@
 #define VL53L0X_LR_VCSEL_PERIOD_FINAL_RANGE 10
 /** @} */
 
+/**
+ * @brief Storage of all Calibration Parameter for the TOF (VL53L1X)
+ * @struct VL53L0X_Calibration_Parameter_S tof.h
+ * TODO: write all parameter
+ */
 typedef struct VL53L0X_Calibration_Parameter_S{
   uint8_t VhvSettings;
   uint8_t PhaseCal;
@@ -78,7 +83,7 @@ typedef struct VL53L0X_Calibration_Parameter_S{
 
 /* Liste globale de tout les tofs */
 // VL53L0X_DEV* tof[TOF_NUM];
-VL53L0X_DEV myTof;
+// VL53L0X_DEV myTof;
 
 
 /**
