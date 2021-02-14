@@ -181,9 +181,8 @@ void test_tof(){
     gpio_set(GPIOA,GPIO6);
     gpio_clear(GPIOA,GPIO5);
 
-    while(1){
-         fprintf(stderr,"New Cycle\n");
-        gpio_clear(GPIOA,GPIO5);
+    //while(0){
+        fprintf(stderr,"New Cycle\n");
         gpio_clear(GPIOA,GPIO6);
         delay_ms(20);
         gpio_set(GPIOA,GPIO6);
@@ -195,17 +194,54 @@ void test_tof(){
         fprintf(stderr,"Get Ref SPAD DONE ! error status: %d\n",status);
         
         //J4ai fait une erreur a corriger 
-        status = _tof_calibration(dev,&myCalib,0,0);
-        // ICI
-        
+        /*Calibration*/
+        status = VL53L0X_PerformRefSpadManagement(dev,&(myCalib.refSpadCount),&(myCalib.isApertureSpads));
+        fprintf(stderr,"perform ref spad error status : %d\n",status);
+
         fprintf(stderr,"Perform SPAD count: %d\n",myCalib.refSpadCount);
         fprintf(stderr,"Perform is aperture SPAD: %d\n",myCalib.isApertureSpads);
         fprintf(stderr,"Perform Ref SPAD DONE ! error status: %d\n",status);
+
+        status = VL53L0X_GetReferenceSpads(dev,&(myCalib.refSpadCount),&(myCalib.isApertureSpads));
+        fprintf(stderr,"get SPAD count: %d\n",myCalib.refSpadCount);
+        fprintf(stderr,"get is aperture SPAD: %d\n",myCalib.isApertureSpads);
+        fprintf(stderr,"Get Ref SPAD DONE ! error status: %d\n",status);
+
+        status = VL53L0X_PerformRefCalibration(dev,&(myCalib.VhvSettings),&(myCalib.PhaseCal));
+        fprintf(stderr,"perform ref calibration error status : %d\n",status);
+        // ICI
+        
+
         status = _tof_configure_dev(dev, myCalib);
         fprintf(stderr,"Configuration DONE ! error status: %d\n",status);
 
+        VL53L0X_DeviceModes mode;
+        VL53L0X_GetDeviceMode(dev,&mode);
+        fprintf(stderr,"Get device mode. error status: %d\n",status);
+        fprintf(stderr,"Get device mode. mode: %d\n",mode);
+
+        
+        status = VL53L0X_StartMeasurement(dev);
+        fprintf(stderr,"Sart Measure DONE ! error status: %d\n",status);
+
         delay_ms(1000);
-    }
+
+        uint16_t range;
+
+        gpio_set(GPIOA,GPIO5);
+        status = tof_get_measure(dev,range);
+        fprintf(stderr,"Une Mesure DONE ! error status: %d\n",status);
+        fprintf(stderr,"Une Mesure DONE ! range: %d\n",range);
+
+/*         while (1)
+        {
+            status = tof_get_measure(dev,range);
+            fprintf(stderr,"Une Mesure DONE ! error status: %d\n",status);
+            fprintf(stderr,"Une Mesure DONE ! range: %d\n",range);
+            delay_ms(500);
+        } */
+        
+    //}
 
     fprintf(stderr,"Goodbye from test tof\n");
 }

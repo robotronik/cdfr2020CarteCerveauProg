@@ -107,15 +107,16 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
     VL53L0X_Error status;
 
     /*Calibration*/
-    gpio_set(GPIOA,GPIO5);
-    status = VL53L0X_SetReferenceSpads(dev, calib_param.refSpadCount, calib_param.isApertureSpads);
+    //not needed because perform do it itself
+/*     status = VL53L0X_SetReferenceSpads(dev, calib_param.refSpadCount, calib_param.isApertureSpads);
     // fprintf(stderr," in tof configure SPAD count: %d\n",calib_param.refSpadCount);
     // fprintf(stderr," in tof configure is aperture SPAD: %d\n",calib_param.isApertureSpads);
     if(status) return status;
 
     status = VL53L0X_SetRefCalibration(dev, calib_param.VhvSettings, calib_param.PhaseCal);
     fprintf(stderr,"Set ref calibration status: %d\n",status);
-    if(status) return status;
+    if(status) return status; */
+
 
     /*We don't have the robot to make the calibration with target*/
     // status = VL53L0X_SetOffsetCalibrationDataMicroMeter(dev,calib_param.OffsetMicroMeter);
@@ -129,12 +130,16 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
 
 
 
-    /* Ranging Profile*/
+    /*Device mode*/
     //Set single ranging mode
     status = VL53L0X_SetDeviceMode(dev, VL53L0X_DEVICEMODE_CONTINUOUS_RANGING);
     fprintf(stderr,"Set device mode status: %d\n",status);
     if(status) return status;
 
+    //Set GPIO Config
+    status = VL53L0X_SetGpioConfig(dev,1,VL53L0X_DEVICEMODE_CONTINUOUS_RANGING,VL53L0X_GPIOFUNCTIONALITY_OFF,VL53L0X_INTERRUPTPOLARITY_LOW);
+
+    /* Ranging Profile*/
     //Enable Sigma Limit
     status = VL53L0X_SetLimitCheckEnable(dev, VL53L0X_CHECKENABLE_SIGMA_FINAL_RANGE, 1);
     fprintf(stderr,"Set enable sigma status: %d\n",status);
@@ -205,25 +210,34 @@ VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* c
 
 VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
     VL53L0X_Error status;
-    uint8_t ready;
-    status = VL53L0X_GetMeasurementDataReady(dev, &ready);
-    if(status) return status;
+    uint8_t ready = 0;
+    while(!ready){
+        status = VL53L0X_GetMeasurementDataReady(dev, &ready);
+        // fprintf(stderr,"Get measure ready. error status : %d\n",status);
+        // fprintf(stderr,"Get measure ready. ready : %d\n",ready);
+        if(status) return status;
+        //delay_ms(1);
+    }
 
     if(!ready) return VL53L0X_ERROR_NOT_IMPLEMENTED;
 
     VL53L0X_RangingMeasurementData_t measure_data;
     status = VL53L0X_GetRangingMeasurementData(dev,&measure_data);
+    // fprintf(stderr,"getRangingMeasurementData error status : %d\n",status);
     if(status) return status;
-
+    
     status = VL53L0X_ClearInterruptMask(dev,-1);
+    // fprintf(stderr,"clear interrupt mask error status : %d\n",status);
     if(status) return status;
 
-    if(!measure_data.RangeStatus){
+    *range = measure_data.RangeMilliMeter;
+
+    /* if(!measure_data.RangeStatus){
         *range = measure_data.RangeMilliMeter;
     }
     else{
         return VL53L0X_ERROR_RANGE_ERROR;
-    }
+    } */
 
     return VL53L0X_ERROR_NONE;
 }
