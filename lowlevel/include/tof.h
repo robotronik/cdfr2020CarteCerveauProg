@@ -66,6 +66,11 @@
 #define VL53L0X_LR_VCSEL_PERIOD_FINAL_RANGE 10
 /** @} */
 
+/**
+ * @brief Storage of all Calibration Parameter for the TOF (VL53L1X)
+ * @struct VL53L0X_Calibration_Parameter_S tof.h
+ * TODO: write all parameter
+ */
 typedef struct VL53L0X_Calibration_Parameter_S{
   uint8_t VhvSettings;
   uint8_t PhaseCal;
