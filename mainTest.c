@@ -176,72 +176,91 @@ void test_tof(){
     uint8_t addr = 0x66;
 
     //gestion du reset des tofs
+    
+    //reset tof
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
     gpio_set(GPIOA,GPIO6);
+ 
+    // debug led(trigger)
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
     gpio_clear(GPIOA,GPIO5);
 
     //while(0){
         fprintf(stderr,"New Cycle\n");
-        gpio_clear(GPIOA,GPIO6);
-        delay_ms(20);
-        gpio_set(GPIOA,GPIO6);
+        uint8_t direction_falling = 0;
+        __pulse(GPIOA,GPIO6,direction_falling,20);
 
-        status = _tof_setup_dev(dev,0x66); //0x33 en pratique
-        status = VL53L0X_GetReferenceSpads(dev,&(myCalib.refSpadCount),&(myCalib.isApertureSpads));
-        fprintf(stderr,"get SPAD count: %d\n",myCalib.refSpadCount);
-        fprintf(stderr,"get is aperture SPAD: %d\n",myCalib.isApertureSpads);
-        fprintf(stderr,"Get Ref SPAD DONE ! error status: %d\n",status);
+        status = _tof_setup_dev(dev,addr);
+        fprintf(stderr,"Setup dev DONE ! error status: %d\n",status);
+
+        // get information
+        __pulse(GPIOA,GPIOA,1,100);
+        VL53L0X_DeviceInfo_t DeviceInfo;
+        status = VL53L0X_GetDeviceInfo(dev, &DeviceInfo);
+        fprintf(stderr,"Get Information DONE ! error status: %d\n",status);
+
+        fprintf(stderr,"VL53L0X_GetDeviceInfo:\n");
+        fprintf(stderr,"Device Name : %s\n", DeviceInfo.Name);
+        fprintf(stderr,"Device Type : %s\n", DeviceInfo.Type);
+        fprintf(stderr,"Device ID : %s\n", DeviceInfo.ProductId);
+        fprintf(stderr,"ProductRevisionMajor : %d\n", DeviceInfo.ProductRevisionMajor);
+        fprintf(stderr,"ProductRevisionMinor : %d\n", DeviceInfo.ProductRevisionMinor);
+
+        status = _tof_calibration(dev,&myCalib,0,0);
+        fprintf(stderr,"Calibration DONE ! error status: %d\n",status);
         
-        //J4ai fait une erreur a corriger 
-        /*Calibration*/
-        status = VL53L0X_PerformRefSpadManagement(dev,&(myCalib.refSpadCount),&(myCalib.isApertureSpads));
-        fprintf(stderr,"perform ref spad error status : %d\n",status);
-
-        fprintf(stderr,"Perform SPAD count: %d\n",myCalib.refSpadCount);
-        fprintf(stderr,"Perform is aperture SPAD: %d\n",myCalib.isApertureSpads);
-        fprintf(stderr,"Perform Ref SPAD DONE ! error status: %d\n",status);
-
-        status = VL53L0X_GetReferenceSpads(dev,&(myCalib.refSpadCount),&(myCalib.isApertureSpads));
-        fprintf(stderr,"get SPAD count: %d\n",myCalib.refSpadCount);
-        fprintf(stderr,"get is aperture SPAD: %d\n",myCalib.isApertureSpads);
-        fprintf(stderr,"Get Ref SPAD DONE ! error status: %d\n",status);
-
-        status = VL53L0X_PerformRefCalibration(dev,&(myCalib.VhvSettings),&(myCalib.PhaseCal));
-        fprintf(stderr,"perform ref calibration error status : %d\n",status);
-        // ICI
-        
-
-        status = _tof_configure_dev(dev, myCalib);
+        // status = _tof_configure_dev(dev, myCalib);
+        status = VL53L0X_SetDeviceMode(dev,VL53L0X_DEVICEMODE_SINGLE_RANGING);
         fprintf(stderr,"Configuration DONE ! error status: %d\n",status);
-
-        VL53L0X_DeviceModes mode;
-        VL53L0X_GetDeviceMode(dev,&mode);
-        fprintf(stderr,"Get device mode. error status: %d\n",status);
-        fprintf(stderr,"Get device mode. mode: %d\n",mode);
-
         
         status = VL53L0X_StartMeasurement(dev);
-        fprintf(stderr,"Sart Measure DONE ! error status: %d\n",status);
+        fprintf(stderr,"Start Measure DONE ! error status: %d\n",status);
 
-        delay_ms(1000);
+        delay_ms(100);
 
-        uint16_t range;
+        uint16_t range = 0;
+        VL53L0X_RangingMeasurementData_t measure_data;
+        uint8_t ready = 0;
+        measure_data.RangeMilliMeter = range;
 
-        gpio_set(GPIOA,GPIO5);
-        status = tof_get_measure(dev,range);
-        fprintf(stderr,"Une Mesure DONE ! error status: %d\n",status);
-        fprintf(stderr,"Une Mesure DONE ! range: %d\n",range);
+        status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
+        fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
 
-/*         while (1)
-        {
-            status = tof_get_measure(dev,range);
-            fprintf(stderr,"Une Mesure DONE ! error status: %d\n",status);
-            fprintf(stderr,"Une Mesure DONE ! range: %d\n",range);
-            delay_ms(500);
-        } */
+        //print all parameter of measure data
+        fprintf(stderr,"measure data time stamp: %d\n",measure_data.TimeStamp);
+        fprintf(stderr,"measure data measurement time Usec: %d\n",measure_data.MeasurementTimeUsec);
+        fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
+        fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
+        fprintf(stderr,"measure data signal rate: %d\n",measure_data.SignalRateRtnMegaCps);
+        fprintf(stderr,"measure data ambient rate: %d\n",measure_data.AmbientRateRtnMegaCps);
+        fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
+        fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
+        fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
+        fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
         
-    //}
+        // while(1){
+        //     gpio_set(GPIOA,GPIO5);
+        //     //appel bloquant a voir si on peut faire sans ? cas d'erreur ou l'appel ne finirait jamais notamment ?
+        //     while(!ready){
+        //         status = VL53L0X_GetMeasurementDataReady(dev, &ready);
+        //         // fprintf(stderr,"Get measure ready. error status : %d\n",status);
+        //         // fprintf(stderr,"Get measure ready. ready : %d\n",ready);
+        //         delay_ms(1);
+        //     }
+        //     fprintf(stderr,"Wait ready DONE ! error status: %d\n",status);
+
+        //     status = VL53L0X_GetRangingMeasurementData(dev,&measure_data);
+        //         //fprintf(stderr,"Get Data DONE ! error status: %d\n",status);
+
+        //         //if(!(measure_data.RangeStatus)){
+        //         range = measure_data.RangeMilliMeter;
+        //         fprintf(stderr,"Range is : %d\n",range);
+        //         //}
+
+        //         VL53L0X_ClearInterruptMask(dev, VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
+
+        //     delay_ms(1000);
+        // }
 
     fprintf(stderr,"Goodbye from test tof\n");
 }

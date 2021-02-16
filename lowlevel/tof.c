@@ -1,5 +1,9 @@
 #include "tof.h"
 
+void tof_reset_pulse(enum rcc_periph_clken rcc_gpio,uint32_t gpio_port,uint16_t gpio_pin){
+
+}
+
 VL53L0X_Error tof_setup(){
     //DONE setup i2c peripheral from benano
     i2c_setup(I2C1);
@@ -93,6 +97,7 @@ VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr){
     status = _tof_set_address(dev, addr);
     if(status) return status;
 
+    // El salvatore
     delay_ms(40);
     VL53L0X_DataInit(dev);
     if(status) return status;
@@ -133,11 +138,7 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
     /*Device mode*/
     //Set single ranging mode
     status = VL53L0X_SetDeviceMode(dev, VL53L0X_DEVICEMODE_CONTINUOUS_RANGING);
-    fprintf(stderr,"Set device mode status: %d\n",status);
     if(status) return status;
-
-    //Set GPIO Config
-    status = VL53L0X_SetGpioConfig(dev,1,VL53L0X_DEVICEMODE_CONTINUOUS_RANGING,VL53L0X_GPIOFUNCTIONALITY_OFF,VL53L0X_INTERRUPTPOLARITY_LOW);
 
     /* Ranging Profile*/
     //Enable Sigma Limit
@@ -150,7 +151,7 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
     fprintf(stderr,"Set enable signal status: %d\n",status);
     if(status) return status;
 
-    /*Profile Long Range*/
+    // Profile Long Range
     //Set signal limit
     status = VL53L0X_SetLimitCheckValue(dev, VL53L0X_CHECKENABLE_SIGNAL_RATE_FINAL_RANGE, VL53L0X_LR_SIGNAL_LIMIT);
     fprintf(stderr,"Set limit check signal status: %d\n",status);
@@ -181,18 +182,12 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
 
 VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* calib_param, FixPoint1616_t offset_cal_distance, FixPoint1616_t xTalk_cal_distance){
     VL53L0X_Error status;
-    status = _tof_setup_dev(dev,0x66);
-    fprintf(stderr,"Setup dev error status: %d\n",status);
-    if(status) return status;
-
 
     /*Calibration*/
-    status = VL53L0X_PerformRefSpadManagement(dev, &(calib_param->refSpadCount), &(calib_param->isApertureSpads));
-    fprintf(stderr,"perform ref spad error status : %d\n",status);
+    status = VL53L0X_PerformRefCalibration(dev, &(calib_param->VhvSettings), &(calib_param->PhaseCal));
     if(status) return status;
 
-    status = VL53L0X_PerformRefCalibration(dev, &(calib_param->VhvSettings), &(calib_param->PhaseCal));
-    fprintf(stderr,"perform ref calibration error status : %d\n",status);
+    status = VL53L0X_PerformRefSpadManagement(dev, &(calib_param->refSpadCount), &(calib_param->isApertureSpads));
     if(status) return status;
 
     /*Calibration avec un objectif*/
@@ -244,13 +239,13 @@ VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
 
 void _shift_reg_init(){
     gpio_set(SR_DSAB_PORT, SR_DSAB_PIN);
-    __pulse(SR_CP_PORT, SR_CP_PIN);
+    __pulse(SR_CP_PORT, SR_CP_PIN, 0, 20);
     gpio_clear(SR_DSAB_PORT, SR_DSAB_PIN);
 }
 
 void _shift_reg(int i){
     for(int j =0; j<i;++j){
-        __pulse(SR_CP_PORT, SR_CP_PIN);
+        __pulse(SR_CP_PORT, SR_CP_PIN, 0, 20);
     }
 }
 

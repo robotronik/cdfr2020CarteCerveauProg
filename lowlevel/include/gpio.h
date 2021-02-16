@@ -50,9 +50,9 @@ void _gpio_setup_pin(enum rcc_periph_clken clken, uint32_t port,uint16_t pin,
 /**
  * @brief This function write a short pulse on the output pin
  *
- * Xavier defines a short pulse to 20 ms
- *
  * @param port      the port to enable
  * @param pin       the pint to enable
+ * @param dir       idle high or low (pulse direction)
+ * @param delay     duration of the pulse
  */
-void __pulse(uint32_t port, uint16_t pin);
+void __pulse(uint32_t port, uint16_t pin, uint8_t dir, uint16_t delay);
