@@ -49,7 +49,7 @@ int main() {
         delay_ms(500);
     } */
     test_tof();
-    //test_xshut();
+    // test_xshut();
 
 }
 
@@ -110,6 +110,7 @@ void test_tof_platform_write(){
     myError = VL53L0X_WriteMulti(pDev,index,bigDataWink,6);
 }
 
+// Obsolete implementation en cours
 void test_tof_platform_read(){
     i2c_setup(I2C1);
     VL53L0X_DEV pDev = calloc(1,sizeof(*pDev));
@@ -154,8 +155,6 @@ void blink_led(){
     }
 }
 
-
-
 void interrupt_timer_test(){
     int counter;
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
@@ -195,7 +194,7 @@ void test_tof(){
 
         // get information
         __pulse(GPIOA,GPIOA,1,100);
-        VL53L0X_DeviceInfo_t DeviceInfo;
+/*         VL53L0X_DeviceInfo_t DeviceInfo;
         status = VL53L0X_GetDeviceInfo(dev, &DeviceInfo);
         fprintf(stderr,"Get Information DONE ! error status: %d\n",status);
 
@@ -204,10 +203,31 @@ void test_tof(){
         fprintf(stderr,"Device Type : %s\n", DeviceInfo.Type);
         fprintf(stderr,"Device ID : %s\n", DeviceInfo.ProductId);
         fprintf(stderr,"ProductRevisionMajor : %d\n", DeviceInfo.ProductRevisionMajor);
-        fprintf(stderr,"ProductRevisionMinor : %d\n", DeviceInfo.ProductRevisionMinor);
+        fprintf(stderr,"ProductRevisionMinor : %d\n", DeviceInfo.ProductRevisionMinor); */
+
+        uint32_t refSPADCount;
+        uint8_t aperture;
+        uint8_t vhvsetting;
+        uint8_t phasecal;
 
         status = _tof_calibration(dev,&myCalib,0,0);
         fprintf(stderr,"Calibration DONE ! error status: %d\n",status);
+        fprintf(stderr,"Calibration DONE ! number of SPAD: %d\n", myCalib.refSpadCount);
+        fprintf(stderr,"Calibration DONE ! is aperture: %d\n",myCalib.isApertureSpads);
+        fprintf(stderr,"Calibration DONE ! VHV setting: %d\n",myCalib.VhvSettings);
+        fprintf(stderr,"Calibration DONE ! Phase calibration: %d\n",myCalib.PhaseCal);
+
+
+        status = VL53L0X_GetReferenceSpads(dev, &refSPADCount, &aperture);
+        fprintf(stderr,"Get Spad DONE ! error status: %d\n",status);
+        fprintf(stderr,"Get Spad DONE ! number of SPAD: %d\n",refSPADCount);
+        fprintf(stderr,"Get Spad DONE ! is aperture: %d\n",aperture);
+
+        status = VL53L0X_GetRefCalibration(dev,&vhvsetting,&phasecal);
+        fprintf(stderr,"Get Calib DONE ! error status: %d\n",status);
+        fprintf(stderr,"Get Calib DONE ! VHV setting: %d\n",vhvsetting);
+        fprintf(stderr,"Get Calib DONE ! Phase calibration: %d\n",phasecal);
+        
         
         // status = _tof_configure_dev(dev, myCalib);
         status = VL53L0X_SetDeviceMode(dev,VL53L0X_DEVICEMODE_SINGLE_RANGING);
@@ -223,21 +243,24 @@ void test_tof(){
         uint8_t ready = 0;
         measure_data.RangeMilliMeter = range;
 
-        status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
-        fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
+        while(1){
+            status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
+            // fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
 
-        //print all parameter of measure data
-        fprintf(stderr,"measure data time stamp: %d\n",measure_data.TimeStamp);
-        fprintf(stderr,"measure data measurement time Usec: %d\n",measure_data.MeasurementTimeUsec);
-        fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
-        fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
-        fprintf(stderr,"measure data signal rate: %d\n",measure_data.SignalRateRtnMegaCps);
-        fprintf(stderr,"measure data ambient rate: %d\n",measure_data.AmbientRateRtnMegaCps);
-        fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
-        fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
-        fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
-        fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
-        
+            //print all parameter of measure data
+            // fprintf(stderr,"measure data time stamp: %d\n",measure_data.TimeStamp);
+            // fprintf(stderr,"measure data measurement time Usec: %d\n",measure_data.MeasurementTimeUsec);
+            fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
+            // fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
+            // fprintf(stderr,"measure data signal rate: %d\n",measure_data.SignalRateRtnMegaCps);
+            // fprintf(stderr,"measure data ambient rate: %d\n",measure_data.AmbientRateRtnMegaCps);
+            // fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
+            // fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
+            // fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
+            // fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
+
+            delay_ms(100);
+        }
         // while(1){
         //     gpio_set(GPIOA,GPIO5);
         //     //appel bloquant a voir si on peut faire sans ? cas d'erreur ou l'appel ne finirait jamais notamment ?

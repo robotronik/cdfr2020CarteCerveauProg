@@ -66,9 +66,9 @@ VL53L0X_Error _tof_poke(VL53L0X_DEV dev){
     if(status){
         return status;
     }
-/*   fprintf(stderr, "Poke: id = 0x%x \n",id);
+/*     fprintf(stderr, "Poke: id = 0x%x \n",id);
     delay_ms(20); */
-    if(id != 0xEEAA){
+    if(id != 0xAAEE){
 /*         fprintf(stderr, "Error: Bad ID \n");
         delay_ms(20); */
         return VL53L0X_ERROR_NOT_IMPLEMENTED;
