@@ -115,8 +115,8 @@ VL53L0X_Error VL53L0X_WriteMulti(VL53L0X_DEV Dev, uint8_t index, uint8_t *pdata,
         Status = VL53L0X_ERROR_INVALID_PARAMS;
     }
 	//status_int = VL53L0X_write_multi(deviceAddress, index, pdata, count);
-	buffer[count] = index;
-    memcpy(&buffer[0], pdata, count);
+	buffer[0] = index;
+    memcpy(&buffer[1], pdata, count);
     i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,buffer,count+1);
 
 	if (i2c_status != I2C_OK ){
@@ -150,8 +150,8 @@ VL53L0X_Error VL53L0X_WrByte(VL53L0X_DEV Dev, uint8_t index, uint8_t data){
 	uint8_t buffer[2];
 
 	//status_int = VL53L0X_write_multi(deviceAddress, index, pdata, count);
-	buffer[1] = index;
-    memcpy(&buffer[0], &data, 1);
+	buffer[0] = index;
+    memcpy(&buffer[1], &data, 1);
     i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,buffer,2);
 
 	if (i2c_status != I2C_OK ){
@@ -166,8 +166,8 @@ VL53L0X_Error VL53L0X_WrWord(VL53L0X_DEV Dev, uint8_t index, uint16_t data){
 	uint8_t buffer[3];
 
 	//status_int = VL53L0X_write_multi(deviceAddress, index, pdata, count);
-	buffer[2] = index;
-    memcpy((uint16_t*)(&buffer[0]), &data, 2);
+	buffer[0] = index;
+    memcpy((uint16_t*)(&buffer[1]), &data, 2);
     i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,buffer,3);
 
 	if (i2c_status != I2C_OK ){
@@ -182,8 +182,8 @@ VL53L0X_Error VL53L0X_WrDWord(VL53L0X_DEV Dev, uint8_t index, uint32_t data){
 	uint8_t buffer[5];
 
 	//status_int = VL53L0X_write_multi(deviceAddress, index, pdata, count);
-	buffer[4] = index;
-    memcpy((uint32_t*)(&buffer[0]), &data, 4);
+	buffer[0] = index;
+    memcpy((uint32_t*)(&buffer[1]), &data, 4);
     i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,buffer,5);
 
 	if (i2c_status != I2C_OK ){
@@ -210,12 +210,13 @@ VL53L0X_Error VL53L0X_UpdateByte(VL53L0X_DEV Dev, uint8_t index, uint8_t AndData
         // status_int = VL53L0X_write_byte(deviceAddress, index, data);
         uint8_t buffer[2];
         //status_int = VL53L0X_write_multi(deviceAddress, index, pdata, count);
-        buffer[0] = index;
-        memcpy(&buffer[1], &data, 1);
+        buffer[1] = index;
+        memcpy(&buffer[0], &data, 1);
         i2c_status = i2c_write7(Dev->i2c_dev,Dev->i2c_slave_address,buffer,2);
 
-        if (i2c_status != I2C_OK)
+        if (i2c_status != I2C_OK){
             Status = VL53L0X_ERROR_CONTROL_INTERFACE;
+        }
     }
 
     return Status;
