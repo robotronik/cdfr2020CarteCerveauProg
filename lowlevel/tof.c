@@ -136,46 +136,46 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
 
 
     /*Device mode*/
-    //Set single ranging mode
+    //Set ranging mode
     status = VL53L0X_SetDeviceMode(dev, VL53L0X_DEVICEMODE_CONTINUOUS_RANGING);
     if(status) return status;
 
-    /* Ranging Profile*/
-    //Enable Sigma Limit
-    status = VL53L0X_SetLimitCheckEnable(dev, VL53L0X_CHECKENABLE_SIGMA_FINAL_RANGE, 1);
-    fprintf(stderr,"Set enable sigma status: %d\n",status);
-    if(status) return status;
+    // /* Ranging Profile*/
+    // //Enable Sigma Limit
+    // status = VL53L0X_SetLimitCheckEnable(dev, VL53L0X_CHECKENABLE_SIGMA_FINAL_RANGE, 1);
+    // fprintf(stderr,"Set enable sigma status: %d\n",status);
+    // if(status) return status;
 
-    //Enable Signal Limit
-    status = VL53L0X_SetLimitCheckEnable(dev, VL53L0X_CHECKENABLE_SIGNAL_RATE_FINAL_RANGE, 1);
-    fprintf(stderr,"Set enable signal status: %d\n",status);
-    if(status) return status;
+    // //Enable Signal Limit
+    // status = VL53L0X_SetLimitCheckEnable(dev, VL53L0X_CHECKENABLE_SIGNAL_RATE_FINAL_RANGE, 1);
+    // fprintf(stderr,"Set enable signal status: %d\n",status);
+    // if(status) return status;
 
-    // Profile Long Range
-    //Set signal limit
-    status = VL53L0X_SetLimitCheckValue(dev, VL53L0X_CHECKENABLE_SIGNAL_RATE_FINAL_RANGE, VL53L0X_LR_SIGNAL_LIMIT);
-    fprintf(stderr,"Set limit check signal status: %d\n",status);
-    if(status) return status;
+    // // Profile Long Range
+    // //Set signal limit
+    // status = VL53L0X_SetLimitCheckValue(dev, VL53L0X_CHECKENABLE_SIGNAL_RATE_FINAL_RANGE, VL53L0X_LR_SIGNAL_LIMIT);
+    // fprintf(stderr,"Set limit check signal status: %d\n",status);
+    // if(status) return status;
 
-    //Set sigma limit
-    status = VL53L0X_SetLimitCheckValue(dev, VL53L0X_CHECKENABLE_SIGMA_FINAL_RANGE, VL53L0X_LR_SIGMA_LIMIT);
-    fprintf(stderr,"Set limit check sigma status: %d\n",status);
-    if(status) return status;
+    // //Set sigma limit
+    // status = VL53L0X_SetLimitCheckValue(dev, VL53L0X_CHECKENABLE_SIGMA_FINAL_RANGE, VL53L0X_LR_SIGMA_LIMIT);
+    // fprintf(stderr,"Set limit check sigma status: %d\n",status);
+    // if(status) return status;
 
-    //Set timing budget
-    status = VL53L0X_SetMeasurementTimingBudgetMicroSeconds(dev, VL53L0X_LR_TIMING_BUDGET);
-    fprintf(stderr,"Set timing budget status: %d\n",status);
-    if(status) return status;
+    // //Set timing budget
+    // status = VL53L0X_SetMeasurementTimingBudgetMicroSeconds(dev, VL53L0X_LR_TIMING_BUDGET);
+    // fprintf(stderr,"Set timing budget status: %d\n",status);
+    // if(status) return status;
 
-    //Set pre range pulse period
-    status = VL53L0X_SetVcselPulsePeriod(dev, VL53L0X_VCSEL_PERIOD_PRE_RANGE, VL53L0X_LR_VCSEL_PERIOD_PRE_RANGE);
-    fprintf(stderr,"Set pre range pulse period status: %d\n",status);
-    if(status) return status;
+    // //Set pre range pulse period
+    // status = VL53L0X_SetVcselPulsePeriod(dev, VL53L0X_VCSEL_PERIOD_PRE_RANGE, VL53L0X_LR_VCSEL_PERIOD_PRE_RANGE);
+    // fprintf(stderr,"Set pre range pulse period status: %d\n",status);
+    // if(status) return status;
 
-    //Set final range pulse period
-    status = VL53L0X_SetVcselPulsePeriod(dev, VL53L0X_VCSEL_PERIOD_FINAL_RANGE, VL53L0X_LR_VCSEL_PERIOD_FINAL_RANGE);
-    fprintf(stderr,"Set vc sel pulse period status: %d\n",status);
-    if(status) return status;
+    // //Set final range pulse period
+    // status = VL53L0X_SetVcselPulsePeriod(dev, VL53L0X_VCSEL_PERIOD_FINAL_RANGE, VL53L0X_LR_VCSEL_PERIOD_FINAL_RANGE);
+    // fprintf(stderr,"Set vc sel pulse period status: %d\n",status);
+    // if(status) return status;
 
     return VL53L0X_ERROR_NONE;
 }
@@ -206,22 +206,20 @@ VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* c
 VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
     VL53L0X_Error status;
     uint8_t ready = 0;
-    while(!ready){
+    while(!(ready && status)){
         status = VL53L0X_GetMeasurementDataReady(dev, &ready);
         // fprintf(stderr,"Get measure ready. error status : %d\n",status);
         // fprintf(stderr,"Get measure ready. ready : %d\n",ready);
         if(status) return status;
-        //delay_ms(1);
+        delay_ms(1);
     }
-
-    if(!ready) return VL53L0X_ERROR_NOT_IMPLEMENTED;
 
     VL53L0X_RangingMeasurementData_t measure_data;
     status = VL53L0X_GetRangingMeasurementData(dev,&measure_data);
     // fprintf(stderr,"getRangingMeasurementData error status : %d\n",status);
     if(status) return status;
     
-    status = VL53L0X_ClearInterruptMask(dev,-1);
+    status = VL53L0X_ClearInterruptMask(dev,VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
     // fprintf(stderr,"clear interrupt mask error status : %d\n",status);
     if(status) return status;
 

@@ -154,8 +154,6 @@ void blink_led(){
     }
 }
 
-
-
 void interrupt_timer_test(){
     int counter;
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
@@ -209,8 +207,8 @@ void test_tof(){
         status = _tof_calibration(dev,&myCalib,0,0);
         fprintf(stderr,"Calibration DONE ! error status: %d\n",status);
         
-        // status = _tof_configure_dev(dev, myCalib);
-        status = VL53L0X_SetDeviceMode(dev,VL53L0X_DEVICEMODE_SINGLE_RANGING);
+        status = _tof_configure_dev(dev, myCalib);
+        // status = VL53L0X_SetDeviceMode(dev,VL53L0X_DEVICEMODE_SINGLE_RANGING);
         fprintf(stderr,"Configuration DONE ! error status: %d\n",status);
         
         status = VL53L0X_StartMeasurement(dev);
