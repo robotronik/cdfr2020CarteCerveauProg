@@ -186,12 +186,12 @@ void test_tof_Single(){
         // fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
 
         //print all parameter of measure data
-        fprintf(stderr,"measure data time stamp: %d\n",measure_data.TimeStamp);
-        fprintf(stderr,"measure data measurement time Usec: %d\n",measure_data.MeasurementTimeUsec);
+        fprintf(stderr,"measure data time stamp: %ld\n",measure_data.TimeStamp);
+        fprintf(stderr,"measure data measurement time Usec: %ld\n",measure_data.MeasurementTimeUsec);
         fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
         fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
-        fprintf(stderr,"measure data signal rate: %d\n",measure_data.SignalRateRtnMegaCps);
-        fprintf(stderr,"measure data ambient rate: %d\n",measure_data.AmbientRateRtnMegaCps);
+        fprintf(stderr,"measure data signal rate: %ld\n",measure_data.SignalRateRtnMegaCps);
+        fprintf(stderr,"measure data ambient rate: %ld\n",measure_data.AmbientRateRtnMegaCps);
         fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
         fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
         fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);

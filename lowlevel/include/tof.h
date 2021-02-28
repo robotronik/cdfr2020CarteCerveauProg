@@ -180,20 +180,18 @@ VL53L0X_Error tof_print_device_mode(VL53L0X_DEV dev);
 /**
  * @brief Function to print range status
  * @warning We assume you already setup your tof and uart
- * @param dev our tof object
  * @param measure_data measured data buffer
  * @see VL53L0X Range status (p16 User Manual)
  */
-VL53L0X_Error tof_print_ranging_status(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data);
+VL53L0X_Error tof_print_ranging_status(VL53L0X_RangingMeasurementData_t measure_data);
 
 /**
  * @brief Function to print measured data in detail
  * @warning We assume you already setup your tof and uart
- * @param dev our tof object
  * @param measure_data measured data buffer
  * @see VL53L0X Ranging Measurement Data
  */
-VL53L0X_Error tof_print_data_measure(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data);
+VL53L0X_Error tof_print_data_measure(VL53L0X_RangingMeasurementData_t measure_data);
 
 /**
  * @brief Function to print interrupt status

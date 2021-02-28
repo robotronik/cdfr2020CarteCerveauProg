@@ -275,7 +275,7 @@ VL53L0X_Error tof_print_calib_info(VL53L0X_DEV dev){
     status = VL53L0X_GetReferenceSpads(dev, &refSPADCount, &aperture);
     fprintf(stderr,"Get Spad Calibration DONE ! error status: %d\n",status);
     if(status) return status;
-    fprintf(stderr,"Get Spad Calibration DONE ! number of SPAD: %d\n",refSPADCount);
+    fprintf(stderr,"Get Spad Calibration DONE ! number of SPAD: %ld\n",refSPADCount);
     fprintf(stderr,"Get Spad Calibration DONE ! is aperture: %d\n",aperture);
 
     return VL53L0X_ERROR_NONE;
@@ -342,7 +342,7 @@ VL53L0X_Error tof_print_device_mode(VL53L0X_DEV dev){
     return VL53L0X_ERROR_NONE;
 }
 
-VL53L0X_Error tof_print_ranging_status(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data){
+VL53L0X_Error tof_print_ranging_status(VL53L0X_RangingMeasurementData_t measure_data){
     VL53L0X_Error status;
     uint8_t range_status;
 
@@ -387,14 +387,14 @@ VL53L0X_Error tof_print_ranging_status(VL53L0X_DEV dev, VL53L0X_RangingMeasureme
     return status;
 }
 
-VL53L0X_Error tof_print_data_measure(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data){    
+VL53L0X_Error tof_print_data_measure(VL53L0X_RangingMeasurementData_t measure_data){    
     //print all parameter of measure data
-    fprintf(stderr,"measure data time stamp: %d\n",measure_data.TimeStamp);
-    fprintf(stderr,"measure data measurement time Usec: %d\n",measure_data.MeasurementTimeUsec);
+    fprintf(stderr,"measure data time stamp: %ld\n",measure_data.TimeStamp);
+    fprintf(stderr,"measure data measurement time Usec: %ld\n",measure_data.MeasurementTimeUsec);
     fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
     fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
-    fprintf(stderr,"measure data signal rate: %d\n",measure_data.SignalRateRtnMegaCps);
-    fprintf(stderr,"measure data ambient rate: %d\n",measure_data.AmbientRateRtnMegaCps);
+    fprintf(stderr,"measure data signal rate: %ld\n",measure_data.SignalRateRtnMegaCps);
+    fprintf(stderr,"measure data ambient rate: %ld\n",measure_data.AmbientRateRtnMegaCps);
     fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
     fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
     fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
