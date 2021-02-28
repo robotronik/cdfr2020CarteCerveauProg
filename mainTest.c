@@ -194,7 +194,7 @@ void test_tof(){
 
         // get information
         __pulse(GPIOA,GPIOA,1,100);
-/*         VL53L0X_DeviceInfo_t DeviceInfo;
+        VL53L0X_DeviceInfo_t DeviceInfo;
         status = VL53L0X_GetDeviceInfo(dev, &DeviceInfo);
         fprintf(stderr,"Get Information DONE ! error status: %d\n",status);
 
@@ -203,7 +203,7 @@ void test_tof(){
         fprintf(stderr,"Device Type : %s\n", DeviceInfo.Type);
         fprintf(stderr,"Device ID : %s\n", DeviceInfo.ProductId);
         fprintf(stderr,"ProductRevisionMajor : %d\n", DeviceInfo.ProductRevisionMajor);
-        fprintf(stderr,"ProductRevisionMinor : %d\n", DeviceInfo.ProductRevisionMinor); */
+        fprintf(stderr,"ProductRevisionMinor : %d\n", DeviceInfo.ProductRevisionMinor);
 
         uint32_t refSPADCount;
         uint8_t aperture;
@@ -230,20 +230,20 @@ void test_tof(){
         
         
         // status = _tof_configure_dev(dev, myCalib);
-        status = VL53L0X_SetDeviceMode(dev,VL53L0X_DEVICEMODE_SINGLE_RANGING);
+        // status = VL53L0X_SetDeviceMode(dev,VL53L0X_DEVICEMODE_SINGLE_RANGING);
+        status = VL53L0X_SetDeviceMode(dev,VL53L0X_DEVICEMODE_CONTINUOUS_RANGING);
         fprintf(stderr,"Configuration DONE ! error status: %d\n",status);
         
         status = VL53L0X_StartMeasurement(dev);
         fprintf(stderr,"Start Measure DONE ! error status: %d\n",status);
 
-        delay_ms(100);
+        delay_ms(1000);
 
         uint16_t range = 0;
         VL53L0X_RangingMeasurementData_t measure_data;
         uint8_t ready = 0;
-        measure_data.RangeMilliMeter = range;
 
-        while(1){
+/*         while(1){
             status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
             // fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
 
@@ -260,30 +260,62 @@ void test_tof(){
             // fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
 
             delay_ms(100);
+        } */
+
+        VL53L0X_State state;
+
+        VL53L0X_DeviceModes deviceMode;
+
+        uint32_t interStatus;
+
+        while(1){
+            status = VL53L0X_GetPalState(dev,&state);
+            fprintf(stderr,"Get state. error status : %d\n",status);
+            fprintf(stderr,"Get state. state : %d\n",state);
+
+            /* Get Current DeviceMode */
+	        status = VL53L0X_GetDeviceMode(dev, &deviceMode);
+            fprintf(stderr,"Get device mode. error status : %d\n",status);
+            fprintf(stderr,"Get device mode. device mode : %d\n",deviceMode);
+
+            //appel bloquant a voir si on peut faire sans ? cas d'erreur ou l'appel ne finirait jamais notamment ?
+            while(!(ready && status == 0)){
+                status = VL53L0X_GetMeasurementDataReady(dev, &ready);
+                // fprintf(stderr,"Get measure ready. error status : %d\n",status);
+                // fprintf(stderr,"Get measure ready. ready : %d\n",ready);
+                if(status != 0){
+                    fprintf(stderr,"Wait ready DONE ! error status: %d\n",status);
+                    fprintf(stderr,"OH FUCKING SECOUR\n");
+                    while(1);
+                }
+                delay_ms(1);
+            }
+            fprintf(stderr,"Wait ready DONE ! error status: %d\n",status);
+
+            status = VL53L0X_GetRangingMeasurementData(dev,&measure_data);
+            fprintf(stderr,"Get Data DONE ! error status: %d\n",status);
+
+            //print all parameter of measure data
+            fprintf(stderr,"measure data time stamp: %d\n",measure_data.TimeStamp);
+            fprintf(stderr,"measure data measurement time Usec: %d\n",measure_data.MeasurementTimeUsec);
+            fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
+            fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
+            fprintf(stderr,"measure data signal rate: %d\n",measure_data.SignalRateRtnMegaCps);
+            fprintf(stderr,"measure data ambient rate: %d\n",measure_data.AmbientRateRtnMegaCps);
+            fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
+            fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
+            fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
+            fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
+
+            ready = 0;
+            status = VL53L0X_GetInterruptMaskStatus(dev,&interStatus);
+            fprintf(stderr,"Get interupt status. error status : %d\n",status);
+            fprintf(stderr,"Get interupt status. interupt status : %d\n",interStatus);
+            status = VL53L0X_ClearInterruptMask(dev, VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
+            fprintf(stderr,"Get clear interupt status. error status : %d\n",status);
+
+            delay_ms(1);
         }
-        // while(1){
-        //     gpio_set(GPIOA,GPIO5);
-        //     //appel bloquant a voir si on peut faire sans ? cas d'erreur ou l'appel ne finirait jamais notamment ?
-        //     while(!ready){
-        //         status = VL53L0X_GetMeasurementDataReady(dev, &ready);
-        //         // fprintf(stderr,"Get measure ready. error status : %d\n",status);
-        //         // fprintf(stderr,"Get measure ready. ready : %d\n",ready);
-        //         delay_ms(1);
-        //     }
-        //     fprintf(stderr,"Wait ready DONE ! error status: %d\n",status);
-
-        //     status = VL53L0X_GetRangingMeasurementData(dev,&measure_data);
-        //         //fprintf(stderr,"Get Data DONE ! error status: %d\n",status);
-
-        //         //if(!(measure_data.RangeStatus)){
-        //         range = measure_data.RangeMilliMeter;
-        //         fprintf(stderr,"Range is : %d\n",range);
-        //         //}
-
-        //         VL53L0X_ClearInterruptMask(dev, VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
-
-        //     delay_ms(1000);
-        // }
 
     fprintf(stderr,"Goodbye from test tof\n");
 }
