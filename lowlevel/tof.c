@@ -4,7 +4,7 @@ void tof_reset_pulse(enum rcc_periph_clken rcc_gpio,uint32_t gpio_port,uint16_t 
 
 }
 
-VL53L0X_Error tof_setup(){
+VL53L0X_Error tof_setup(VL53L0X_DEV dev){
     //DONE setup i2c peripheral from benano
     i2c_setup(I2C1);
 
@@ -20,33 +20,32 @@ VL53L0X_Error tof_setup(){
     delay_ms(TOF_DELAY);
     */
 
-/*     //POUR 1 TOF
+    // FOR ONE TOF
     VL53L0X_Error status;
-    myTof = calloc(1,sizeof(*myTof));  
-    
-    
-    // ATTENTION CETTE FONCTION EST DANS CALIBRATION QUI SERA ENLEVER DU SETUP PLUS TARD, CORDIALEMENT
-    //status = _tof_setup_dev(myTof,0x52);
-    // ATTENTION CE CODE EST TEMPORAIRE JUSQU'A UNE IMPLEMENTATION PLUS PROPRE DE LA CALIBRATION, CORDIALEMENT
-    VL53L0X_Calibration_Parameter myCalib;
-    status = _tof_calibration(myTof,&myCalib,0,0);
-    fprintf(stderr,"status after tof_calibration %d\n",status);
-    delay_ms(20);
-    if(status) return status;
-    status = _tof_configure_dev(myTof, myCalib);
-    fprintf(stderr,"status after tof_configure_dev %d\n",status);
-    delay_ms(20);
-    if(status) return status;
-    //if(status) return status;
-    // J'ESPERE QUE VOUS AVEZ PRIS EN COMPTE LES WARNINGS AU DESSUS
+    VL53L0X_Calibration_Parameter calibration;
+    uint8_t addr = 0x66;
 
-    //TODO return error not yet implemented void function
-    //if(status) return -1;
+    //reset tof
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
+    gpio_set(GPIOA,GPIO6);
+ 
+    // reset tof
+    uint8_t direction_falling = 0;
+    __pulse(GPIOA,GPIO6,direction_falling,20);
 
-    status = VL53L0X_StartMeasurement(myTof);
-    //if(status) return status; 
-*/
-    
+    status = _tof_setup_dev(dev,addr);
+    if(status) return status;
+
+    // 0 0 because no target information
+    status = _tof_calibration(dev,&calibration,0,0);
+    if(status) return status;
+
+    status = _tof_configure_dev(dev, calibration);
+    if(status) return status;
+
+    status = VL53L0X_StartMeasurement(dev);
+    if(status) return status;
+
     return VL53L0X_ERROR_NONE;
 }
 
@@ -107,33 +106,33 @@ VL53L0X_Error _tof_setup_dev(VL53L0X_DEV dev, uint8_t addr){
     return VL53L0X_ERROR_NONE;
 }
 
-VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter calib_param){
-    //Fig 5
+VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* calib_param, FixPoint1616_t offset_cal_distance, FixPoint1616_t xTalk_cal_distance){
     VL53L0X_Error status;
 
     /*Calibration*/
-    //not needed because perform do it itself
-/*     status = VL53L0X_SetReferenceSpads(dev, calib_param.refSpadCount, calib_param.isApertureSpads);
-    // fprintf(stderr," in tof configure SPAD count: %d\n",calib_param.refSpadCount);
-    // fprintf(stderr," in tof configure is aperture SPAD: %d\n",calib_param.isApertureSpads);
+    status = VL53L0X_PerformRefCalibration(dev, &(calib_param->VhvSettings), &(calib_param->PhaseCal));
     if(status) return status;
 
-    status = VL53L0X_SetRefCalibration(dev, calib_param.VhvSettings, calib_param.PhaseCal);
-    fprintf(stderr,"Set ref calibration status: %d\n",status);
-    if(status) return status; */
+    status = VL53L0X_PerformRefSpadManagement(dev, &(calib_param->refSpadCount), &(calib_param->isApertureSpads));
+    if(status) return status;
 
-
+    /*Calibration avec un objectif*/
     /*We don't have the robot to make the calibration with target*/
-    // status = VL53L0X_SetOffsetCalibrationDataMicroMeter(dev,calib_param.OffsetMicroMeter);
+    // /*Set a White Target and define the distance to the sensor*/
+    // status = VL53L0X_PerformOffsetCalibration(dev, offset_cal_distance, &(calib_param->OffsetMicroMeter));
     // if(status) return status;
 
-    // status = VL53L0X_SetXTalkCompensationEnable(dev,1);
+    // /*Set a Grey Target and define */
+    // status = VL53L0X_PerformXTalkCalibration(dev, xTalk_cal_distance, &(calib_param->XTalkCompensationRateMegaCps));
     // if(status) return status;
 
-    // status = VL53L0X_SetXTalkCompensationRateMegaCps(dev,calib_param.XTalkCompensationRateMegaCps);
-    // if(status) return status;
+    return VL53L0X_ERROR_NONE;
+}
 
 
+VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter calib_param){
+    //Fig 5
+    VL53L0X_Error status;
 
     /*Device mode*/
     //Set ranging mode
@@ -180,57 +179,46 @@ VL53L0X_Error _tof_configure_dev(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter 
     return VL53L0X_ERROR_NONE;
 }
 
-VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* calib_param, FixPoint1616_t offset_cal_distance, FixPoint1616_t xTalk_cal_distance){
-    VL53L0X_Error status;
-
-    /*Calibration*/
-    status = VL53L0X_PerformRefCalibration(dev, &(calib_param->VhvSettings), &(calib_param->PhaseCal));
-    if(status) return status;
-
-    status = VL53L0X_PerformRefSpadManagement(dev, &(calib_param->refSpadCount), &(calib_param->isApertureSpads));
-    if(status) return status;
-
-    /*Calibration avec un objectif*/
-    /*We don't have the robot to make the calibration with target*/
-    // /*Set a White Target and define the distance to the sensor*/
-    // status = VL53L0X_PerformOffsetCalibration(dev, offset_cal_distance, &(calib_param->OffsetMicroMeter));
-    // if(status) return status;
-
-    // /*Set a Grey Target and define */
-    // status = VL53L0X_PerformXTalkCalibration(dev, xTalk_cal_distance, &(calib_param->XTalkCompensationRateMegaCps));
-    // if(status) return status;
-
-    return VL53L0X_ERROR_NONE;
-}
-
 VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
     VL53L0X_Error status;
     uint8_t ready = 0;
-    while(!(ready && status)){
+    uint32_t loop_nb = 0;
+    VL53L0X_RangingMeasurementData_t measure_data;
+
+    // POLLING until ready or time out 
+    while(loop_nb < VL53L0X_DEFAULT_MAX_LOOP){
         status = VL53L0X_GetMeasurementDataReady(dev, &ready);
-        // fprintf(stderr,"Get measure ready. error status : %d\n",status);
-        // fprintf(stderr,"Get measure ready. ready : %d\n",ready);
         if(status) return status;
+        if(ready == 1){
+            break;
+        }
+        loop_nb += 1;
         delay_ms(1);
     }
 
-    VL53L0X_RangingMeasurementData_t measure_data;
+    if (loop_nb >= VL53L0X_DEFAULT_MAX_LOOP) {
+        status = VL53L0X_ERROR_TIME_OUT;
+        return status;
+    }
+
     status = VL53L0X_GetRangingMeasurementData(dev,&measure_data);
     // fprintf(stderr,"getRangingMeasurementData error status : %d\n",status);
     if(status) return status;
+
+    // tof_print_data_measure(dev,measure_data);
+    // tof_print_int_status(dev);
     
     status = VL53L0X_ClearInterruptMask(dev,VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
     // fprintf(stderr,"clear interrupt mask error status : %d\n",status);
     if(status) return status;
 
-    *range = measure_data.RangeMilliMeter;
-
-    /* if(!measure_data.RangeStatus){
+    if(measure_data.RangeStatus == 0){
         *range = measure_data.RangeMilliMeter;
     }
     else{
-        return VL53L0X_ERROR_RANGE_ERROR;
-    } */
+        // status = tof_print_ranging_status(dev,measure_data);
+        // if(status) return status;
+    }
 
     return VL53L0X_ERROR_NONE;
 }
@@ -252,4 +240,193 @@ void tof_reset(){
     for(int i =0; i<TOF_NUM-1;++i){
         _shift_reg(1);
     }
+}
+
+VL53L0X_Error tof_print_device_info(VL53L0X_DEV dev){
+    VL53L0X_Error status;
+    VL53L0X_DeviceInfo_t DeviceInfo;
+    status = VL53L0X_GetDeviceInfo(dev, &DeviceInfo);
+    fprintf(stderr,"Get Information DONE ! error status: %d\n",status);
+    if(status) return status;
+
+    fprintf(stderr,"VL53L0X_GetDeviceInfo:\n");
+    fprintf(stderr,"Device Name : %s\n", DeviceInfo.Name);
+    fprintf(stderr,"Device Type : %s\n", DeviceInfo.Type);
+    fprintf(stderr,"Device ID : %s\n", DeviceInfo.ProductId);
+    fprintf(stderr,"ProductRevisionMajor : %d\n", DeviceInfo.ProductRevisionMajor);
+    fprintf(stderr,"ProductRevisionMinor : %d\n", DeviceInfo.ProductRevisionMinor);
+
+    return VL53L0X_ERROR_NONE;
+}
+
+VL53L0X_Error tof_print_calib_info(VL53L0X_DEV dev){
+    VL53L0X_Error status;
+    uint32_t refSPADCount;
+    uint8_t aperture;
+    uint8_t vhvsetting;
+    uint8_t phasecal;
+
+    status = VL53L0X_GetRefCalibration(dev,&vhvsetting,&phasecal);
+    fprintf(stderr,"Get Ref Calibration DONE ! error status: %d\n",status);
+    if(status) return status;
+    fprintf(stderr,"Get Ref Calibration DONE ! VHV setting: %d\n",vhvsetting);
+    fprintf(stderr,"Get Ref Calibration DONE ! Phase calibration: %d\n",phasecal);
+
+    status = VL53L0X_GetReferenceSpads(dev, &refSPADCount, &aperture);
+    fprintf(stderr,"Get Spad Calibration DONE ! error status: %d\n",status);
+    if(status) return status;
+    fprintf(stderr,"Get Spad Calibration DONE ! number of SPAD: %d\n",refSPADCount);
+    fprintf(stderr,"Get Spad Calibration DONE ! is aperture: %d\n",aperture);
+
+    return VL53L0X_ERROR_NONE;
+}
+
+VL53L0X_Error tof_print_PAL_state(VL53L0X_DEV dev){
+    VL53L0X_Error status;
+    VL53L0X_State state;
+
+    status = VL53L0X_GetPalState(dev,&state);
+    fprintf(stderr,"Get state. error status : %d\n",status);
+    if(status) return status;
+
+    switch (state)
+    {
+    case 2:
+        fprintf(stderr,"Get state. state : STANDBY\n");
+        break;
+    case 3:
+        fprintf(stderr,"Get state. state : IDLE\n");
+        break;
+    case 4:
+        fprintf(stderr,"Get state. state : RUNNING\n");
+        break;
+    case 98:
+        fprintf(stderr,"Get state. state : UNKNOWN\n");
+        break;
+    case 99:
+        fprintf(stderr,"Get state. state : ERROR\n");
+        break;
+    
+    default:
+        fprintf(stderr,"Get state. state : NOT EXPECTED\n");
+        break;
+    }
+
+    return VL53L0X_ERROR_NONE;
+}
+
+VL53L0X_Error tof_print_device_mode(VL53L0X_DEV dev){
+    VL53L0X_Error status;
+    VL53L0X_DeviceModes deviceMode;
+
+    status = VL53L0X_GetDeviceMode(dev, &deviceMode);
+    fprintf(stderr,"Get device mode. error status : %d\n",status);
+    if(status) return status;
+
+    switch (deviceMode) {
+    case 0:
+        fprintf(stderr,"Get device mode. mode : SINGLE_RANGING\n");
+        break;
+    case 1:
+        fprintf(stderr,"Get device mode. mode : CONTINUOUS_RANGING\n");
+        break;
+    case 3:
+        fprintf(stderr,"Get device mode. mode : CONTINUOUS_TIMED_RANGING\n");
+        break;
+    
+    default:
+        fprintf(stderr,"Get device mode. mode : NOT EXPECTED\n");
+        break;
+    }
+
+    return VL53L0X_ERROR_NONE;
+}
+
+VL53L0X_Error tof_print_ranging_status(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data){
+    VL53L0X_Error status;
+    uint8_t range_status;
+
+    range_status = measure_data.RangeStatus;
+
+    switch (range_status) {
+    case 0:
+        fprintf(stderr,"Get range status. status : VALID\n");
+        status = VL53L0X_ERROR_NONE;
+        break;
+    case 1:
+        fprintf(stderr,"Get range status. status : SIGMA FAIL\n");
+        status = VL53L0X_ERROR_RANGE_ERROR;
+        break;
+    case 2:
+        fprintf(stderr,"Get range status. status : SIGNAL FAIL\n");
+        status = VL53L0X_ERROR_RANGE_ERROR;
+        break;
+    case 3:
+        fprintf(stderr,"Get range status. status : MIN RANGE FAIL\n");
+        status = VL53L0X_ERROR_RANGE_ERROR;
+        break;
+    case 4:
+        fprintf(stderr,"Get range status. status : PHASE FAIL\n");
+        status = VL53L0X_ERROR_RANGE_ERROR;
+        break;
+    case 5:
+        fprintf(stderr,"Get range status. status : HARDWARE FAIL\n");
+        status = VL53L0X_ERROR_RANGE_ERROR;
+        break;
+    case 255:
+        fprintf(stderr,"Get range status. status : NO UPDATE\n");
+        status = VL53L0X_ERROR_RANGE_ERROR;
+        break;
+    
+    default:
+        fprintf(stderr,"Get range status. status : NOT EXPECTED\n");
+        status = VL53L0X_ERROR_RANGE_ERROR;
+        break;
+    }
+
+    return status;
+}
+
+VL53L0X_Error tof_print_data_measure(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data){    
+    //print all parameter of measure data
+    fprintf(stderr,"measure data time stamp: %d\n",measure_data.TimeStamp);
+    fprintf(stderr,"measure data measurement time Usec: %d\n",measure_data.MeasurementTimeUsec);
+    fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
+    fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
+    fprintf(stderr,"measure data signal rate: %d\n",measure_data.SignalRateRtnMegaCps);
+    fprintf(stderr,"measure data ambient rate: %d\n",measure_data.AmbientRateRtnMegaCps);
+    fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
+    fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
+    fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
+    fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
+
+    return VL53L0X_ERROR_NONE;
+}
+
+VL53L0X_Error tof_print_int_status(VL53L0X_DEV dev){
+    VL53L0X_Error status;
+    uint32_t intStatus;
+
+    status = VL53L0X_GetInterruptMaskStatus(dev,&intStatus);
+    fprintf(stderr,"Get interupt status. error status : %d\n",status);
+    if(status) return status;
+
+    switch (intStatus)
+    {
+    case 0:
+        fprintf(stderr,"Get Interrupt Status. status : DIASBLED\n");
+        break;
+    case 3:
+        fprintf(stderr,"Get Interrupt Status. status : OUT OF WINDOW\n");
+        break;
+    case 4:
+        fprintf(stderr,"Get Interrupt Status. status : NEW SAMPLE READY\n");
+        break;
+    
+    default:
+        fprintf(stderr,"Get Interrupt Status. status : NOT EXPECTED\n");
+        break;
+    }
+
+    return VL53L0X_ERROR_NONE;
 }

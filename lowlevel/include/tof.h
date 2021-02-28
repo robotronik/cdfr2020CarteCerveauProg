@@ -90,7 +90,7 @@ typedef struct VL53L0X_Calibration_Parameter_S{
  * @brief setup the tof and all pin
  * 
  */
-VL53L0X_Error tof_setup();
+VL53L0X_Error tof_setup(VL53L0X_DEV dev);
 
 /**
  * @brief setup the structure with the standard address and I2C peripheral
@@ -146,6 +146,62 @@ VL53L0X_Error _tof_calibration(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* c
  * @return return the error type from the API
  */
 VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range);
+
+/**
+ * @brief Function to print tof device information
+ * @warning We assume you already setup your tof and uart
+ * @param dev our tof object
+ */
+VL53L0X_Error tof_print_device_info(VL53L0X_DEV dev);
+
+/**
+ * @brief Function to print tof calibration information
+ * @warning We assume you already setup your tof and uart
+ * @param dev our tof object
+ */
+VL53L0X_Error tof_print_calib_info(VL53L0X_DEV dev);
+
+/**
+ * @brief Function to print PAL state
+ * @warning We assume you already setup your tof and uart
+ * @param dev our tof object
+ * @see VL53L0X State group (l273 vl53l0x_def.h)
+ */
+VL53L0X_Error tof_print_PAL_state(VL53L0X_DEV dev);
+
+/**
+ * @brief Function to print device mode
+ * @warning We assume you already setup your tof and uart
+ * @param dev our tof object
+ * @see VL53L0X DeviceModes group (l181 vl53l0x_def.h)
+ */
+VL53L0X_Error tof_print_device_mode(VL53L0X_DEV dev);
+
+/**
+ * @brief Function to print range status
+ * @warning We assume you already setup your tof and uart
+ * @param dev our tof object
+ * @param measure_data measured data buffer
+ * @see VL53L0X Range status (p16 User Manual)
+ */
+VL53L0X_Error tof_print_ranging_status(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data);
+
+/**
+ * @brief Function to print measured data in detail
+ * @warning We assume you already setup your tof and uart
+ * @param dev our tof object
+ * @param measure_data measured data buffer
+ * @see VL53L0X Ranging Measurement Data
+ */
+VL53L0X_Error tof_print_data_measure(VL53L0X_DEV dev, VL53L0X_RangingMeasurementData_t measure_data);
+
+/**
+ * @brief Function to print interrupt status
+ * @warning We assume you already setup your tof and uart
+ * @param dev our tof object
+ * @see VL53L0X_REG_SYSTEM_INTERRUPT (l152 vl53l0x_device.h)
+ */
+VL53L0X_Error tof_print_int_status(VL53L0X_DEV dev);
 
 /**
  * @brief reset all tof via the shift register
