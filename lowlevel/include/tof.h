@@ -20,6 +20,8 @@
 
 #include "vl53l0x_api.h"
 
+volatile VL53L0X_DEV* t_dev;
+
 #define TOF_COR_FACTOR ((int) (0.5  * 256))
 
 //Fixed in hardware
@@ -165,10 +167,9 @@ VL53L0X_Error _tof_setup_calib(VL53L0X_DEV dev, VL53L0X_Calibration_Parameter* c
  * function faster you will have delay required to obtain a measurement)
  * 
  * @param dev the defining structure of the tof 
- * @param range this parameter will store the result of the measurement /!\ MILLIMETER /!\
  * @return VL53L0X_Error 
  */
-VL53L0X_Error tof_perform_measure(VL53L0X_DEV dev, uint16_t* range);
+VL53L0X_Error tof_perform_measure(VL53L0X_DEV dev);
 
 /**
  * @brief Function to print tof device information

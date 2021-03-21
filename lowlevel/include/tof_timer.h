@@ -24,6 +24,7 @@
 
 #include "timer.h"
 #include "uart.h"
+#include "tof.h"
 
 /**
  * Prescale 84000000 Hz system clock by 84 = 1000000 Hz.

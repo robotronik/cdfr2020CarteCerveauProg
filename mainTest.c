@@ -38,16 +38,16 @@ int main() {
     */
 
 
-    //blink_led();
-    //test_tof_platform_write();
-    //test_i2c();
-    //test_tof_platform_read();
-    //interrupt_timer_test();
+    // blink_led();
+    // test_tof_platform_write();
+    // test_i2c();
+    // test_tof_platform_read();
+    test_interrupt_timer();
     // while(1){
     //     test_tof_poke();
     //     delay_ms(500);
     // }
-    test_tof_Single();
+    // test_tof_Single();
     // test_xshut();
 
 }
@@ -159,8 +159,25 @@ void test_tof_platform_read(){
 }
 
 void test_interrupt_timer(){
-    // int counter;
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+    i2c_setup(I2C1);
+    //tof setup
+    t_dev = calloc(1,sizeof(*t_dev));
+    t_dev[0] = calloc(1,sizeof(VL53L0X_DEV));
+    VL53L0X_DEV dev = t_dev[0];
+    uint8_t addr = 0x66;
+    VL53L0X_Error status = 0;
+
+    // debug led(trigger)
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
+    gpio_clear(GPIOA,GPIO5);
+
+    fprintf(stderr,"Setup TOF\n");
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
+    __pulse(GPIOA, GPIO6, low, 20);
+
+    status = _tof_1_setup(dev,addr);
+    fprintf(stderr,"Setup dev DONE and Measure STARTED ! error status: %d\n",status);
+
     timer_setup_interrupt();
     while (1);
 }
@@ -169,10 +186,11 @@ void test_tof_Single(){
     fprintf(stderr,"Welcome in test tof Single Ranging Mode\n");
     i2c_setup(I2C1);
     //tof setup
-    VL53L0X_DEV dev = calloc(1,sizeof(*dev));
+    t_dev = calloc(1,sizeof(*t_dev));
+    t_dev[0] = calloc(1,sizeof(VL53L0X_DEV));
+    VL53L0X_DEV dev = t_dev[0];
     uint8_t addr = 0x66;
     VL53L0X_Error status = 0;
-    uint16_t range = 0;
 
     // debug led(trigger)
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
@@ -191,10 +209,10 @@ void test_tof_Single(){
     while(!status){
         start = _clock_get_systicks();
         gpio_toggle(GPIOA,GPIO5);
-        status = tof_perform_measure(dev,&range);
+        status = tof_perform_measure(dev);
         stop = _clock_get_systicks();
         fprintf(stderr,"Measure Performed ! error status: %d\n",status);
-        fprintf(stderr,"Measure Performed ! range: %d\n",range);
+        fprintf(stderr,"Measure Performed ! range: %d\n",dev->range);
         gpio_clear(GPIOA,GPIO5);
 
         time = stop - start;

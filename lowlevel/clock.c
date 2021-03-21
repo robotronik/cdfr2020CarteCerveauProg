@@ -25,17 +25,7 @@ uint32_t _clock_get_systicks() {
   return _systicks;
 }
 
-/*
-uint32_t get_uptime_ms() {
-  return systicks;
-}
-*/
-
 void delay_ms(uint32_t ms) {
   uint32_t count_max = _clock_get_systicks() + ms;
 	while(_clock_get_systicks() < count_max);
 }
-
-
-//const uint32_t millisec = 1600;
-//const uint32_t second = millisec*1000;

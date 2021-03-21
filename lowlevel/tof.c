@@ -208,7 +208,7 @@ VL53L0X_Error _tof_config(VL53L0X_DEV dev){
     return VL53L0X_ERROR_NONE;
 }
 
-VL53L0X_Error tof_perform_measure(VL53L0X_DEV dev, uint16_t* range){
+VL53L0X_Error tof_perform_measure(VL53L0X_DEV dev){
     VL53L0X_Error status;
     VL53L0X_RangingMeasurementData_t measure_data;
 
@@ -218,7 +218,7 @@ VL53L0X_Error tof_perform_measure(VL53L0X_DEV dev, uint16_t* range){
     // tof_print_ranging_status(dev,measure_data);
     if(status) return status;
 
-    *range = measure_data.RangeMilliMeter;
+    dev->range = measure_data.RangeMilliMeter;
     
     //monitoring function with verbose ranging data
     // tof_print_data_measure(dev,measure_data);
