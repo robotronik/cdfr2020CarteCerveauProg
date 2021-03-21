@@ -32,13 +32,15 @@ VL53L0X_Error tof_setup(VL53L0X_DEV* t_dev,uint8_t tof_number){
 }
 
 VL53L0X_Error _tof_1_setup(VL53L0X_DEV dev, uint8_t tof_addr){
-    VL53L0X_Error status;
+    VL53L0X_Error status = 0;
     VL53L0X_Calibration_Parameter calibration;
 
     status = _tof_setup_addr(dev,tof_addr);
+    // fprintf(stderr,"Setup addr ! error status: %d\n",status);
     if(status) return status;
 
     status = _tof_setup_calib(dev,&calibration);
+    // fprintf(stderr,"Setup calib ! error status: %d\n",status);
     if(status) return status;
 
     // not needed using single measure and default range
@@ -48,6 +50,7 @@ VL53L0X_Error _tof_1_setup(VL53L0X_DEV dev, uint8_t tof_addr){
     */
 
     status = VL53L0X_StartMeasurement(dev);
+    // fprintf(stderr,"Start measure ! error status: %d\n",status);
     if(status) return status;
 
     return VL53L0X_ERROR_NONE;
@@ -56,7 +59,7 @@ VL53L0X_Error _tof_1_setup(VL53L0X_DEV dev, uint8_t tof_addr){
 void _tof_init_struct(VL53L0X_DEV dev){
     dev->i2c_slave_address = 0x52 / 2;
 	dev->i2c_dev = I2C1;
-    dev->last_range = 0xfffe;
+    dev->range = 0xfffe;
 }
 
 VL53L0X_Error _tof_poke(VL53L0X_DEV dev){

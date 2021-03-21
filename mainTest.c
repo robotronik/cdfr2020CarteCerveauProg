@@ -18,7 +18,7 @@ void test_i2c();
 void test_xshut();
 void test_tof_platform_write();
 void test_tof_platform_read();
-void interrupt_timer_test();
+void test_interrupt_timer();
 
 int main() {
 
@@ -43,13 +43,23 @@ int main() {
     //test_i2c();
     //test_tof_platform_read();
     //interrupt_timer_test();
-    /* while(1){
-        test_tof_poke();
-        delay_ms(500);
-     }*/
+    // while(1){
+    //     test_tof_poke();
+    //     delay_ms(500);
+    // }
     test_tof_Single();
     // test_xshut();
 
+}
+
+void blink_led(){
+    //led is on PA5
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+
+    while(1){
+        gpio_toggle(GPIOA,GPIO5);
+        delay_ms(50);
+    }
 }
 
 void test_actuator(){
@@ -148,31 +158,20 @@ void test_tof_platform_read(){
     fprintf(stderr,"Read a bunch of data, error status after everything: %d\n",status);
 }
 
-void blink_led(){
-    //led is on PA5
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
-
-    while(1){
-        gpio_toggle(GPIOA,GPIO5);
-        delay_ms(50);
-    }
-}
-
-void interrupt_timer_test(){
+void test_interrupt_timer(){
     // int counter;
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
     timer_setup_interrupt();
-    while (1){
-
-    }
-
+    while (1);
 }
 
 void test_tof_Single(){
     fprintf(stderr,"Welcome in test tof Single Ranging Mode\n");
+    i2c_setup(I2C1);
     //tof setup
     VL53L0X_DEV dev = calloc(1,sizeof(*dev));
-    VL53L0X_Error status;
+    uint8_t addr = 0x66;
+    VL53L0X_Error status = 0;
     uint16_t range = 0;
 
     // debug led(trigger)
@@ -180,22 +179,25 @@ void test_tof_Single(){
     gpio_clear(GPIOA,GPIO5);
 
     fprintf(stderr,"Setup TOF\n");
-    __pulse(GPIOA, GPIO6, low, 20);    
-    status = _tof_1_setup(dev,0x66);
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
+    __pulse(GPIOA, GPIO6, low, 20);
+
+    status = _tof_1_setup(dev,addr);
     fprintf(stderr,"Setup dev DONE and Measure STARTED ! error status: %d\n",status);
 
     uint32_t start,stop;
     uint8_t time;
 
-    while(1){
+    while(!status){
         start = _clock_get_systicks();
-        gpio_set(GPIOA,GPIO5);
+        gpio_toggle(GPIOA,GPIO5);
         status = tof_perform_measure(dev,&range);
         stop = _clock_get_systicks();
         fprintf(stderr,"Measure Performed ! error status: %d\n",status);
+        fprintf(stderr,"Measure Performed ! range: %d\n",range);
         gpio_clear(GPIOA,GPIO5);
 
-        time = start - stop;
+        time = stop - start;
         fprintf(stderr,"Measure Performed ! measure time [ms]: %d\n",time);
 
         delay_ms(50);
@@ -229,21 +231,22 @@ void test_xshut(){
     i2c_setup(I2C1);
     uint8_t addr = 0x88;
     VL53L0X_DEV dev = calloc(1,sizeof(*dev));
-    VL53L0X_Error status;
+    VL53L0X_Error status = 0;
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
     gpio_set(GPIOA, GPIO6);
 
     while(1){
         fprintf(stderr,"Start poke on base address\n");
-        _tof_init_struct(dev);
-        fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
-        status = _tof_poke(dev); //0x00c0
-        //delay_ms(50);
-        fprintf(stderr,"status: %d\n",status);
-        fprintf(stderr,"After base address poke\n");
+        // _tof_init_struct(dev);
+        // fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
+        // status = _tof_poke(dev); //0x00c0
+        // //delay_ms(50);
+        // fprintf(stderr,"status: %d\n",status);
+        // fprintf(stderr,"After base address poke\n");
 
-        fprintf(stderr,"Start poke on new address\n");
-        status = _tof_set_address(dev, addr);
+        // fprintf(stderr,"Start poke on new address\n");
+        // status = _tof_set_address(dev, addr);
+        _tof_setup_addr(dev,addr);
         //delay_ms(50);
         fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
         fprintf(stderr,"status: %d\n",status);

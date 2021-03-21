@@ -64,7 +64,7 @@ typedef struct {
   /*!< user specific field */
   uint8_t i2c_slave_address;
   i2c_dev_t i2c_dev; // I2C peripheral address
-  uint16_t last_range;
+  uint16_t range;
 } VL53L0X_Dev_t;
 
 
