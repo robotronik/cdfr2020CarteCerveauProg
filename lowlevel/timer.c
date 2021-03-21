@@ -3,9 +3,6 @@
 void _timer_setup(enum rcc_periph_clken rcc_clken, uint32_t timer_peripheral, uint32_t prescaler, uint32_t period){
 	/* Enable timer clock */
 	rcc_periph_clock_enable(rcc_clken);
-    
-	/* Reset TIM1 peripheral */
-	//timer_reset(timer_peripheral);
 
 	/* Set the timers global mode to:
 	 * - use no divider

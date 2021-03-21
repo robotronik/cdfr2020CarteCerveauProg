@@ -3,9 +3,9 @@
 void timer_setup_interrupt(){
     _timer_setup(TOF_TIM_RCC,TOF_TIM,TOF_TIM_PRESCALE,TOF_TIM_PERIOD);
     _timer_setup_output_c(TOF_TIM,TOF_TIM_OC_ID,TOF_TIM_OC_MODE,0);
-    //timer_disable_oc_clear(TOF_TIM, TOF_TIM_OC_ID);
-    //timer_disable_preload(TOF_TIM);
-    //timer_set_oc_slow_mode(TOF_TIM, TOF_TIM_OC_ID);
+    // timer_disable_oc_clear(TOF_TIM, TOF_TIM_OC_ID);
+    // timer_disable_preload(TOF_TIM);
+    // timer_set_oc_slow_mode(TOF_TIM, TOF_TIM_OC_ID);
     nvic_enable_irq(TOF_TIM_NVIC);
 	timer_enable_irq(TOF_TIM, TOF_TIM_DIER_CCIE);
     _timer_start(TOF_TIM);
@@ -14,11 +14,13 @@ void timer_setup_interrupt(){
 void tim4_isr(){
     if (timer_get_flag(TOF_TIM, TOF_TIM_SR_CCIF))
 	{
-        //do something
+        timer_clear_flag(TOF_TIM, TOF_TIM_SR_CCIF);
+        //Insert your code here
+        //It will be executed when the interruption occurs
         fprintf(stderr,"interrupt from timer\n");
         gpio_toggle(GPIOA,GPIO5);
-
-		timer_clear_flag(TOF_TIM, TOF_TIM_SR_CCIF);
+        tof_perform_measure(t_dev[0]);
+        fprintf(stderr,"Measure Performed ! range: %d\n",t_dev[0]->range);
 	}
 }
 

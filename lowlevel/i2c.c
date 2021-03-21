@@ -71,7 +71,7 @@ I2C_status i2c_write7(uint32_t i2c, int addr, uint8_t *data, size_t n){
     (void)I2C_SR2(i2c);
 
     for (size_t i = 0; i < n; i++){
-        i2c_send_data(i2c, data[n-1-i]);
+        i2c_send_data(i2c, data[i]);//i2c_send_data(i2c, data[n-1-i]);
         start_time = _clock_get_systicks();
         while (!(I2C_SR1(i2c) & (I2C_SR1_BTF))){
             if ((_clock_get_systicks() - start_time) > I2C_MAX_TIMEOUT){
@@ -120,7 +120,7 @@ I2C_status i2c_read7(uint32_t i2c, int addr, uint8_t *res, size_t n){
                 return (I2C_TIMEOUT);
             }
         }
-        res[n-1-i] = i2c_get_data(i2c);
+        res[i] = i2c_get_data(i2c); //res[n-1-i] = i2c_get_data(i2c);
     }
     i2c_send_stop(i2c);
 

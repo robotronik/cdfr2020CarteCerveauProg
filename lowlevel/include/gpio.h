@@ -20,6 +20,13 @@
 #include "clock.h"
 
 /**
+ * @brief enum of the pulse possible directions
+ * active low is a high->low->high transition
+ * active high is a low->high->low transition
+ */
+enum pulse_active {low, high};
+
+/**
  * @brief This function setup a pin for an alternate function
  * 
  * @param rcc_clken     reset clock control for the pin (usualy RCC_X with X 
@@ -50,9 +57,9 @@ void _gpio_setup_pin(enum rcc_periph_clken clken, uint32_t port,uint16_t pin,
 /**
  * @brief This function write a short pulse on the output pin
  *
- * Xavier defines a short pulse to 20 ms
- *
  * @param port      the port to enable
  * @param pin       the pint to enable
+ * @param dir       active high or low (pulse direction)
+ * @param delay     duration of the pulse
  */
-void __pulse(uint32_t port, uint16_t pin);
+void __pulse(uint32_t port, uint16_t pin, enum pulse_active dir, uint16_t delay);
