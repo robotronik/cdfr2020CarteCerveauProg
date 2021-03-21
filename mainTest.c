@@ -45,11 +45,11 @@ int main() {
     //test_i2c();
     //test_tof_platform_read();
     //interrupt_timer_test();
-/*     while(1){
+    /* while(1){
         test_tof_poke();
         delay_ms(500);
-    } */
-    test_tof();
+     }*/
+    test_tof_Single();
     // test_xshut();
 
 }
@@ -181,23 +181,37 @@ void test_tof_Single(){
     status = tof_setup(dev);
     fprintf(stderr,"Setup dev DONE and Measure STARTED ! error status: %d\n",status);
 
+    static int factor = (int)( 0.55 *256);
+
+    status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
+    uint16_t prev = measure_data.RangeMilliMeter;
+    uint32_t start,stop;
+
     while(1){
+        start = _clock_get_systicks();
+        gpio_set(GPIOA,GPIO5);
         status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
-        // fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
+        stop = _clock_get_systicks();
+        gpio_clear(GPIOA,GPIO5);
+        // // fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
 
-        //print all parameter of measure data
-        fprintf(stderr,"measure data time stamp: %ld\n",measure_data.TimeStamp);
-        fprintf(stderr,"measure data measurement time Usec: %ld\n",measure_data.MeasurementTimeUsec);
-        fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
-        fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
-        fprintf(stderr,"measure data signal rate: %ld\n",measure_data.SignalRateRtnMegaCps);
-        fprintf(stderr,"measure data ambient rate: %ld\n",measure_data.AmbientRateRtnMegaCps);
-        fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
-        fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
-        fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
-        fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
+        // //print all parameter of measure data
+        // // fprintf(stderr,"measure data time stamp: %ld\n",measure_data.TimeStamp);
+        // // fprintf(stderr,"measure data measurement time Usec: %ld\n",measure_data.MeasurementTimeUsec);
+        // fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
+        // // fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
+        // // fprintf(stderr,"measure data signal rate: %ld\n",measure_data.SignalRateRtnMegaCps);
+        // // fprintf(stderr,"measure data ambient rate: %ld\n",measure_data.AmbientRateRtnMegaCps);
+        // // fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
+        // // fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
+        // // fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
+        // fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
 
-        delay_ms(100);
+        // fprintf(stderr,"corrected measure: %d\n",(factor*prev+(256-factor)*measure_data.RangeMilliMeter)>>8);
+
+        // fprintf(stderr,"measured time(ms): %ld\n",stop-start);
+
+        delay_ms(50);
     }
 }
 
@@ -222,7 +236,7 @@ void test_tof(){
 
     uint16_t range;
 
-    while(1){
+    while(!status){
         // status = tof_print_PAL_state(dev);
         // fprintf(stderr,"Print PAL state DONE ! error status: %d\n",status);
 
@@ -231,8 +245,8 @@ void test_tof(){
     
         //for verbose see commented tof_print_data_measure in tof_get_measure
         status = tof_get_measure(dev,&range);
-        // fprintf(stderr,"Measure DONE ! error status: %d\n",status);
-        // fprintf(stderr,"Measure DONE ! range: %d\n",range);
+        fprintf(stderr,"Measure DONE ! error status: %d\n",status);
+        fprintf(stderr,"Measure DONE ! range: %d\n",range);
 
         delay_ms(1000);
     }

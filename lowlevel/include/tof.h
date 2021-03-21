@@ -21,6 +21,7 @@
 #include "vl53l0x_api.h"
 
 #define TOF_NUM 1
+#define TOF_COR_FACTOR ((int) (0.5  * 256))
 
 //Fixed in hardware
 #define TOF_DEFAULT_ADDR 0x52 
@@ -37,7 +38,7 @@
  * permettraient plus au microcontrôleur de savoir quel ToF a 
  * quelle adresse. 
  * C'est pourquoi on a choisi d'utiliser un registre à décalage : 
- * Lorsqqu'il faut reset les ToFs, on passe DSAB à 1 puis on envoie une impulsion sur CP pour mettre ce 1 dans le premier bit du registre.
+ * Lorsqu'il faut reset les ToFs, on passe DSAB à 1 puis on envoie une impulsion sur CP pour mettre ce 1 dans le premier bit du registre.
  * Ceci aura pour effet de reset le premier ToF qui ne connaît alors
  * plus son adresse.
  * On passe DSAB à 0 pour éviter de reset plusieurs ToFs d'un coup.

@@ -52,6 +52,7 @@ VL53L0X_Error tof_setup(VL53L0X_DEV dev){
 void _tof_init_dev(VL53L0X_DEV dev){
     dev->i2c_slave_address = 0x52 / 2;
 	dev->i2c_dev = I2C1;
+    dev->last_range = 0xfffe;
 }
 
 VL53L0X_Error _tof_poke(VL53L0X_DEV dev){
@@ -213,7 +214,16 @@ VL53L0X_Error tof_get_measure(VL53L0X_DEV dev, uint16_t* range){
     if(status) return status;
 
     if(measure_data.RangeStatus == 0){
-        *range = measure_data.RangeMilliMeter;
+        // Code maudit remerciez notre seigneur ST
+        if(dev->last_range == 0xfffe){
+            *range = measure_data.RangeMilliMeter;
+            dev->last_range = *range;
+            fprintf(stderr,"Voila ma premiere mesure: %d\n",*range);
+        }
+        else{
+            *range = (TOF_COR_FACTOR * dev->last_range + (256-TOF_COR_FACTOR) * measure_data.RangeMilliMeter)/256;
+            dev->last_range = *range;
+        }
     }
     else{
         // status = tof_print_ranging_status(dev,measure_data);

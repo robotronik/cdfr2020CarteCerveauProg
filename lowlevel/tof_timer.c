@@ -14,9 +14,12 @@ void timer_setup_interrupt(){
 void tim4_isr(){
     if (timer_get_flag(TOF_TIM, TOF_TIM_SR_CCIF))
 	{
-        //do something
+        //Insert your code here
+        //It will be executed when the interruption occurs
         fprintf(stderr,"interrupt from timer\n");
         gpio_toggle(GPIOA,GPIO5);
+
+        //
 
 		timer_clear_flag(TOF_TIM, TOF_TIM_SR_CCIF);
 	}

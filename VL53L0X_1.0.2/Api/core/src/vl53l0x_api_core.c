@@ -74,7 +74,7 @@ VL53L0X_Error VL53L0X_measurement_poll_for_completion(VL53L0X_DEV Dev)
 			break; /* the error is set */
 
 		if (NewDataReady == 1)
-			break; /* done note that status == 0 */
+			break; /* don*e note that status == 0 */
 
 		LoopNb++;
 		if (LoopNb >= VL53L0X_DEFAULT_MAX_LOOP) {

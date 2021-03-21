@@ -59,11 +59,12 @@ typedef uint32_t i2c_dev_t;
  *
  */
 typedef struct {
-    VL53L0X_DevData_t Data;               /*!< embed ST Ewok Dev  data as "Data"*/
+  VL53L0X_DevData_t Data;               /*!< embed ST Ewok Dev  data as "Data"*/
 
-    /*!< user specific field */
-    uint8_t i2c_slave_address;
-	  i2c_dev_t i2c_dev; // I2C peripheral address
+  /*!< user specific field */
+  uint8_t i2c_slave_address;
+  i2c_dev_t i2c_dev; // I2C peripheral address
+  uint16_t last_range;
 } VL53L0X_Dev_t;
 
 
