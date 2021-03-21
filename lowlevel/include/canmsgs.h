@@ -24,6 +24,8 @@
 #include <string.h>
 #include <unistd.h> */
 
+#include <stdio.h>
+
 #include <libopencm3/cm3/nvic.h>
 #include <libopencm3/stm32/can.h>
 #include <libopencm3/stm32/exti.h>
@@ -32,16 +34,15 @@
 #include <libopencm3/stm32/usart.h>
 
 //// Bit timing settings
-//// Assuming 48MHz base clock, 87.5% sample point, 500 kBit/s data rate
 //// http://www.bittiming.can-wiki.info/
 // Resync time quanta jump width
 #define PARAM_SJW CAN_BTR_SJW_1TQ
 // Time segment 1 time quanta width
-#define PARAM_TS1 CAN_BTR_TS1_11TQ // 13,
+#define PARAM_TS1 CAN_BTR_TS1_10TQ //CAN_BTR_TS1_11TQ
 // Time segment 2 time quanta width
-#define PARAM_TS2 CAN_BTR_TS2_4TQ // 2,
+#define PARAM_TS2 CAN_BTR_TS2_3TQ //CAN_BTR_TS2_2TQ
 // Baudrate prescaler
-#define PARAM_BRP 6
+#define PARAM_BRP 16
 
 #define CAN1_RX_PORT GPIOB
 #define CAN1_RX_PIN GPIO8
@@ -125,7 +126,7 @@ struct can_msg_buffer_list_t{
     Can_rx_msg data;
     can_msg_buffer_list_t * next;
 };
-can_msg_buffer_list_t * can_msg_buffer_list;
+// can_msg_buffer_list_t * can_msg_buffer_list;
 
 /**
  * @brief Appends a can message at the end of the global can buffer list

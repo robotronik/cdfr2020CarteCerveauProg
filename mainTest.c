@@ -9,6 +9,7 @@
 #include "vl53l0x_platform.h"
 #include "tof.h"
 #include "tof_timer.h"
+#include "canmsgs.h"
 
 void test_actuator();
 void test_com();
@@ -20,6 +21,7 @@ void blink_led();
 void test_tof_platform_write();
 void test_tof_platform_read();
 void interrupt_timer_test();
+void test_can_transmit();
 
 int main() {
 
@@ -39,18 +41,19 @@ int main() {
     */
 
 
-    //blink_led();
+    // blink_led();
     //test_tof_platform_write();
-    //test_i2c();
+    // test_i2c();
     //test_tof_platform_read();
     //interrupt_timer_test();
 /*     while(1){
         test_tof_poke();
         delay_ms(500);
     } */
-    test_tof();
+    /*test_tof();*/
     //test_xshut();
 
+    test_can_transmit();
 }
 
 void test_actuator(){
@@ -153,8 +156,6 @@ void blink_led(){
         delay_ms(50);
     }
 }
-
-
 
 void interrupt_timer_test(){
     int counter;
@@ -270,5 +271,19 @@ void test_xshut(){
         fprintf(stderr,"After reset poke\n");
 
         delay_ms(1000);
+    }
+}
+
+void test_can_transmit(){
+    uint8_t* data = calloc(2,sizeof(*data));
+    data = 0xbeef;
+
+    can_setup();
+    int status = 0;
+
+    while(!status){
+        status = can_transmit(CAN1, 0x4, false, false,sizeof(data), data);
+        fprintf(stderr,"transmission status: %d\n",status);
+        delay_ms(100);
     }
 }

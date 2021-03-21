@@ -9,7 +9,7 @@ VL53L0X_Error tof_setup(){
     _gpio_setup_pin(SR_CP_RCC, SR_CP_PORT, SR_CP_PIN, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLDOWN,GPIO_OTYPE_PP);
 
     /* For more than one
-    //Pulse reset on tof
+#include "canmsgs.h"    //Pulse reset on tof
     __pulse(SR_CP_PORT, SR_CP_PIN);
 
     // Wait for the chip to start
