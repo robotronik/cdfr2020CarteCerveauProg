@@ -26,14 +26,14 @@ void _gpio_setup_pin(enum rcc_periph_clken clken, uint32_t port,uint16_t pin,
     }
 }
 
-void __pulse(uint32_t port, uint16_t pin, uint8_t dir, uint16_t delay){
-    // IDLE High, pulse direction : falling
-	if(!dir){
+void __pulse(uint32_t port, uint16_t pin, enum pulse_active dir, uint16_t delay){
+    // IDLE High, pulse direction : hlh
+	if(dir==low){
 		gpio_clear(port,pin);
 		delay_ms(delay);
 		gpio_set(port,pin);
 	}
-	// IDLE Low, pulse direction : rising
+	// IDLE Low, pulse direction : lhl
 	else{
 		gpio_set(port,pin);
 		delay_ms(delay);

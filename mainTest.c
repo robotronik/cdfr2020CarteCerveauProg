@@ -10,14 +10,12 @@
 #include "tof.h"
 #include "tof_timer.h"
 
+void blink_led();
 void test_actuator();
-void test_com();
-void test_tof();
 void test_tof_Single();
 void test_tof_poke();
 void test_i2c();
 void test_xshut();
-void blink_led();
 void test_tof_platform_write();
 void test_tof_platform_read();
 void interrupt_timer_test();
@@ -59,11 +57,6 @@ void test_actuator(){
     actuator_set(FLAG, 10);
 }
 
-void test_com(){
-    //uart_send_string("super nul");
-    //printf("coucou \n");
-}
-
 void test_i2c(){
     i2c_setup(I2C1);
     // uint32_t data = 0xabcdef ;
@@ -96,22 +89,25 @@ void test_tof_platform_write(){
 
     uint8_t index = 0xc0;
     uint8_t dataByte = 0xab;
-    VL53L0X_Error myError = VL53L0X_WrByte(pDev,index,dataByte);
+    VL53L0X_Error status = VL53L0X_WrByte(pDev,index,dataByte);
+    fprintf(stderr,"Write Byte! error status: %d\n",status);
     delay_ms(30);
 
     uint16_t dataWord = 0xa1b2;
-    myError = VL53L0X_WrWord(pDev,index,dataWord);
+    status = VL53L0X_WrWord(pDev,index,dataWord);
+    fprintf(stderr,"Write Word! error status: %d\n",status);
     delay_ms(30);
 
     uint32_t dataDWord = 0xa1b2e3f4;
-    myError = VL53L0X_WrDWord(pDev,index,dataDWord);
+    status = VL53L0X_WrDWord(pDev,index,dataDWord);
+    fprintf(stderr,"Write Double Word! error status: %d\n",status);
     delay_ms(30);
 
     uint8_t bigDataWink[6] ={0xab,0xcd,0xef,0x12,0x13,0x14};
-    myError = VL53L0X_WriteMulti(pDev,index,bigDataWink,6);
+    status = VL53L0X_WriteMulti(pDev,index,bigDataWink,6);
+    fprintf(stderr,"Write Multi! error status: %d\n",status);
 }
 
-// Obsolete implementation en cours
 void test_tof_platform_read(){
     i2c_setup(I2C1);
     VL53L0X_DEV pDev = calloc(1,sizeof(*pDev));
@@ -120,30 +116,36 @@ void test_tof_platform_read(){
     delay_ms(200);
 
     uint8_t index = 0xcd;
-    VL53L0X_Error myError;
+    VL53L0X_Error status;
 
     uint8_t dataReadByte = 0;
-    myError = VL53L0X_RdByte(pDev,index,&dataReadByte);
+    status = VL53L0X_RdByte(pDev,index,&dataReadByte);
+    fprintf(stderr,"Read Byte! error status: %d\n",status);
     delay_ms(200);
 
     uint16_t dataReadWord = 0;
-    myError = VL53L0X_RdWord(pDev,index,&dataReadWord);
+    status = VL53L0X_RdWord(pDev,index,&dataReadWord);
+    fprintf(stderr,"Read Word! error status: %d\n",status);
     delay_ms(200);
 
     uint32_t dataReadDWord = 0;
-    myError = VL53L0X_RdDWord(pDev,index,&dataReadDWord);
+    status = VL53L0X_RdDWord(pDev,index,&dataReadDWord);
+    fprintf(stderr,"Read Double Word! error status: %d\n",status);
     delay_ms(200);
 
     uint8_t bigDataRead[6];
-    myError = VL53L0X_ReadMulti(pDev,index,(uint8_t*)(&bigDataRead),6);
+    status = VL53L0X_ReadMulti(pDev,index,(uint8_t*)(&bigDataRead),6);
+    fprintf(stderr,"Read Multi! error status: %d\n",status);
     delay_ms(200);
 
-    fprintf(stderr,"Byte = %X \t Word = %X \t DWord = %X \t ",dataReadByte,dataReadWord,dataReadDWord,bigDataRead);
+    fprintf(stderr,"Byte = %X \t Word = %X \t DWord = %lX \t ",dataReadByte,dataReadWord,dataReadDWord);
     fprintf(stderr,"Multi = ");
     for (int i=0;i<6;i++){
-        fprintf(stderr,"%X",bigDataRead[5-i]);
+        fprintf(stderr,"%X",bigDataRead[i]);
     }
     fprintf(stderr,"\n");
+
+    fprintf(stderr,"Read a bunch of data, error status after everything: %d\n",status);
 }
 
 void blink_led(){
@@ -157,7 +159,7 @@ void blink_led(){
 }
 
 void interrupt_timer_test(){
-    int counter;
+    // int counter;
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
     timer_setup_interrupt();
     while (1){
@@ -171,87 +173,33 @@ void test_tof_Single(){
     //tof setup
     VL53L0X_DEV dev = calloc(1,sizeof(*dev));
     VL53L0X_Error status;
-    VL53L0X_RangingMeasurementData_t measure_data;
+    uint16_t range = 0;
 
     // debug led(trigger)
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
     gpio_clear(GPIOA,GPIO5);
 
     fprintf(stderr,"Setup TOF\n");
-    status = tof_setup(dev);
+    __pulse(GPIOA, GPIO6, low, 20);    
+    status = _tof_1_setup(dev,0x66);
     fprintf(stderr,"Setup dev DONE and Measure STARTED ! error status: %d\n",status);
 
-    static int factor = (int)( 0.55 *256);
-
-    status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
-    uint16_t prev = measure_data.RangeMilliMeter;
     uint32_t start,stop;
+    uint8_t time;
 
     while(1){
         start = _clock_get_systicks();
         gpio_set(GPIOA,GPIO5);
-        status = VL53L0X_PerformSingleRangingMeasurement (dev, &measure_data);
+        status = tof_perform_measure(dev,&range);
         stop = _clock_get_systicks();
+        fprintf(stderr,"Measure Performed ! error status: %d\n",status);
         gpio_clear(GPIOA,GPIO5);
-        // // fprintf(stderr,"One Measure DONE ! error status: %d\n",status);
 
-        // //print all parameter of measure data
-        // // fprintf(stderr,"measure data time stamp: %ld\n",measure_data.TimeStamp);
-        // // fprintf(stderr,"measure data measurement time Usec: %ld\n",measure_data.MeasurementTimeUsec);
-        // fprintf(stderr,"measure data range in milli: %d\n",measure_data.RangeMilliMeter);
-        // // fprintf(stderr,"measure data range dmax in milli: %d\n",measure_data.RangeDMaxMilliMeter);
-        // // fprintf(stderr,"measure data signal rate: %ld\n",measure_data.SignalRateRtnMegaCps);
-        // // fprintf(stderr,"measure data ambient rate: %ld\n",measure_data.AmbientRateRtnMegaCps);
-        // // fprintf(stderr,"measure data effective spad count: %d\n",measure_data.EffectiveSpadRtnCount);
-        // // fprintf(stderr,"measure data zone ID: %d\n",measure_data.ZoneId);
-        // // fprintf(stderr,"measure data fractionnal part: %d\n",measure_data.RangeFractionalPart);
-        // fprintf(stderr,"measure data status: %d\n",measure_data.RangeStatus);
-
-        // fprintf(stderr,"corrected measure: %d\n",(factor*prev+(256-factor)*measure_data.RangeMilliMeter)>>8);
-
-        // fprintf(stderr,"measured time(ms): %ld\n",stop-start);
+        time = start - stop;
+        fprintf(stderr,"Measure Performed ! measure time [ms]: %d\n",time);
 
         delay_ms(50);
     }
-}
-
-void test_tof(){
-    fprintf(stderr,"Welcome in test tof\n");
-    //tof setup
-    VL53L0X_DEV dev = calloc(1,sizeof(*dev));
-    VL53L0X_Error status;
-    
-    // debug led(trigger)
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,GPIO_OTYPE_PP);
-    gpio_clear(GPIOA,GPIO5);
-
-    fprintf(stderr,"Setup TOF\n");
-    status = tof_setup(dev);
-    fprintf(stderr,"Setup dev DONE and Measure STARTED ! error status: %d\n",status);
-
-    // status = tof_print_device_info(dev);
-    // fprintf(stderr,"Print device info DONE ! error status: %d\n",status);
-    // status = tof_print_calib_info(dev);
-    // fprintf(stderr,"Print calib info DONE ! error status: %d\n",status);
-
-    uint16_t range;
-
-    while(!status){
-        // status = tof_print_PAL_state(dev);
-        // fprintf(stderr,"Print PAL state DONE ! error status: %d\n",status);
-
-        // status = tof_print_device_mode(dev);
-        // fprintf(stderr,"Print device mode DONE ! error status: %d\n",status);
-    
-        //for verbose see commented tof_print_data_measure in tof_get_measure
-        status = tof_get_measure(dev,&range);
-        fprintf(stderr,"Measure DONE ! error status: %d\n",status);
-        fprintf(stderr,"Measure DONE ! range: %d\n",range);
-
-        delay_ms(1000);
-    }
-
-    fprintf(stderr,"Goodbye from test tof\n");
 }
 
 void test_tof_poke(){
@@ -262,7 +210,7 @@ void test_tof_poke(){
     VL53L0X_DEV dev = calloc(1,sizeof(*dev));
     VL53L0X_Error status;
     fprintf(stderr,"Before init_dev\n");
-    _tof_init_dev(dev);
+    _tof_init_struct(dev);
     fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
     fprintf(stderr,"i2c peripheral: %s\n",(dev->i2c_dev==I2C1)?"OK":"NOP");
     fprintf(stderr,"After init_dev\n");
@@ -287,7 +235,7 @@ void test_xshut(){
 
     while(1){
         fprintf(stderr,"Start poke on base address\n");
-        _tof_init_dev(dev);
+        _tof_init_struct(dev);
         fprintf(stderr,"slave address: %X\n",dev->i2c_slave_address);
         status = _tof_poke(dev); //0x00c0
         //delay_ms(50);
@@ -301,10 +249,7 @@ void test_xshut(){
         fprintf(stderr,"status: %d\n",status);
         fprintf(stderr,"After new address poke\n");
 
-        gpio_clear(GPIOA,GPIO6);
-        delay_ms(20);
-        gpio_set(GPIOA,GPIO6);
-
+        __pulse(GPIOA, GPIO6, low, 20);
 
         fprintf(stderr,"Start poke after reset\n");
         dev->i2c_slave_address = 0x52 / 2;
