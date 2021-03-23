@@ -1,20 +1,19 @@
 #include "tof_timer.h"
 
 void timer_setup_interrupt(){
-    _timer_setup(TOF_TIM_RCC,TOF_TIM,TOF_TIM_PRESCALE,TOF_TIM_PERIOD);
-    _timer_setup_output_c(TOF_TIM,TOF_TIM_OC_ID,TOF_TIM_OC_MODE,0);
-    // timer_disable_oc_clear(TOF_TIM, TOF_TIM_OC_ID);
-    // timer_disable_preload(TOF_TIM);
-    // timer_set_oc_slow_mode(TOF_TIM, TOF_TIM_OC_ID);
+    _timer_setup(TOF_TIM_RCC,TOF_TIM,TOF_TIM_PRESCALER,TOF_TIM_PERIOD);
+
     nvic_enable_irq(TOF_TIM_NVIC);
-	timer_enable_irq(TOF_TIM, TOF_TIM_DIER_CCIE);
+	timer_enable_irq(TOF_TIM, TOF_TIM_DIER_UIE);
+
     _timer_start(TOF_TIM);
 }
 
 void tim4_isr(){
-    if (timer_get_flag(TOF_TIM, TOF_TIM_SR_CCIF))
+    if (timer_get_flag(TOF_TIM, TOF_TIM_SR_UIF))
 	{
-        timer_clear_flag(TOF_TIM, TOF_TIM_SR_CCIF);
+        timer_clear_flag(TOF_TIM, TOF_TIM_SR_UIF);
+        timer_get_flag(TOF_TIM, TOF_TIM_SR_UIF);
         //Insert your code here
         //It will be executed when the interruption occurs
         fprintf(stderr,"interrupt from timer\n");
