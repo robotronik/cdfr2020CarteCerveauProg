@@ -20,8 +20,6 @@
 
 #include "vl53l0x_api.h"
 
-volatile VL53L0X_DEV* t_dev;
-
 #define TOF_COR_FACTOR ((int) (0.5  * 256))
 
 //Fixed in hardware

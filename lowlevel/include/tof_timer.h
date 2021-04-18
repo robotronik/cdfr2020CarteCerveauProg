@@ -29,12 +29,13 @@
 /**
  * Prescale 84000000 Hz system clock by 84000 = 1000 Hz.
  */
+// TODO: cannot go over 2**16 with the prescale value despite the function accepting uint32 , investigate
 #define TOF_TIM_PRESCALER	(42000)
 
 /**
  * Period for the Timer [ms]
  */
-#define TOF_TIM_PERIOD		(500)
+#define TOF_TIM_PERIOD		(50)
 
 /**
  * @defgroup TOF_TIM tof_tim

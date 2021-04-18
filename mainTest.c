@@ -22,6 +22,8 @@ void test_tof_platform_read();
 
 void test_interrupt_timer();
 
+volatile VL53L0X_DEV* t_dev;
+
 int main() {
 
     //setup
@@ -53,7 +55,7 @@ int main() {
     // test_tof_Single();
     // test_xshut();
 
-    test_can_transmit();
+    // test_can_transmit();
 }
 
 void blink_led(){
@@ -184,14 +186,18 @@ void test_interrupt_timer(){
     fprintf(stderr,"Setup dev DONE and Measure STARTED ! error status: %d\n",status);
 
     timer_setup_interrupt();
-    while (1);
+    while (1){
+        // fprintf(stderr,"Measure Performed ! range: %d\n",t_dev[0]->range);
+        // t_dev;
+        // delay_ms(1000);
+    };
 }
 
 void test_tof_Single(){
     fprintf(stderr,"Welcome in test tof Single Ranging Mode\n");
     i2c_setup(I2C1);
     //tof setup
-    t_dev = calloc(1,sizeof(*t_dev));
+    volatile VL53L0X_DEV* t_dev = calloc(1,sizeof(*t_dev));
     t_dev[0] = calloc(1,sizeof(VL53L0X_DEV));
     VL53L0X_DEV dev = t_dev[0];
     uint8_t addr = 0x66;
