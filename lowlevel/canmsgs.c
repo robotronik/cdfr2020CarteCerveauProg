@@ -23,6 +23,10 @@ void can_setup() {
   // Enable clock to the CAN peripheral
   rcc_periph_clock_enable(RCC_CAN1);
 
+  //set alternate function on the pin to use CAN
+  _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
+  _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
+
   // Reset the CAN peripheral
   can_reset(CAN1);
 
@@ -45,8 +49,8 @@ void can_setup() {
            // Silent mode
            false); // If set, CAN can receive but not transmit
   fprintf(stderr,"setup status: %d\n",status);
-  uint32_t reg = PARAM_SJW+PARAM_TS1+PARAM_TS2+PARAM_BRP;
-  fprintf(stderr,"un message de test %lx\n",reg); 
+  // uint32_t reg = PARAM_SJW+PARAM_TS1+PARAM_TS2+PARAM_BRP;
+  fprintf(stderr,"valeur du reg CAN_BTR: %lx\n",CAN_BTR(CAN1)); 
 
   // Enable CAN interrupts for FIFO message pending (FMPIE)
   // no idea why there are two interrupts to enable here
@@ -62,13 +66,6 @@ void can_setup() {
   //enable the entries related to both FIFO in NVIC table
   nvic_enable_irq(CAN1_NVIC_RX0);
   nvic_enable_irq(CAN1_NVIC_RX1);
-
-
-  //set alternate function on the pin to use CAN
-  _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
-  _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
-
-
 
   // filter for later
   //    // Initialisation filter 0

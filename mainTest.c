@@ -22,6 +22,9 @@ void test_tof_platform_read();
 
 void test_interrupt_timer();
 
+void test_can_transmit();
+void test_transceiver();
+
 volatile VL53L0X_DEV* t_dev;
 
 int main() {
@@ -47,7 +50,7 @@ int main() {
     // test_tof_platform_write();
     // test_i2c();
     // test_tof_platform_read();
-    test_interrupt_timer();
+    // test_interrupt_timer();
     // while(1){
     //     test_tof_poke();
     //     delay_ms(500);
@@ -55,7 +58,7 @@ int main() {
     // test_tof_Single();
     // test_xshut();
 
-    // test_can_transmit();
+    test_can_transmit();
 }
 
 void blink_led(){
@@ -64,7 +67,7 @@ void blink_led(){
 
     while(1){
         gpio_toggle(GPIOA,GPIO5);
-        delay_ms(50);
+        delay_ms(1);
     }
 }
 
@@ -163,7 +166,6 @@ void test_tof_platform_read(){
 
     fprintf(stderr,"Read a bunch of data, error status after everything: %d\n",status);
 }
-
 
 void test_interrupt_timer(){
     i2c_setup(I2C1);
@@ -301,9 +303,13 @@ void test_can_transmit(){
     can_setup();
     int status = 0;
 
-    while(!status){
-        status = can_transmit(CAN1, 0x4, false, false,sizeof(data), data);
-        fprintf(stderr,"transmission status: %d\n",status);
-        delay_ms(100);
-    }
+    // while(!status){
+    //     status = can_transmit(CAN1, 0x4, false, false,sizeof(data), data);
+    //     fprintf(stderr,"transmission status: %d\n",status);
+    //     delay_ms(100);
+    // }
+}
+
+void test_transceiver(){
+    _gpio_setup_pin(RCC_GPIOB, GPIOB,GPIO9, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_OTYPE_PP);
 }
