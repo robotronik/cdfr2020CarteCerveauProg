@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,6 +11,7 @@
 #include "tof.h"
 #include "tof_timer.h"
 #include "canmsgs.h"
+#include "flash.h"
 
 void blink_led();
 void test_actuator();
@@ -21,6 +23,7 @@ void test_tof_platform_write();
 void test_tof_platform_read();
 
 void test_interrupt_timer();
+void test_rom();
 
 volatile VL53L0X_DEV* t_dev;
 
@@ -47,15 +50,16 @@ int main() {
     // test_tof_platform_write();
     // test_i2c();
     // test_tof_platform_read();
-    test_interrupt_timer();
+    //test_interrupt_timer();
     // while(1){
     //     test_tof_poke();
     //     delay_ms(500);
     // }
     // test_tof_Single();
     // test_xshut();
-
     // test_can_transmit();
+
+    test_rom();
 }
 
 void blink_led(){
@@ -306,4 +310,17 @@ void test_can_transmit(){
         fprintf(stderr,"transmission status: %d\n",status);
         delay_ms(100);
     }
+}
+
+void test_rom(){
+    uint32_t SECTOR_TABLE_F4[] = {0x08000000, 0x08004000, 0x08008000, 0x0800C000, 
+    0x08010000, 0x08020000, 0x8040000, 0x8060000};
+    uint8_t data = 0x19;
+    fprintf(stderr, "hello before flashing data\n");
+    uint32_t status_flash = flash_program_data(5, &data, 1);
+    fprintf(stderr, "flash_status_fun_exit=%d \n", status_flash);
+
+    uint8_t output_data=12;
+    flash_read_data(SECTOR_TABLE_F4[0], 1, &output_data);
+    fprintf(stderr, "read_data=%d", output_data);
 }
