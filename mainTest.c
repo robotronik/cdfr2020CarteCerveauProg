@@ -297,15 +297,17 @@ void test_xshut(){
 }
 
 void test_can_transmit(){
-    uint8_t* data = calloc(1,sizeof(*data));
-    data = 0xff;
+    int len = 2;
+    uint8_t* pdata = calloc(len,sizeof(*pdata));
+    pdata[0] = 0xbe;
+    pdata[1] = 0xef;
     uint32_t id = 0b00000111111;
 
     can_setup();
     int status = 0;
 
     //while(!status){
-        status = can_transmit(CAN1, id, false, false,1,data);
+        status = can_transmit(CAN1, id, false, false,len,pdata);
         fprintf(stderr,"transmission status: %d\n",status);
         delay_ms(100);
     //}

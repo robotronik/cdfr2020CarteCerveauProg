@@ -38,11 +38,11 @@
 // Resync time quanta jump width
 #define PARAM_SJW CAN_BTR_SJW_1TQ
 // Time segment 1 time quanta width
-#define PARAM_TS1 CAN_BTR_TS1_11TQ //CAN_BTR_TS1_11TQ
+#define PARAM_TS1 CAN_BTR_TS1_6TQ //CAN_BTR_TS1_11TQ
 // Time segment 2 time quanta width
-#define PARAM_TS2 CAN_BTR_TS2_2TQ //CAN_BTR_TS2_2TQ
+#define PARAM_TS2 CAN_BTR_TS2_1TQ //CAN_BTR_TS2_2TQ
 // Baudrate prescaler
-#define PARAM_BRP 12
+#define PARAM_BRP 21
 
 #define CAN1_RX_PORT GPIOB
 #define CAN1_RX_PIN GPIO8
