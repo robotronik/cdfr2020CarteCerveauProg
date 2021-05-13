@@ -36,7 +36,7 @@ void can_setup() {
            false, // Time Trigger Communication mode? No
            true,  // Automatic bus-off management? Yes
            true,  // Automatic wakeup mode? Wakeup on message rx
-           false, // No automatic transmit? Do auto-retry
+           true, // No automatic transmit? Do auto-retry IF False auto-retry, if TRUE only one TRY
            false, // Receive FIFO locked mode? Discard older messages over newer
            false, // Transmit FIFO priority ? Tx priority based on identifier
            // Bit timing settings
@@ -58,7 +58,7 @@ void can_setup() {
   can_enable_irq(CAN1_RX_PORT, CAN_IER_FMPIE0 | CAN_IER_FMPIE1);
 
   // Transmit mailbox empty interrupt enable
-  //can_enable_irq(CAN1_RX_PORT, CAN_IER_TMEIE);
+  //can_enable_irq(CAN1_TX_PORT, CAN_IER_TMEIE);
 
   // Error interrupt enable
   //can_enable_irq(CAN1_RX_PORT, CAN_IER_ERRIE);
