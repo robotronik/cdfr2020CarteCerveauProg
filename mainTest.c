@@ -301,7 +301,7 @@ void test_can_transmit(){
     uint8_t* pdata = calloc(len,sizeof(*pdata));
     pdata[0] = 0xbe;
     pdata[1] = 0xef;
-    uint32_t id = 0b00000111111;
+    uint32_t id = 0b00000111111; //0x3f
 
     can_setup();
     int status = 0;

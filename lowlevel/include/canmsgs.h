@@ -11,7 +11,7 @@
  * Licence :
  *
  * Robotronik Phelma
- * @author NPXav Benano Trukbidule JamesWright Floorcows
+ * @author NPXav Benano Trukbidule JamesWright Floorcows KameradJS(Nornort)
  */
 
 #pragma once
@@ -40,7 +40,7 @@
 
 //// Bit timing settings
 //// http://www.bittiming.can-wiki.info/
-// Setting is currently 400 kbit/s
+// Setting is currently 400 kbit/s CAN_BTR should be 0x001b0006
 // Resync time quanta jump width
 #define PARAM_SJW CAN_BTR_SJW_1TQ
 // Time segment 1 time quanta width
