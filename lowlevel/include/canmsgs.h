@@ -33,16 +33,22 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/usart.h>
 
+
+// can clock is on APB1, there is a /2 prescaler compared to cpu clock
+// this means you have to do calculations with a 42MHz clock for the CAN peripheral
+// TODO: check if the prescale comes fromp APB or AHB
+
 //// Bit timing settings
 //// http://www.bittiming.can-wiki.info/
+// Setting is currently 400 kbit/s
 // Resync time quanta jump width
 #define PARAM_SJW CAN_BTR_SJW_1TQ
 // Time segment 1 time quanta width
-#define PARAM_TS1 CAN_BTR_TS1_6TQ //CAN_BTR_TS1_11TQ
+#define PARAM_TS1 CAN_BTR_TS1_12TQ //CAN_BTR_TS1_11TQ
 // Time segment 2 time quanta width
-#define PARAM_TS2 CAN_BTR_TS2_1TQ //CAN_BTR_TS2_2TQ
+#define PARAM_TS2 CAN_BTR_TS2_2TQ //CAN_BTR_TS2_2TQ
 // Baudrate prescaler
-#define PARAM_BRP 21
+#define PARAM_BRP 7
 
 #define CAN1_RX_PORT GPIOB
 #define CAN1_RX_PIN GPIO8
