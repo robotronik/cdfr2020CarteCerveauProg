@@ -313,14 +313,15 @@ void test_can_transmit(){
 }
 
 void test_rom(){
-    uint32_t SECTOR_TABLE_F4[] = {0x08000000, 0x08004000, 0x08008000, 0x0800C000, 
+    uint32_t SECTOR_TABLE_F4[] = {0x08000000, 0x08004000, 0x08008000, 0x0800C000,
     0x08010000, 0x08020000, 0x8040000, 0x8060000};
     uint8_t data = 0x19;
     fprintf(stderr, "hello before flashing data\n");
     uint32_t status_flash = flash_program_data(5, &data, 1);
     fprintf(stderr, "flash_status_fun_exit=%d \n", status_flash);
 
-    uint8_t output_data=12;
-    flash_read_data(SECTOR_TABLE_F4[0], 1, &output_data);
-    fprintf(stderr, "read_data=%d", output_data);
+    uint8_t output_data=0x12;
+    flash_read_data(SECTOR_TABLE_F4[5], 1, &output_data);
+    fprintf(stderr, "read_data=%x\n", output_data);
+
 }
