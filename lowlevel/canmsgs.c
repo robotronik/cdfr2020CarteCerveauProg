@@ -57,10 +57,10 @@ void can_setup() {
   can_enable_irq(CAN1, CAN_IER_FMPIE0 | CAN_IER_FMPIE1 ); 
 
   // Transmit mailbox empty interrupt enable
-  can_enable_irq(CAN1, CAN_IER_TMEIE);
+  // can_enable_irq(CAN1, CAN_IER_TMEIE);
 
   // Error interrupt enable
-  can_enable_irq(CAN1, CAN_IER_ERRIE);
+  // can_enable_irq(CAN1, CAN_IER_ERRIE);
 
   fprintf(stderr,"valeur du reg CAN_IER: %lx\n",CAN_IER(CAN1)); 
 
@@ -68,28 +68,33 @@ void can_setup() {
   nvic_enable_irq(NVIC_CAN1_RX0_IRQ);
   nvic_enable_irq(NVIC_CAN1_RX1_IRQ);
 
-  // filter for later
-  //    // Initialisation filter 0
-  //    can_filter_id_mask_16bit_init(
-  //      0,                                 // Filter bank 0
-  //      0x000 << 5, 0x001 << 5,            // LSB == 0
-  //  		0x000 << 5, 0x001 << 5,            // Not used
-  //  		0,                                 // FIFO 0
-  //  		true);                             // enables the filter
-  //
-  //    // Initialisation filter 1
-  //    can_filter_id_mask_16bit_init(
-  //      1,                                 // Filter bank 1
-  //      0x000 << 5, 0x001 << 5,            // LSB == 0
-  //  		0x000 << 5, 0x001 << 5,            // Not used
-  //  		1,                                 // FIFO 1
-  //  		true);
+
+  // 0..27 filter banks                                               
+  // Initialisation filter bank 0
+  can_filter_id_mask_16bit_init(
+    0,  // Filter bank 0
+    0,  // id1
+   	0,  // mask1
+    0,  // id2
+    0,  // mask2
+   	0,  // FIFO 0
+   	false); // enables the filter
+  
+    // Initialisation of filter bank 1
+  can_filter_id_mask_16bit_init(
+    0,  // Filter bank 0
+    0,  // id1
+   	0,  // mask1
+    0,  // id2
+    0,  // mask2
+   	0,  // FIFO 1
+   	false); // enables the filter
 
 }
 
 // // ISR for both FIFO reception
 // // TODO name FIFO_O and FIFO_1
-void can_rx0_isr(){
+void can1_rx0_isr(){
   // receive(0);
 
   fprintf(stderr,"Message detected on fifo 0\n");
@@ -102,7 +107,7 @@ void can_rx0_isr(){
   fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id,length,pdata[0],pdata[1]);
 }
 
-void can_rx1_isr(){
+void can1_rx1_isr(){
   // receive(1);
 
   fprintf(stderr,"Message detected on fifo 1\n");
@@ -113,5 +118,10 @@ void can_rx1_isr(){
   bool ext,rtr;
   can_receive(CAN1,1,true,&id,&ext,&rtr,&fmi,&length,pdata,&timestamp);
   fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id,length,pdata[0],pdata[1]);
+}
+
+void can1_sce_isr(){
+  fprintf(stderr, "sce interrupt");
+  //FIXME: lower the flag
 }
 

@@ -49,6 +49,7 @@
 #define PARAM_TS2 CAN_BTR_TS2_2TQ //CAN_BTR_TS2_2TQ
 // Baudrate prescaler
 #define PARAM_BRP 7
+// sample point 86.7
 
 #define CAN1_RX_PORT GPIOB
 #define CAN1_RX_PIN GPIO8
@@ -174,3 +175,7 @@ void receive(uint8_t fifo);
 // data before requesting the transmission by setting the corresponding TXRQ bit
 // in the CAN_TIxR register.}
 void transmit(uint32_t id, Can_tx_msg tx_msg);
+
+void can1_rx1_isr();
+void can1_rx0_isr();
+void can1_sce_isr();
