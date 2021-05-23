@@ -62,10 +62,6 @@
 #define CAN1_TX_AF GPIO_AF9
 //#define CAN1_NVIC NVIC_CEC_CAN_IRQ           Not defined for F4
 // Which could replace it?
-#define CAN1_NVIC_TX NVIC_CAN1_TX_IRQ
-#define CAN1_NVIC_RX0 NVIC_CAN1_RX0_IRQ
-#define CAN1_NVIC_RX1 NVIC_CAN1_RX1_IRQ
-#define CAN1_NVIC_SCE NVIC_CAN1_SCE_IRQ
 
 /**
  * @brief Frame of stantard transmitted CAN messages

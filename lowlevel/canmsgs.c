@@ -24,6 +24,8 @@ void can_setup() {
   rcc_periph_clock_enable(RCC_CAN1);
 
   //set alternate function on the pin to use CAN
+  //FIXME: pullup sur RX ?
+  // PP sur TX ?
   _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
   _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
 
@@ -67,7 +69,7 @@ void can_setup() {
   //enable the entries related to both FIFO in NVIC table
   nvic_enable_irq(NVIC_CAN1_RX0_IRQ);
   nvic_enable_irq(NVIC_CAN1_RX1_IRQ);
-
+  nvic_enable_irq(NVIC_CAN1_SCE_IRQ)
 
   // 0..27 filter banks                                               
   // Initialisation filter bank 0
@@ -87,7 +89,7 @@ void can_setup() {
    	0,  // mask1
     0,  // id2
     0,  // mask2
-   	0,  // FIFO 1
+   	1,  // FIFO 1
    	false); // enables the filter
 
 }
@@ -122,6 +124,23 @@ void can1_rx1_isr(){
 
 void can1_sce_isr(){
   fprintf(stderr, "sce interrupt");
-  //FIXME: lower the flag
+  //FIXME:lower the flag
+CLEAR_BITS(CAN_MSR(CAN1), CAN_MSR_ERRI)
+
 }
 
+// potential function to wrap clear flags MSR
+// void can_sce_clear_flag(uint32_t can_peripheral, uint32_t flag){
+//     CAN_MSR(can_peripheral) &= ~flag;
+//     //TODO check can ESR for more info of the error (EWGI, EPVI, BOFI or last error code LECI)
+// }
+
+// FIFO
+// void can_fifo_clear_flag(uint8_t fifo, uint32_t can_peripheral, uint32_t flag){
+//     if(fifo == 0){ //fifo0
+//       CAN_RF0R(can_peripheral) &= ~flag;
+//     }
+//     else if(fifo == 1){ //fifo1
+//       CAN_RF1R(can_peripheral) &= ~flag;
+//     }
+// }
