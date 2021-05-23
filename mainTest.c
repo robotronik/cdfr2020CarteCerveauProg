@@ -304,13 +304,15 @@ void test_can_transmit(){
     uint32_t id = 0b00000111111; //0x3f
 
     can_setup();
-    int status = 0;
+    int status = 96;
 
-    //while(!status){
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+
+    do{
         status = can_transmit(CAN1, id, false, false,len,pdata);
         fprintf(stderr,"transmission status: %d\n",status);
         delay_ms(100);
-    //}
+    }while(!status);
 }
 
 void test_transceiver(){

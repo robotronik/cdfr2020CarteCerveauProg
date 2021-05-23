@@ -26,8 +26,22 @@ void can_setup() {
   //set alternate function on the pin to use CAN
   //FIXME: pullup sur RX ?
   // PP sur TX ?
-  _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
-  _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
+  //_gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
+  //_gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+
+  // CAN RX
+  rcc_periph_clock_enable(CAN1_RX_RCC);
+  gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
+  gpio_mode_setup(CAN1_RX_PORT, GPIO_MODE_AF,
+                  GPIO_PUPD_PULLUP, CAN1_RX_PIN);
+  
+  // // CAN TX
+  rcc_periph_clock_enable(CAN1_TX_RCC);
+  gpio_set_af(CAN1_TX_PORT, CAN1_TX_AF, CAN1_TX_PIN);
+  gpio_set_output_options(CAN1_TX_PORT, GPIO_OTYPE_PP,
+                          GPIO_OSPEED_50MHZ, CAN1_TX_PIN);
+  gpio_mode_setup(CAN1_TX_PORT, GPIO_MODE_AF,
+                  GPIO_PUPD_NONE, CAN1_TX_PIN);
 
   // Reset the CAN peripheral
   can_reset(CAN1);
@@ -62,14 +76,14 @@ void can_setup() {
   // can_enable_irq(CAN1, CAN_IER_TMEIE);
 
   // Error interrupt enable
-  // can_enable_irq(CAN1, CAN_IER_ERRIE);
+  can_enable_irq(CAN1, CAN_IER_ERRIE);
 
   fprintf(stderr,"valeur du reg CAN_IER: %lx\n",CAN_IER(CAN1)); 
 
   //enable the entries related to both FIFO in NVIC table
   nvic_enable_irq(NVIC_CAN1_RX0_IRQ);
   nvic_enable_irq(NVIC_CAN1_RX1_IRQ);
-  nvic_enable_irq(NVIC_CAN1_SCE_IRQ)
+  nvic_enable_irq(NVIC_CAN1_SCE_IRQ);
 
   // 0..27 filter banks                                               
   // Initialisation filter bank 0
@@ -80,7 +94,7 @@ void can_setup() {
     0,  // id2
     0,  // mask2
    	0,  // FIFO 0
-   	false); // enables the filter
+   	true); // enables the filter
   
     // Initialisation of filter bank 1
   can_filter_id_mask_16bit_init(
@@ -98,6 +112,9 @@ void can_setup() {
 // // TODO name FIFO_O and FIFO_1
 void can1_rx0_isr(){
   // receive(0);
+
+  // LE TEST DE LA LED VERTE
+  gpio_toggle(GPIOA,GPIO5);
 
   fprintf(stderr,"Message detected on fifo 0\n");
   uint32_t id = 0;
@@ -125,8 +142,7 @@ void can1_rx1_isr(){
 void can1_sce_isr(){
   fprintf(stderr, "sce interrupt");
   //FIXME:lower the flag
-CLEAR_BITS(CAN_MSR(CAN1), CAN_MSR_ERRI)
-
+  //CLEAR_BITS(CAN_MSR(CAN1), CAN_MSR_ERRI);
 }
 
 // potential function to wrap clear flags MSR
