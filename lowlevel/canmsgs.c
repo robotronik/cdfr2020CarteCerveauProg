@@ -34,7 +34,8 @@ void can_setup() {
   gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
   gpio_mode_setup(CAN1_RX_PORT, GPIO_MODE_AF,
                   GPIO_PUPD_PULLUP, CAN1_RX_PIN);
-  
+    gpio_set_output_options(CAN1_RX_PORT, GPIO_OTYPE_OD,
+                          GPIO_OSPEED_50MHZ, CAN1_RX_PIN);
   // // CAN TX
   rcc_periph_clock_enable(CAN1_TX_RCC);
   gpio_set_af(CAN1_TX_PORT, CAN1_TX_AF, CAN1_TX_PIN);
@@ -50,7 +51,7 @@ void can_setup() {
   // return 0 if success, 1 if failure
   status = can_init(CAN1,  // The CAN ID
            false, // Time Trigger Communication mode? No
-           true,  // Automatic bus-off management? Yes
+           true,  // Automatic bus-off management? 
            true,  // Automatic wakeup mode? Wakeup on message rx
            true, // No automatic transmit? Do auto-retry IF False auto-retry, if TRUE only one TRY
            false, // Receive FIFO locked mode? Discard older messages over newer
@@ -61,7 +62,7 @@ void can_setup() {
            PARAM_TS2, // Time segment 2 time quanta width
            PARAM_BRP, // Baudrate prescaler
            // Loopback mode
-           false, // If set, CAN can transmit but not receive
+           true, // If set, can RX and can TX are internally linked, for testing purposes
            // Silent mode
            false); // If set, CAN can receive but not transmit
   fprintf(stderr,"setup status: %d\n",status);
@@ -87,24 +88,24 @@ void can_setup() {
 
   // 0..27 filter banks                                               
   // Initialisation filter bank 0
-  can_filter_id_mask_16bit_init(
-    0,  // Filter bank 0
-    0,  // id1
-   	0,  // mask1
-    0,  // id2
-    0,  // mask2
-   	0,  // FIFO 0
-   	true); // enables the filter
+//   can_filter_id_mask_16bit_init(
+//     0,  // Filter bank 0
+//     0,  // id1
+//    	0,  // mask1
+//     0,  // id2
+//     0,  // mask2
+//    	0,  // FIFO 0
+//    	true); // enables the filter
   
-    // Initialisation of filter bank 1
-  can_filter_id_mask_16bit_init(
-    0,  // Filter bank 0
-    0,  // id1
-   	0,  // mask1
-    0,  // id2
-    0,  // mask2
-   	1,  // FIFO 1
-   	false); // enables the filter
+//     // Initialisation of filter bank 1
+//   can_filter_id_mask_16bit_init(
+//     0,  // Filter bank 0
+//     0,  // id1
+//    	0,  // mask1
+//     0,  // id2
+//     0,  // mask2
+//    	1,  // FIFO 1
+//    	false); // enables the filter
 
 }
 

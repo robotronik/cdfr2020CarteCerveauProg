@@ -59,6 +59,8 @@ int main() {
     // test_xshut();
 
     test_can_transmit();
+
+    while(1);
 }
 
 void blink_led(){
@@ -308,13 +310,37 @@ void test_can_transmit(){
 
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
 
-    do{
+    //do{
         status = can_transmit(CAN1, id, false, false,len,pdata);
         fprintf(stderr,"transmission status: %d\n",status);
         delay_ms(100);
-    }while(!status);
-}
+uint32_t id_rcv = 0;
+  uint8_t fmi,length;
+  uint8_t pdata_rcv[2];
+  uint16_t timestamp;
+  bool ext,rtr;
+union {
+                 uint8_t data8[4];
+                 uint32_t data32;
+         } rdlxr, rdhxr;
 
+        rdlxr.data32 = CAN_RDLxR(CAN1, 1);
+         rdhxr.data32 = CAN_RDHxR(CAN1, 1);
+         rdlxr.data8[0] = 0;
+         rdlxr.data8[1] = 0;
+         rdlxr.data8[2] = 0;
+         rdlxr.data8[3] = 0;
+         rdhxr.data8[0] = 0;
+         rdhxr.data8[1] = 0;
+         rdhxr.data8[2] = 0;
+         rdhxr.data8[3] = 0;
+        can_receive(CAN1,1,true,&id_rcv,&ext,&rtr,&fmi,&length,pdata_rcv,&timestamp);
+  fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id_rcv,length,pdata_rcv[0],pdata_rcv[1]);
+        can_receive(CAN1,1,true,&id_rcv,&ext,&rtr,&fmi,&length,pdata_rcv,&timestamp);
+  fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id_rcv,length,pdata_rcv[0],pdata_rcv[1]);
+    //}while(!status);
+    
+}
 void test_transceiver(){
     _gpio_setup_pin(RCC_GPIOB, GPIOB,GPIO9, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_OTYPE_PP);
 }
