@@ -12,21 +12,28 @@ VL53L0X_Error tof_setup(VL53L0X_DEV* t_dev,uint8_t tof_number){
      GPIO_PUPD_PULLDOWN,GPIO_OTYPE_PP);
 
     /*Reset Tof */
-
+    gpio_set(SHIFTR_DSAB_PORT,SHIFTR_DSAB_PIN);
+    __pulse(SHIFTR_CP_PORT,SHIFTR_CP_PIN,low,20);
+    gpio_clear(SHIFTR_DSAB_PORT,SHIFTR_DSAB_PIN);
     for(int i = 0; i< tof_number;++i){
-        //faire un truc
-        __pulse(GPIOA,GPIO6,low,20);
+        __pulse(SHIFTR_CP_PORT,SHIFTR_CP_PIN,low,20);
+        //init le tof i
+        status = _tof_1_setup(t_dev[i],10*i); //no idea what address we wanna give !
+            if(status){
+               fprintf(stderr, "tof %d failed setup",i);
+               return status;
+            }
     }
     //placeholder for one tof
-    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP,
-    GPIO_OTYPE_PP);
-    gpio_set(GPIOA,GPIO6);
-    // reset tof
-    __pulse(GPIOA,GPIO6,low,20);
+    /* _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO6,GPIO_MODE_OUTPUT,GPIO_PUPD_PULLUP, */
+    /* GPIO_OTYPE_PP); */
+    /* gpio_set(GPIOA,GPIO6); */
+    /* // reset tof */
+    /* __pulse(GPIOA,GPIO6,low,20); */
 
 
-    status = _tof_1_setup(t_dev[0],0x66);
-    if(status) return status;
+    /* status = _tof_1_setup(t_dev[0],0x66); */
+    /* if(status) return status; */
 
     return VL53L0X_ERROR_NONE;
 }

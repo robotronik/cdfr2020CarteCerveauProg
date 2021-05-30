@@ -298,6 +298,24 @@ void test_xshut(){
     }
 }
 
+void test_shift_register(){
+    //setup pin for SHIFTR
+    _gpio_setup_pin(SHIFTR_DSAB_RCC, SHIFTR_DSAB_PORT, SHIFTR_DSAB_PIN, GPIO_MODE_OUTPUT,
+     GPIO_PUPD_PULLDOWN,GPIO_OTYPE_PP);
+    _gpio_setup_pin(SHIFTR_CP_RCC, SHIFTR_CP_PORT, SHIFTR_CP_PIN, GPIO_MODE_OUTPUT,
+     GPIO_PUPD_PULLDOWN,GPIO_OTYPE_PP);
+    //input one "1" in the shift register
+    gpio_set(SHIFTR_DSAB_PORT,SHIFTR_DSAB_PIN);
+    __pulse(GPIOA,GPIO6,low,20);
+    gpio_clear(SHIFTR_DSAB_PORT,SHIFTR_DSAB_PIN);
+
+    // move the 1 across the whole register
+    for(int i=0;i<8;i++){
+        __pulse(GPIOA,GPIO6,low,20);
+        delay_ms(1000);
+    }
+}
+
 void test_can_transmit(){
     uint8_t* data = calloc(2,sizeof(*data));
     data = 0xbeef;
@@ -323,5 +341,4 @@ void test_rom(){
     uint8_t output_data=0x12;
     flash_read_data(SECTOR_TABLE_F4[5], 1, &output_data);
     fprintf(stderr, "read_data=%x\n", output_data);
-
 }
