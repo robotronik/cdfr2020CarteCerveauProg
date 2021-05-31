@@ -314,30 +314,12 @@ void test_can_transmit(){
         status = can_transmit(CAN1, id, false, false,len,pdata);
         fprintf(stderr,"transmission status: %d\n",status);
         delay_ms(100);
-uint32_t id_rcv = 0;
-  uint8_t fmi,length;
-  uint8_t pdata_rcv[2];
-  uint16_t timestamp;
-  bool ext,rtr;
-union {
-                 uint8_t data8[4];
-                 uint32_t data32;
-         } rdlxr, rdhxr;
 
-        rdlxr.data32 = CAN_RDLxR(CAN1, 1);
-         rdhxr.data32 = CAN_RDHxR(CAN1, 1);
-         rdlxr.data8[0] = 0;
-         rdlxr.data8[1] = 0;
-         rdlxr.data8[2] = 0;
-         rdlxr.data8[3] = 0;
-         rdhxr.data8[0] = 0;
-         rdhxr.data8[1] = 0;
-         rdhxr.data8[2] = 0;
-         rdhxr.data8[3] = 0;
-        can_receive(CAN1,1,true,&id_rcv,&ext,&rtr,&fmi,&length,pdata_rcv,&timestamp);
-  fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id_rcv,length,pdata_rcv[0],pdata_rcv[1]);
-        can_receive(CAN1,1,true,&id_rcv,&ext,&rtr,&fmi,&length,pdata_rcv,&timestamp);
-  fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id_rcv,length,pdata_rcv[0],pdata_rcv[1]);
+        pdata[0] = 0xab;
+        pdata[1] = 0xcd;
+        status = can_transmit(CAN1, id, false, false,len,pdata);
+        fprintf(stderr,"transmission status: %d\n",status);
+        delay_ms(100);
     //}while(!status);
     
 }

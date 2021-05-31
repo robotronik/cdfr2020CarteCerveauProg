@@ -31,16 +31,17 @@ void can_setup() {
 
   // CAN RX
   rcc_periph_clock_enable(CAN1_RX_RCC);
-  gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
   gpio_mode_setup(CAN1_RX_PORT, GPIO_MODE_AF,
                   GPIO_PUPD_PULLUP, CAN1_RX_PIN);
-    gpio_set_output_options(CAN1_RX_PORT, GPIO_OTYPE_OD,
-                          GPIO_OSPEED_50MHZ, CAN1_RX_PIN);
+  gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
+  // gpio_set_output_options(CAN1_RX_PORT, GPIO_OTYPE_OD,
+  //                       GPIO_SOSPEED_50MHZ, CAN1_RX_PIN);
+  
   // // CAN TX
   rcc_periph_clock_enable(CAN1_TX_RCC);
   gpio_set_af(CAN1_TX_PORT, CAN1_TX_AF, CAN1_TX_PIN);
-  gpio_set_output_options(CAN1_TX_PORT, GPIO_OTYPE_PP,
-                          GPIO_OSPEED_50MHZ, CAN1_TX_PIN);
+  // gpio_set_output_options(CAN1_TX_PORT, GPIO_OTYPE_PP,
+  //                         GPIO_OSPEED_50MHZ, CAN1_TX_PIN);
   gpio_mode_setup(CAN1_TX_PORT, GPIO_MODE_AF,
                   GPIO_PUPD_NONE, CAN1_TX_PIN);
 
@@ -97,15 +98,15 @@ void can_setup() {
 //    	0,  // FIFO 0
 //    	true); // enables the filter
   
-//     // Initialisation of filter bank 1
-//   can_filter_id_mask_16bit_init(
-//     0,  // Filter bank 0
-//     0,  // id1
-//    	0,  // mask1
-//     0,  // id2
-//     0,  // mask2
-//    	1,  // FIFO 1
-//    	false); // enables the filter
+    // Initialisation of filter bank 1
+  can_filter_id_mask_16bit_init(
+    0,  // Filter bank 0
+    0,  // id1
+   	0,  // mask1
+    0,  // id2
+    0,  // mask2
+   	1,  // FIFO 1
+   	true); // enables the filter
 
 }
 
@@ -129,6 +130,9 @@ void can1_rx0_isr(){
 
 void can1_rx1_isr(){
   // receive(1);
+
+  // LE TEST DE LA LED VERTE
+  gpio_toggle(GPIOA,GPIO5);
 
   fprintf(stderr,"Message detected on fifo 1\n");
   uint32_t id = 0;
