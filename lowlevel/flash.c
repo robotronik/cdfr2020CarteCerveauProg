@@ -17,7 +17,7 @@ uint32_t flash_program_data(uint8_t sector, uint8_t *input_data, uint16_t num_el
 	uint16_t iter;
 	uint32_t current_address = SECTOR_TABLE_F4[sector];
 	uint32_t sector_address = SECTOR_TABLE_F4[sector];
-    // too many check because we work with sector but this structure is useful for pages
+    // too many check because we work with sectors on the F4 but this structure is useful for pages
 	/*check if start_address is in proper range*/
 	if((sector_address - FLASH_OPERATION_ADDRESS) >= (FLASH_SECTOR_SIZE * (FLASH_SECTOR_NUM_MAX+1)))
 		return 1;
@@ -49,7 +49,6 @@ uint32_t flash_program_data(uint8_t sector, uint8_t *input_data, uint16_t num_el
 	/*programming flash memory*/
 	for(iter=0; iter<num_elements; iter++)
 	{
-		/*programming word data*/
 		flash_program_byte(current_address+iter, *(input_data + iter));
 		/* if(flash_status != FLASH_SR_EOP) */
 		/* 	return flash_status; */
@@ -59,7 +58,6 @@ uint32_t flash_program_data(uint8_t sector, uint8_t *input_data, uint16_t num_el
 		if(*(uint8_t*)(current_address+iter) != *(input_data + iter))
 			return -1;
 	}
-
 	return 0;
 }
 
