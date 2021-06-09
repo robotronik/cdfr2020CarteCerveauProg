@@ -1,4 +1,4 @@
-// //from the libopencm3 example: https://github.com/libopencm3/libopencm3-examples/blob/master/examples/stm32/f1/stm32-h107/flash_rw_example/flash_rw_example.c
+
 
 #include "flash.h"
 

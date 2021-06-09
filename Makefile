@@ -148,6 +148,11 @@ install_udev:
 %.debug: %.elf
 	$(GDB) $^ --command=gdb/attach.gdb
 
+# generate the doxygen documentation with pdf
+doxypdf:
+	doxygen doxygenConf
+	cd doxygen/latex && make
+
 clean:
 		find . \
 		\( -not -path  "./hal_common*" \) \
