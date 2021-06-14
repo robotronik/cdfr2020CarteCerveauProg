@@ -15,6 +15,8 @@ To clean: `make clean`
 ## Software documentation
 You can access the documentation generated from the code with doxygen (see the doxygen paragraph to generate it) in the doxygen/html or latex.
 
+And now on the github page: https://robotronik.github.io/cdfr2020CarteCerveauProg/
+
 ## Hardware documentation
 Microcontroller used: STM32F401RE on a Nulceo-64 board, main doc:
 * [Reference Manual STM32F401 line, doc RM0368, 847 pages](https://www.st.com/resource/en/reference_manual/dm00096844-stm32f401xbc-and-stm32f401xde-advanced-armbased-32bit-mcus-stmicroelectronics.pdf)
@@ -27,13 +29,12 @@ Microcontroller used: STM32F401RE on a Nulceo-64 board, main doc:
 Generating the documentation with doxygen:
 --> install doxygen on your system
 
---> run `doxygen doxygenConf` from the project directory
+--> `doxygen doxygenConf`
 
---> the documentation can then be read from doxygen/html/index.html in a browser
-
---> to generate the pdf for the github (or for yourself !) go into the latex directory `cd doxygen/latex` and run `make`.
-
+You can run the following command to make the pdf version of the documentation
+--> `make doxypdf`
 Note: You must have a latex distribution on your computer that has `pdflatex` command.
+
 
 ## Generate the database for your IDE
 --> to update the compile_command.json you can use bear (available in the AUR)
