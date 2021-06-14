@@ -32,6 +32,7 @@ Generating the documentation with doxygen:
 --> `doxygen doxygenConf`
 
 You can run the following command to make the pdf version of the documentation
+
 --> `make doxypdf`
 Note: You must have a latex distribution on your computer that has `pdflatex` command.
 
