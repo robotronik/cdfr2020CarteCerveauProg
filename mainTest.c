@@ -31,8 +31,8 @@ int main() {
 
     //setup
     clock_setup();
-    //exti_setup();
-    //actuator_setup();
+    // exti_setup();
+    // actuator_setup();
     uart_setup();
 
     /*
@@ -310,18 +310,20 @@ void test_can_transmit(){
 
     _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
 
-    //do{
+    // do{
         status = can_transmit(CAN1, id, false, false,len,pdata);
         fprintf(stderr,"transmission status: %d\n",status);
-        delay_ms(100);
+        delay_ms(500);
 
-        pdata[0] = 0xab;
-        pdata[1] = 0xcd;
-        status = can_transmit(CAN1, id, false, false,len,pdata);
-        fprintf(stderr,"transmission status: %d\n",status);
-        delay_ms(100);
-    //}while(!status);
+        // pdata[0] = 0xab;
+        // pdata[1] = 0xcd;
+        // status = can_transmit(CAN1, id, false, false,len,pdata);
+        // fprintf(stderr,"transmission status: %d\n",status);
+        // delay_ms(100);
+    // }while(!status);
     
+    
+    // fprintf(stderr,"transmission status: %d\n",status);
 }
 void test_transceiver(){
     _gpio_setup_pin(RCC_GPIOB, GPIOB,GPIO9, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_OTYPE_PP);
