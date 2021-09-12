@@ -36,6 +36,7 @@ void can_setup() {
   // gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
   // // gpio_set_output_options(CAN1_RX_PORT, GPIO_OTYPE_OD,
   // //                       GPIO_SOSPEED_50MHZ, CAN1_RX_PIN);
+
   
   // // // CAN TX
   // rcc_periph_clock_enable(CAN1_TX_RCC);
@@ -107,7 +108,7 @@ void can_setup() {
     0,  // mask2
    	1,  // FIFO 1
    	true); // enables the filter
-
+     
 }
 
 // // ISR for both FIFO reception

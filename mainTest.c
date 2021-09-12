@@ -31,8 +31,8 @@ int main() {
 
     //setup
     clock_setup();
-    //exti_setup();
-    //actuator_setup();
+    // exti_setup();
+    // actuator_setup();
     uart_setup();
 
     /*
@@ -324,6 +324,7 @@ void test_can_transmit(){
         delay_ms(100);
     }while(!status);
     
+    // fprintf(stderr,"transmission status: %d\n",status);
 }
 void test_transceiver(){
     _gpio_setup_pin(RCC_GPIOB, GPIOB,GPIO9, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_OTYPE_PP);
