@@ -25,14 +25,17 @@ void test_tof_platform_read();
 void test_interrupt_timer();
 void test_rom();
 
+void test_can_transmit();
+void test_transceiver();
+
 volatile VL53L0X_DEV* t_dev;
 
 int main() {
 
     //setup
     clock_setup();
-    //exti_setup();
-    //actuator_setup();
+    // exti_setup();
+    // actuator_setup();
     uart_setup();
 
     /*
@@ -59,7 +62,11 @@ int main() {
     // test_xshut();
     // test_can_transmit();
 
-    test_rom();
+    // test_rom();
+
+    test_can_transmit();
+
+    while(1);
 }
 
 void blink_led(){
@@ -68,7 +75,7 @@ void blink_led(){
 
     while(1){
         gpio_toggle(GPIOA,GPIO5);
-        delay_ms(50);
+        delay_ms(1000);
     }
 }
 
@@ -167,7 +174,6 @@ void test_tof_platform_read(){
 
     fprintf(stderr,"Read a bunch of data, error status after everything: %d\n",status);
 }
-
 
 void test_interrupt_timer(){
     i2c_setup(I2C1);
@@ -317,17 +323,35 @@ void test_shift_register(){
 }
 
 void test_can_transmit(){
-    uint8_t* data = calloc(2,sizeof(*data));
-    data = 0xbeef;
+    int len = 2;
+    uint8_t* pdata = calloc(len,sizeof(*pdata));
+    pdata[0] = 0xbe;
+    pdata[1] = 0xef;
+    uint32_t id = 0b00000111111; //0x3f
 
     can_setup();
-    int status = 0;
+    int status = 96;
 
-    while(!status){
-        status = can_transmit(CAN1, 0x4, false, false,sizeof(data), data);
+    _gpio_setup_pin(RCC_GPIOA,GPIOA,GPIO5,GPIO_MODE_OUTPUT,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+
+    do{
+        pdata[0] = 0xf4;
+        pdata[1] = 0xcc;
+        status = can_transmit(CAN1, id, false, false,len,pdata);
         fprintf(stderr,"transmission status: %d\n",status);
         delay_ms(100);
-    }
+
+        pdata[0] = 0xf4;
+        pdata[1] = 0xdd;
+        status = can_transmit(CAN1, id, false, false,len,pdata);
+        fprintf(stderr,"transmission status: %d\n",status);
+        delay_ms(100);
+    }while(!status);
+
+    // fprintf(stderr,"transmission status: %d\n",status);
+}
+void test_transceiver(){
+    _gpio_setup_pin(RCC_GPIOB, GPIOB,GPIO9, GPIO_MODE_OUTPUT, GPIO_PUPD_PULLUP, GPIO_OTYPE_PP);
 }
 
 void test_rom(){

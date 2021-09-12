@@ -12,7 +12,7 @@
  * Licence :
  *
  * Robotronik Phelma
- * @author NPXav Benano JamesWright
+ * @author NPXav Benano JamesWright KameradJS(Nornort)
  */
 
 #include "canmsgs.h"
@@ -23,6 +23,29 @@ void can_setup() {
   // Enable clock to the CAN peripheral
   rcc_periph_clock_enable(RCC_CAN1);
 
+  //set alternate function on the pin to use CAN
+  //FIXME: pullup sur RX ?
+  // PP sur TX ?
+  _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
+  _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+
+  // CAN RX
+  // rcc_periph_clock_enable(CAN1_RX_RCC);
+  // gpio_mode_setup(CAN1_RX_PORT, GPIO_MODE_AF,
+  //                 GPIO_PUPD_PULLUP, CAN1_RX_PIN);
+  // gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
+  // // gpio_set_output_options(CAN1_RX_PORT, GPIO_OTYPE_OD,
+  // //                       GPIO_SOSPEED_50MHZ, CAN1_RX_PIN);
+
+  
+  // // // CAN TX
+  // rcc_periph_clock_enable(CAN1_TX_RCC);
+  // gpio_set_af(CAN1_TX_PORT, CAN1_TX_AF, CAN1_TX_PIN);
+  // // gpio_set_output_options(CAN1_TX_PORT, GPIO_OTYPE_PP,
+  // //                         GPIO_OSPEED_50MHZ, CAN1_TX_PIN);
+  // gpio_mode_setup(CAN1_TX_PORT, GPIO_MODE_AF,
+  //                 GPIO_PUPD_NONE, CAN1_TX_PIN);
+
   // Reset the CAN peripheral
   can_reset(CAN1);
 
@@ -30,9 +53,9 @@ void can_setup() {
   // return 0 if success, 1 if failure
   status = can_init(CAN1,  // The CAN ID
            false, // Time Trigger Communication mode? No
-           true,  // Automatic bus-off management? Yes
+           true,  // Automatic bus-off management? 
            true,  // Automatic wakeup mode? Wakeup on message rx
-           false, // No automatic transmit? Do auto-retry
+           true, // No automatic transmit? Do auto-retry IF False auto-retry, if TRUE only one TRY
            false, // Receive FIFO locked mode? Discard older messages over newer
            false, // Transmit FIFO priority ? Tx priority based on identifier
            // Bit timing settings
@@ -41,110 +64,105 @@ void can_setup() {
            PARAM_TS2, // Time segment 2 time quanta width
            PARAM_BRP, // Baudrate prescaler
            // Loopback mode
-           false, // If set, CAN can transmit but not receive
+           false, // If set, can RX and can TX are internally linked, for testing purposes
            // Silent mode
            false); // If set, CAN can receive but not transmit
   fprintf(stderr,"setup status: %d\n",status);
-  uint32_t reg = PARAM_SJW+PARAM_TS1+PARAM_TS2+PARAM_BRP;
-  fprintf(stderr,"un message de test %lx\n",reg); 
+  // uint32_t reg = PARAM_SJW+PARAM_TS1+PARAM_TS2+PARAM_BRP;
+  fprintf(stderr,"valeur du reg CAN_BTR: %lx\n",CAN_BTR(CAN1)); 
 
   // Enable CAN interrupts for FIFO message pending (FMPIE)
-  // no idea why there are two interrupts to enable here
   // actually there are two FIFO so two interrupt for new messages to check
-  can_enable_irq(CAN1_RX_PORT, CAN_IER_FMPIE0 | CAN_IER_FMPIE1);
+  can_enable_irq(CAN1, CAN_IER_FMPIE0 | CAN_IER_FMPIE1 ); 
 
   // Transmit mailbox empty interrupt enable
-  //can_enable_irq(CAN1_RX_PORT, CAN_IER_TMEIE);
+  // can_enable_irq(CAN1, CAN_IER_TMEIE);
 
   // Error interrupt enable
-  //can_enable_irq(CAN1_RX_PORT, CAN_IER_ERRIE);
+  can_enable_irq(CAN1, CAN_IER_ERRIE);
+
+  fprintf(stderr,"valeur du reg CAN_IER: %lx\n",CAN_IER(CAN1)); 
 
   //enable the entries related to both FIFO in NVIC table
-  nvic_enable_irq(CAN1_NVIC_RX0);
-  nvic_enable_irq(CAN1_NVIC_RX1);
+  nvic_enable_irq(NVIC_CAN1_RX0_IRQ);
+  nvic_enable_irq(NVIC_CAN1_RX1_IRQ);
+  nvic_enable_irq(NVIC_CAN1_SCE_IRQ);
 
-
-  //set alternate function on the pin to use CAN
-  _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
-  _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
-
-
-
-  // filter for later
-  //    // Initialisation filter 0
-  //    can_filter_id_mask_16bit_init(
-  //      0,                                 // Filter bank 0
-  //      0x000 << 5, 0x001 << 5,            // LSB == 0
-  //  		0x000 << 5, 0x001 << 5,            // Not used
-  //  		0,                                 // FIFO 0
-  //  		true);                             // enables the filter
-  //
-  //    // Initialisation filter 1
-  //    can_filter_id_mask_16bit_init(
-  //      1,                                 // Filter bank 1
-  //      0x000 << 5, 0x001 << 5,            // LSB == 0
-  //  		0x000 << 5, 0x001 << 5,            // Not used
-  //  		1,                                 // FIFO 1
-  //  		true);
-
+  // 0..27 filter banks                                               
+  // Initialisation filter bank 0
+//   can_filter_id_mask_16bit_init(
+//     0,  // Filter bank 0
+//     0,  // id1
+//    	0,  // mask1
+//     0,  // id2
+//     0,  // mask2
+//    	0,  // FIFO 0
+//    	true); // enables the filter
+  
+    // Initialisation of filter bank 1
+  can_filter_id_mask_16bit_init(
+    0,  // Filter bank 0
+    0,  // id1
+   	0,  // mask1
+    0,  // id2
+    0,  // mask2
+   	1,  // FIFO 1
+   	true); // enables the filter
+     
 }
 
 // // ISR for both FIFO reception
 // // TODO name FIFO_O and FIFO_1
-// void can_rx0_isr(){
-//   receive(0);
+void can1_rx0_isr(){
+  // receive(0);
+
+  // LE TEST DE LA LED VERTE
+  gpio_toggle(GPIOA,GPIO5);
+
+  fprintf(stderr,"Message detected on fifo 0\n");
+  uint32_t id = 0;
+  uint8_t fmi,length;
+  uint8_t pdata[2];
+  uint16_t timestamp;
+  bool ext,rtr;
+  can_receive(CAN1,0,true,&id,&ext,&rtr,&fmi,&length,pdata,&timestamp);
+  fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id,length,pdata[0],pdata[1]);
+}
+
+void can1_rx1_isr(){
+  // receive(1);
+
+  // LE TEST DE LA LED VERTE
+  gpio_toggle(GPIOA,GPIO5);
+
+  fprintf(stderr,"Message detected on fifo 1\n");
+  uint32_t id = 0;
+  uint8_t fmi,length;
+  uint8_t pdata[2];
+  uint16_t timestamp;
+  bool ext,rtr;
+  can_receive(CAN1,1,true,&id,&ext,&rtr,&fmi,&length,pdata,&timestamp);
+  fprintf(stderr,"Message received is: id=%lx dlc=%d data=%x%x\n",id,length,pdata[0],pdata[1]);
+}
+
+void can1_sce_isr(){
+  fprintf(stderr, "sce interrupt");
+  //FIXME:lower the flag
+  //CLEAR_BITS(CAN_MSR(CAN1), CAN_MSR_ERRI);
+}
+
+// potential function to wrap clear flags MSR
+// void can_sce_clear_flag(uint32_t can_peripheral, uint32_t flag){
+//     CAN_MSR(can_peripheral) &= ~flag;
+//     //TODO check can ESR for more info of the error (EWGI, EPVI, BOFI or last error code LECI)
 // }
 
-// void can_rx1_isr(){
-//   receive(1);
+// FIFO
+// void can_fifo_clear_flag(uint8_t fifo, uint32_t can_peripheral, uint32_t flag){
+//     if(fifo == 0){ //fifo0
+//       CAN_RF0R(can_peripheral) &= ~flag;
+//     }
+//     else if(fifo == 1){ //fifo1
+//       CAN_RF1R(can_peripheral) &= ~flag;
+//     }
 // }
-
-// void receive(uint8_t fifo) {
-//   // Copy CAN message data into main ram
-//   Can_rx_msg rx_msg;
-//   can_receive(CAN1,
-//               fifo, // FIFO ID
-//               true, // Automatically release FIFO after rx
-//               &rx_msg.std_id, &rx_msg.ext_id, &rx_msg.rtr, &rx_msg.fmi,
-//               &rx_msg.dlc, rx_msg.data, &rx_msg.ts);
-//   // Append the message a global can message buffer
-//   _can_msg_buffer_append( rx_msg );
-// }
-
-// void _can_msg_buffer_append( Can_rx_msg rx_msg ){
-//   // Edge case: the linked list is empty
-//   if( NULL == can_msg_buffer_list ){
-//     can_msg_buffer_list = calloc(1, sizeof(can_msg_buffer_list_t));
-//     can_msg_buffer_list->next = NULL;
-//     can_msg_buffer_list->data = rx_msg;
-//     return;
-//   }
-//   // Adding the message to the end of the linked list
-//   can_msg_buffer_list_t * p = can_msg_buffer_list;
-//   while( NULL != p->next ){
-//     p = p->next;
-//   }
-//   p->next = calloc(1, sizeof(can_msg_buffer_list_t));
-//   p->next->data = rx_msg;
-//   p->next->next = NULL;
-// }
-
-// int can_msg_buffer_pop( Can_rx_msg * rx_msg ){
-//   // Checking if the linked list is empty
-//   if( NULL == can_msg_buffer_list ){
-//     return 1;
-//   }
-//   // Fetching and deleting the first element of the linked list
-//   *rx_msg = can_msg_buffer_list->data;
-//   can_msg_buffer_list_t * buffer = can_msg_buffer_list;
-//   can_msg_buffer_list = can_msg_buffer_list->next;
-//   free(buffer);
-//   return 0;
-// }
-
-// void transmit(uint32_t id, Can_tx_msg tx_msg) {
-//   can_transmit(CAN1, id, tx_msg.ext_id, tx_msg.rtr, tx_msg.dlc,
-//                &tx_msg.data);
-// }
-
-// // TODO user function that takes in argument the message data and set all the parameters

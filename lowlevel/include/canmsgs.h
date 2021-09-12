@@ -11,7 +11,7 @@
  * Licence :
  *
  * Robotronik Phelma
- * @author NPXav Benano Trukbidule JamesWright Floorcows
+ * @author NPXav Benano Trukbidule JamesWright Floorcows KameradJS(Nornort)
  */
 
 #pragma once
@@ -33,16 +33,23 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/usart.h>
 
+
+// can clock is on APB1, there is a /2 prescaler compared to cpu clock
+// this means you have to do calculations with a 42MHz clock for the CAN peripheral
+// TODO: check if the prescale comes fromp APB or AHB
+
 //// Bit timing settings
 //// http://www.bittiming.can-wiki.info/
+// Setting is currently 400 kbit/s CAN_BTR should be 0x001b0006
 // Resync time quanta jump width
 #define PARAM_SJW CAN_BTR_SJW_1TQ
 // Time segment 1 time quanta width
-#define PARAM_TS1 CAN_BTR_TS1_10TQ //CAN_BTR_TS1_11TQ
+#define PARAM_TS1 CAN_BTR_TS1_12TQ //CAN_BTR_TS1_11TQ
 // Time segment 2 time quanta width
-#define PARAM_TS2 CAN_BTR_TS2_3TQ //CAN_BTR_TS2_2TQ
+#define PARAM_TS2 CAN_BTR_TS2_2TQ //CAN_BTR_TS2_2TQ
 // Baudrate prescaler
-#define PARAM_BRP 16
+#define PARAM_BRP 7
+// sample point 86.7
 
 #define CAN1_RX_PORT GPIOB
 #define CAN1_RX_PIN GPIO8
@@ -55,10 +62,6 @@
 #define CAN1_TX_AF GPIO_AF9
 //#define CAN1_NVIC NVIC_CEC_CAN_IRQ           Not defined for F4
 // Which could replace it?
-#define CAN1_NVIC_TX NVIC_CAN1_TX_IRQ
-#define CAN1_NVIC_RX0 NVIC_CAN1_RX0_IRQ
-#define CAN1_NVIC_RX1 NVIC_CAN1_RX1_IRQ
-#define CAN1_NVIC_SCE NVIC_CAN1_SCE_IRQ
 
 /**
  * @brief Frame of stantard transmitted CAN messages
@@ -168,3 +171,7 @@ void receive(uint8_t fifo);
 // data before requesting the transmission by setting the corresponding TXRQ bit
 // in the CAN_TIxR register.}
 void transmit(uint32_t id, Can_tx_msg tx_msg);
+
+void can1_rx1_isr();
+void can1_rx0_isr();
+void can1_sce_isr();

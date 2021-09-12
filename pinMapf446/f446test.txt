@@ -1,6 +1,6 @@
 Configuration	f446test
-STM32CubeMX 	6.0.1
-Date	10/01/2020
+STM32CubeMX 	6.3.0
+Date	09/12/2021
 MCU	STM32F446RETx
 
 
@@ -17,24 +17,16 @@ Pin Nb	PINs	FUNCTIONs	LABELs
 9	PC1	GPIO_Output	tof_data
 16	PA2*	USART2_TX	debug_TX_AF07
 17	PA3*	USART2_RX	debug_RX_AF07
-27	PB1*	TIM3_CH4	bras2_pwm_AF02
-28	PB2	GPIO_Output	bras_2_out2
-29	PB10	GPIO_Output	bras_2_out1
-33	PB12	GPIO_Output	bras_1_out1
-34	PB13	GPIO_Output	bras_1_out2
-35	PB14	GPIO_Output	flag_out1
-36	PB15	GPIO_Output	flag_out2
+33	PB12	GPIO_Output	bras1_dir
+35	PB14	GPIO_Output	flag_dir
 37	PC6*	TIM3_CH1	flag_pwm_AF02
-38	PC7*	TIM3_CH2	bras1_pwm_AF02
+38	PC7*	TIM3_CH2	bras_pwm_AF02
 39	PC8	GPIO_EXTI8	EXTI8_flag_butee
 40	PC9	GPIO_EXTI9	EXTI9_bras_butee
 42	PA9*	USART1_TX	commF3_TX_AF07
 43	PA10*	USART1_RX	commF3_RX_AF07
 44	PA11	GPIO_Input	aruco_in
 45	PA12	GPIO_Output	aruco_out
-55	PB3*	SPI1_SCK	pixy_spi_clk_AF05
-56	PB4*	SPI1_MISO	pixy_spi_miso_AF05
-57	PB5*	SPI1_MOSI	pixy_spi_mosi_AF05
 58	PB6*	I2C1_SCL	tof_SCL_AF04
 59	PB7*	I2C1_SDA	tof_SDA_AF04
 61	PB8	CAN1_RX	
@@ -51,24 +43,16 @@ Pin Nb	PINs	FUNCTIONs	LABELs
 9	PC1	GPIO_Output	tof_data
 16	PA2*	USART2_TX	debug_TX_AF07
 17	PA3*	USART2_RX	debug_RX_AF07
-27	PB1*	TIM3_CH4	bras2_pwm_AF02
-28	PB2	GPIO_Output	bras_2_out2
-29	PB10	GPIO_Output	bras_2_out1
-33	PB12	GPIO_Output	bras_1_out1
-34	PB13	GPIO_Output	bras_1_out2
-35	PB14	GPIO_Output	flag_out1
-36	PB15	GPIO_Output	flag_out2
+33	PB12	GPIO_Output	bras1_dir
+35	PB14	GPIO_Output	flag_dir
 37	PC6*	TIM3_CH1	flag_pwm_AF02
-38	PC7*	TIM3_CH2	bras1_pwm_AF02
+38	PC7*	TIM3_CH2	bras_pwm_AF02
 39	PC8	GPIO_EXTI8	EXTI8_flag_butee
 40	PC9	GPIO_EXTI9	EXTI9_bras_butee
 42	PA9*	USART1_TX	commF3_TX_AF07
 43	PA10*	USART1_RX	commF3_RX_AF07
 44	PA11	GPIO_Input	aruco_in
 45	PA12	GPIO_Output	aruco_out
-55	PB3*	SPI1_SCK	pixy_spi_clk_AF05
-56	PB4*	SPI1_MISO	pixy_spi_miso_AF05
-57	PB5*	SPI1_MOSI	pixy_spi_mosi_AF05
 58	PB6*	I2C1_SCL	tof_SCL_AF04
 59	PB7*	I2C1_SDA	tof_SDA_AF04
 61	PB8	CAN1_RX	
@@ -80,7 +64,7 @@ SOFTWARE PROJECT
 
 Project Settings : 
 Project Name : f446test
-Project Folder : /home/akko/robotronik/cdfr2020CarteCerveauProg/pinMapf446
+Project Folder : C:\Users\beatr\Documents\robotronik\cdfr2020CarteCerveauProg\pinMapf446
 Toolchain / IDE : EWARM V8.32
 Firmware Package Name and Version : STM32Cube FW_F4 V1.25.0
 

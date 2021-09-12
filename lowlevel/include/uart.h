@@ -57,29 +57,30 @@ simple uart configuration for debugging
 #define DEBUG_UART_NVIC NVIC_USART2_IRQ
 /** @} */
 
+// Uncomment for an additional USART for communication
 /**
- * @defgroup ACTUATOR_TIM actuator_tim
+ * @defgroup COM_USART com_usart
  * @{
  * @brief Uart used for communication between devices
  * 
  * Baudrate is 9600
  */
-#define COMM_RCC_USART RCC_USART1
-#define COMM_USART USART1
-#define COMM_UART_SPEED (9600)
+// #define COMM_RCC_USART RCC_USART1
+// #define COMM_USART USART1
+// #define COMM_UART_SPEED (9600)
 
-#define COMM_PORT_TX GPIOA
-#define COMM_PORT_TX_RCC RCC_GPIOB 
-#define COMM_PIN_TX GPIO9
-#define COMM_AF_TX GPIO_AF7
+// #define COMM_PORT_TX GPIOA
+// #define COMM_PORT_TX_RCC RCC_GPIOB 
+// #define COMM_PIN_TX GPIO9
+// #define COMM_AF_TX GPIO_AF7
 
-#define COMM_PORT_RX GPIOA
-#define COMM_PORT_RX_RCC RCC_GPIOB
-#define COMM_PIN_RX GPIO10
-#define COMM_AF_RX GPIO_AF7
+// #define COMM_PORT_RX GPIOA
+// #define COMM_PORT_RX_RCC RCC_GPIOB
+// #define COMM_PIN_RX GPIO10
+// #define COMM_AF_RX GPIO_AF7
 
-#define COMM_UART_EXTI EXTI25
-#define COMM_UART_NVIC NVIC_USART1_IRQ
+// #define COMM_UART_EXTI EXTI25
+// #define COMM_UART_NVIC NVIC_USART1_IRQ
 /** @} */
 
 /**
