@@ -26,24 +26,24 @@ void can_setup() {
   //set alternate function on the pin to use CAN
   //FIXME: pullup sur RX ?
   // PP sur TX ?
-  //_gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
-  //_gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
+  _gpio_setup_pin_af(CAN1_RX_RCC,CAN1_RX_PORT,CAN1_RX_PIN,CAN1_RX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_OD);
+  _gpio_setup_pin_af(CAN1_TX_RCC,CAN1_TX_PORT,CAN1_TX_PIN,CAN1_TX_AF,GPIO_PUPD_NONE,GPIO_OTYPE_PP);
 
   // CAN RX
-  rcc_periph_clock_enable(CAN1_RX_RCC);
-  gpio_mode_setup(CAN1_RX_PORT, GPIO_MODE_AF,
-                  GPIO_PUPD_PULLUP, CAN1_RX_PIN);
-  gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
-  // gpio_set_output_options(CAN1_RX_PORT, GPIO_OTYPE_OD,
-  //                       GPIO_SOSPEED_50MHZ, CAN1_RX_PIN);
+  // rcc_periph_clock_enable(CAN1_RX_RCC);
+  // gpio_mode_setup(CAN1_RX_PORT, GPIO_MODE_AF,
+  //                 GPIO_PUPD_PULLUP, CAN1_RX_PIN);
+  // gpio_set_af(CAN1_RX_PORT, CAN1_RX_AF, CAN1_RX_PIN);
+  // // gpio_set_output_options(CAN1_RX_PORT, GPIO_OTYPE_OD,
+  // //                       GPIO_SOSPEED_50MHZ, CAN1_RX_PIN);
   
-  // // CAN TX
-  rcc_periph_clock_enable(CAN1_TX_RCC);
-  gpio_set_af(CAN1_TX_PORT, CAN1_TX_AF, CAN1_TX_PIN);
-  // gpio_set_output_options(CAN1_TX_PORT, GPIO_OTYPE_PP,
-  //                         GPIO_OSPEED_50MHZ, CAN1_TX_PIN);
-  gpio_mode_setup(CAN1_TX_PORT, GPIO_MODE_AF,
-                  GPIO_PUPD_NONE, CAN1_TX_PIN);
+  // // // CAN TX
+  // rcc_periph_clock_enable(CAN1_TX_RCC);
+  // gpio_set_af(CAN1_TX_PORT, CAN1_TX_AF, CAN1_TX_PIN);
+  // // gpio_set_output_options(CAN1_TX_PORT, GPIO_OTYPE_PP,
+  // //                         GPIO_OSPEED_50MHZ, CAN1_TX_PIN);
+  // gpio_mode_setup(CAN1_TX_PORT, GPIO_MODE_AF,
+  //                 GPIO_PUPD_NONE, CAN1_TX_PIN);
 
   // Reset the CAN peripheral
   can_reset(CAN1);
@@ -63,7 +63,7 @@ void can_setup() {
            PARAM_TS2, // Time segment 2 time quanta width
            PARAM_BRP, // Baudrate prescaler
            // Loopback mode
-           true, // If set, can RX and can TX are internally linked, for testing purposes
+           false, // If set, can RX and can TX are internally linked, for testing purposes
            // Silent mode
            false); // If set, CAN can receive but not transmit
   fprintf(stderr,"setup status: %d\n",status);
